@@ -1,0 +1,21 @@
+{
+  "theme": "pro",
+  "customThemes": {
+    "test": {
+      "label": "test",
+      "vars": {
+        "--primary": "#75e873",
+        "--primary-dark": "#27db24",
+        "--primary-light": "#b6f3b5",
+        "--secondary": "#cc6ace",
+        "--secondary-dark": "#a336a6",
+        "--accent": "#ac7fdc",
+        "--accent-dark": "#7d37c8",
+        "--bg": "#f4f6f4",
+        "--bg-light": "#fcfdfc",
+        "--text": "#1a2332",
+        "--text-muted": "#465e86"
+      }
+    }
+  }
+}

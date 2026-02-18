@@ -1,0 +1,33 @@
+<section class="hero">
+    <div class="hero-bg" id="hero-bg-<%= section.carouselId %>"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <p class="hero-eyebrow" data-content-key="hero-eyebrow">Portfolio de realisations</p>
+        <h1 class="hero-title" data-content-key="hero-title">Nos Realisations</h1>
+        <p class="hero-subtitle" data-content-key="hero-subtitle">15 ans de savoir-faire alpin</p>
+    </div>
+</section>
+
+<svg class="divider" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 80" preserveAspectRatio="none">
+    <path d="M0,80 L0,50 L120,20 L240,60 L360,10 L480,55 L600,25 L720,65 L840,15 L960,50 L1080,20 L1200,60 L1320,30 L1440,50 L1440,80 Z" fill="#faf7f2"/>
+</svg>
+
+<script>
+(function() {
+    var heroBg = document.getElementById('hero-bg-<%= section.carouselId %>');
+    // Parallax
+    window.addEventListener('scroll', function() {
+        if (heroBg && window.scrollY < window.innerHeight) {
+            heroBg.style.transform = 'translateY(' + (window.scrollY * 0.4) + 'px)';
+        }
+    }, { passive: true });
+    // Charger l'image depuis l'API
+    fetch('/api/carousel/<%= section.carouselId %>/images')
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.images && data.images.length > 0 && heroBg) {
+                heroBg.style.backgroundImage = "url('" + data.images[0].url + "')";
+            }
+        }).catch(function() {});
+})();
+</script>

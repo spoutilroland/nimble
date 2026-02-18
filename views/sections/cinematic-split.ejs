@@ -1,0 +1,92 @@
+<section class="s2">
+    <div class="container" style="max-width:100%;padding:0">
+        <div class="container" style="margin-bottom:3.5rem">
+            <div class="section-header reveal">
+                <span class="section-tag" data-content-key="s2-tag">&mdash; Expertise & Savoir-faire &mdash;</span>
+                <h2 class="section-title" data-content-key="s2-title">Renovation Interieure</h2>
+            </div>
+        </div>
+
+        <div class="project-row reveal" id="cinematic-<%= section.carouselId %>">
+            <div class="project-image">
+                <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&h=550&fit=crop&q=80" alt="Renovation cuisine alpine">
+            </div>
+            <div class="project-text">
+                <div class="project-num">01</div>
+                <div class="project-text-inner">
+                    <div class="tag-row" style="margin-bottom:1rem">
+                        <span class="tag-chip">Cuisine</span>
+                        <span class="tag-chip">Bois massif</span>
+                    </div>
+                    <h3 data-content-key="project-1-title">Cuisine ouverte<br>en meleze</h3>
+                    <p data-content-key="project-1-desc">Renovation complete d'une cuisine avec pose de facades en meleze massif local, plan de travail en granit des Alpes, eclairage encastre basse consommation et amenagements sur mesure adaptes aux volumes du chalet.</p>
+                    <div class="tag-row">
+                        <span class="tag-chip">Savoie 73</span>
+                        <span class="tag-chip">6 semaines</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-row reversed reveal">
+            <div class="project-image">
+                <img src="https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=900&h=550&fit=crop&q=80" alt="Salle de bain renovee">
+            </div>
+            <div class="project-text">
+                <div class="project-num">02</div>
+                <div class="project-text-inner">
+                    <div class="tag-row" style="margin-bottom:1rem">
+                        <span class="tag-chip">Salle de bain</span>
+                        <span class="tag-chip">Carrelage</span>
+                    </div>
+                    <h3 data-content-key="project-2-title">Salle de bain<br>esprit spa alpin</h3>
+                    <p data-content-key="project-2-desc">Creation d'une salle de bain haut de gamme avec douche a l'italienne en pierre naturelle, boiseries en pin traite, double vasque sur mesure et integration d'un seche-serviette pierre refractaire.</p>
+                    <div class="tag-row">
+                        <span class="tag-chip">Haute-Savoie 74</span>
+                        <span class="tag-chip">4 semaines</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-row reveal">
+            <div class="project-image">
+                <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&h=550&fit=crop&q=80" alt="Parquet massif salon">
+            </div>
+            <div class="project-text">
+                <div class="project-num">03</div>
+                <div class="project-text-inner">
+                    <div class="tag-row" style="margin-bottom:1rem">
+                        <span class="tag-chip">Parquet</span>
+                        <span class="tag-chip">Salon</span>
+                    </div>
+                    <h3 data-content-key="project-3-title">Parquet massif<br>& lambris epicea</h3>
+                    <p data-content-key="project-3-desc">Pose de parquet massif chene huile en chevron, habillage mural en lambris epicea vieilli, refection complete du plafond avec poutres apparentes et integration d'une cheminee en pierre de taille.</p>
+                    <div class="tag-row">
+                        <span class="tag-chip">Isere 38</span>
+                        <span class="tag-chip">8 semaines</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<svg class="divider" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 80" preserveAspectRatio="none" style="background:var(--secondary-dark)">
+    <path d="M0,80 L0,30 L80,55 L200,5 L360,45 L480,15 L620,50 L720,20 L860,55 L960,10 L1100,45 L1220,18 L1340,50 L1440,28 L1440,80 Z" fill="#2d5016"/>
+</svg>
+
+<script>
+(function() {
+    fetch('/api/carousel/<%= section.carouselId %>/images')
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.images && data.images.length > 0) {
+                var allImgs = document.querySelectorAll('.project-image img');
+                data.images.forEach(function(img, i) {
+                    if (allImgs[i]) allImgs[i].src = img.webpUrl || img.url;
+                });
+            }
+        }).catch(function() {});
+})();
+</script>

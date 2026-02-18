@@ -1,0 +1,37 @@
+<section class="section section-gallery" id="realisations">
+    <div class="container">
+        <h2 class="section-title" data-content-key="gallery-title">Nos Dernieres Realisations</h2>
+        <div class="gallery-grid" id="gallery-grid-<%= section.carouselId %>">
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop&q=80" alt="Realisation 1">
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=800&h=600&fit=crop&q=80" alt="Realisation 2">
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&h=600&fit=crop&q=80" alt="Realisation 3">
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop&q=80" alt="Realisation 4">
+            </div>
+        </div>
+        <div class="text-center">
+            <a href="/nos-travaux" class="btn btn-secondary" data-content-key="gallery-cta">Voir toutes nos realisations</a>
+        </div>
+    </div>
+</section>
+
+<script>
+(function() {
+    fetch('/api/carousel/<%= section.carouselId %>/images')
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.images && data.images.length > 0) {
+                var items = document.querySelectorAll('#gallery-grid-<%= section.carouselId %> .gallery-item img');
+                data.images.forEach(function(img, i) {
+                    if (items[i]) items[i].src = img.webpUrl || img.url;
+                });
+            }
+        }).catch(function() {});
+})();
+</script>

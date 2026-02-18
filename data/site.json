@@ -1,0 +1,94 @@
+{
+  "business": {
+    "name": "Renovation Azur",
+    "tagline": "Artisants sur la côte d'Azur depuis 2002",
+    "description": "Expert en renovation et construction",
+    "phone": "01 23 45 67 89",
+    "email": "contact@renovation-azur.fr",
+    "address": "PACA",
+    "hours": {
+      "weekdays": "Lundi - Vendredi : 9h - 19h",
+      "saturday": "Samedi : 8h - 16h",
+      "note": "Déplacements en région gratuit"
+    },
+    "legal": {
+      "siret": "111 3333 444 589796",
+      "certifications": "RGE - Assurance tout court",
+      "copyright": "2026 Renovation Azur"
+    }
+  },
+  "seo": {
+    "defaultTitle": "Renovation Alpine | Artisans en Savoie",
+    "defaultDescription": "Expert en renovation alpine depuis plus de 15 ans",
+    "ogImage": null
+  },
+  "fonts": {
+    "heading": "Oswald",
+    "body": "Raleway",
+    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Raleway:wght@300;400;500;600;700&display=swap"
+  },
+  "captcha": {
+    "provider": "turnstile",
+    "siteKey": "0x4AAAAAACaxH5ibx3vlXzfZ"
+  },
+  "design": {
+    "borderStyle": "custom",
+    "customRadius": {
+      "tl": 48,
+      "tr": 48,
+      "br": 48,
+      "bl": 0
+    }
+  },
+  "logoMode": "logo-name",
+  "logoPosition": "left",
+  "languages": {
+    "available": [
+      "fr"
+    ],
+    "default": "fr"
+  },
+  "social": {
+    "linkedin": "",
+    "facebook": "",
+    "instagram": "",
+    "x": "",
+    "tiktok": "",
+    "youtube": "",
+    "pinterest": "",
+    "github": ""
+  },
+  "footer": {
+    "cols": 3,
+    "blocks": [
+      {
+        "blockId": "f1",
+        "type": "logo-desc",
+        "row": 1,
+        "col": 1,
+        "colSpan": 1
+      },
+      {
+        "blockId": "f2",
+        "type": "contact",
+        "row": 1,
+        "col": 2,
+        "colSpan": 1
+      },
+      {
+        "blockId": "f3",
+        "type": "hours",
+        "row": 1,
+        "col": 3,
+        "colSpan": 1
+      },
+      {
+        "blockId": "f4",
+        "type": "legal",
+        "row": 2,
+        "col": 1,
+        "colSpan": 3
+      }
+    ]
+  }
+}

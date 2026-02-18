@@ -24,4 +24,5 @@ Thumbs.db
 .idea/
 
 # Mémoire Claude (données de session privées)
+CLAUDE.md
 .claude/

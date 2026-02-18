@@ -1,0 +1,49 @@
+<div class="stats-bar reveal">
+    <div class="stat-item">
+        <span class="stat-number" data-count="150"><span>0</span></span>
+        <span class="stat-label" data-content-key="stat-1-label">Chantiers realises</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-number" data-count="15"><span>0</span></span>
+        <span class="stat-label" data-content-key="stat-2-label">Annees d'experience</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-number" data-count="98"><span>0</span></span>
+        <span class="stat-label" data-content-key="stat-3-label">Clients satisfaits %</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-number" data-count="3"><span>0</span></span>
+        <span class="stat-label" data-content-key="stat-4-label">Departements</span>
+    </div>
+</div>
+
+<script>
+(function() {
+    function countUp(el, target) {
+        var start = 0;
+        var step = target / (1600 / 16);
+        var span = el.querySelector('span');
+        var timer = setInterval(function() {
+            start = Math.min(start + step, target);
+            span.textContent = Math.floor(start);
+            if (start >= target) clearInterval(timer);
+        }, 16);
+    }
+
+    var statsBar = document.querySelector('.stats-bar');
+    if (!statsBar) return;
+
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.querySelectorAll('[data-count]').forEach(function(el) {
+                    countUp(el, parseInt(el.dataset.count));
+                });
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    observer.observe(statsBar);
+})();
+</script>

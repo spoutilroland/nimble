@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr" data-border="<%= (site.design && site.design.borderStyle) || 'angular' %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Back Office — <%= site.business.name %></title>
+  <% if (typeof faviconUrl !== 'undefined' && faviconUrl) { %>
+  <link rel="icon" href="<%= faviconUrl %>">
+  <% } %>
+  <!-- Restaurer le thème backoffice avant le chargement CSS (anti-FOUC) -->
+  <script>
+    (function() {
+      var t = localStorage.getItem('back-theme');
+      if (t === 'dark') document.documentElement.setAttribute('data-back-theme', 'dark');
+    })();
+  </script>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="backoffice-body is-backoffice">
+
+  <!-- Login Screen -->
+  <div id="login-screen" class="login-screen">
+    <div class="login-box">
+      <h1>Back Office</h1>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required autofocus>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+        <div id="login-error" class="error-message"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div id="admin-dashboard" class="admin-dashboard" style="display: none;">
+    <header class="admin-header">
+      <div class="container">
+        <h1>Administration</h1>
+        <div style="display:flex;align-items:center;gap:0.6rem;">
+          <button id="back-theme-toggle" class="btn btn-secondary btn-icon-sm" title="Basculer clair / sombre">☀️</button>
+          <button id="logout-btn" class="btn btn-secondary">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Barre d'onglets horizontaux -->
+    <nav id="main-tabs">
+      <button class="main-tab active" data-tab="tab-design">🎨 Design</button>
+      <button class="main-tab" data-tab="tab-content">📄 Contenu</button>
+      <button class="main-tab" data-tab="tab-identity">🏢 Identité</button>
+      <button class="main-tab" data-tab="tab-config">🌐 Configuration</button>
+      <button class="main-tab" data-tab="tab-security">⚙️ Sécurité</button>
+    </nav>
+
+    <!-- Corps principal : sidebar verticale + zone de contenu -->
+    <div id="backoffice-body">
+
+      <!-- Panel Design -->
+      <div class="tab-panel active" id="tab-design">
+        <nav class="side-nav">
+          <a class="side-nav-link" href="#theme-section">Thèmes</a>
+          <a class="side-nav-link" href="#logo-section">Logo & Favicon</a>
+          <a class="side-nav-link" href="#border-section">Bordures</a>
+        </nav>
+        <div class="panel-content" id="container-design">
+          <!-- Sections injectées par JS : theme-section, logo-section, border-section -->
+        </div>
+      </div>
+
+      <!-- Panel Contenu -->
+      <div class="tab-panel" id="tab-content">
+        <nav class="side-nav">
+          <a class="side-nav-link" href="#pages-section">Pages</a>
+          <a class="side-nav-link" href="#layouts-section">Layouts</a>
+        </nav>
+        <div class="panel-content" id="container-content">
+          <!-- Sections injectées par JS : pages-section, layouts-section + carousels dynamiques -->
+        </div>
+      </div>
+
+      <!-- Panel Identité -->
+      <div class="tab-panel" id="tab-identity">
+        <nav class="side-nav">
+          <a class="side-nav-link" href="#site-section">Identité</a>
+          <a class="side-nav-link" href="#footer-section">Footer</a>
+        </nav>
+        <div class="panel-content" id="container-identity">
+          <!-- Sections injectées par JS : site-section, footer-section -->
+        </div>
+      </div>
+
+      <!-- Panel Configuration -->
+      <div class="tab-panel" id="tab-config">
+        <nav class="side-nav">
+          <a class="side-nav-link" href="#config-section">Langues</a>
+        </nav>
+        <div class="panel-content" id="container-config">
+          <!-- Section injectée par JS : config-section -->
+        </div>
+      </div>
+
+      <!-- Panel Sécurité -->
+      <div class="tab-panel" id="tab-security">
+        <nav class="side-nav">
+          <a class="side-nav-link" href="#security-section">Mot de passe</a>
+          <a class="side-nav-link" href="#captcha-section">Captcha</a>
+        </nav>
+        <div class="panel-content" id="container-security">
+          <!-- Sections injectées par JS : security-section, captcha-section -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/js/backoffice.js"></script>
+</body>
+</html>

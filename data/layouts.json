@@ -1,0 +1,42 @@
+{
+  "layouts": {
+    "roland-spoutil": {
+      "id": "roland-spoutil",
+      "label": "Roland Spoutil",
+      "createdAt": "2026-02-17T22:46:20.037Z",
+      "updatedAt": "2026-02-17T22:46:20.037Z",
+      "blocks": [
+        {
+          "blockId": "b1",
+          "type": "map",
+          "row": 1,
+          "col": 1,
+          "colSpan": 1,
+          "provider": "google-embed",
+          "address": "229 Rue Jean Borotra",
+          "embedUrl": "",
+          "height": "300"
+        }
+      ]
+    },
+    "roland-spoutilaaa": {
+      "id": "roland-spoutilaaa",
+      "label": "Roland Spoutilaaa",
+      "createdAt": "2026-02-17T22:48:50.370Z",
+      "updatedAt": "2026-02-17T22:48:50.370Z",
+      "blocks": [
+        {
+          "blockId": "b2",
+          "type": "map",
+          "row": 1,
+          "col": 2,
+          "colSpan": 1,
+          "provider": "leaflet",
+          "address": "229 Rue Jean Borotra",
+          "embedUrl": "",
+          "height": "300"
+        }
+      ]
+    }
+  }
+}

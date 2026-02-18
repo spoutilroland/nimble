@@ -1,0 +1,129 @@
+<%
+    const _logoUrl  = typeof logoUrl      !== 'undefined' ? logoUrl      : null;
+    const _logoMode = typeof logoMode     !== 'undefined' ? logoMode     : 'logo-only';
+    const _logoPos  = typeof logoPosition !== 'undefined' ? logoPosition : 'left';
+
+    const navPages     = pages.filter(p => p.showInNav).sort((a, b) => a.navOrder - b.navOrder);
+    const MAX_NAV      = 5;
+    const visiblePages = navPages.slice(0, MAX_NAV);
+    const overflowPages = navPages.slice(MAX_NAV);
+    const homePage     = pages.find(p => p.slug === '/');
+    const hasContact   = homePage && homePage.sections.some(s => s.type === 'contact');
+
+    // Pour le mode center : découpe en deux moitiés uniquement si > 3 liens au total
+    const totalLinks = visiblePages.length + overflowPages.length + (hasContact ? 1 : 0);
+    const shouldSplit = _logoPos === 'center' && totalLinks > 3;
+    const half       = shouldSplit ? Math.ceil(visiblePages.length / 2) : 0;
+    const leftPages  = shouldSplit ? visiblePages.slice(0, half) : [];
+    const rightPages = shouldSplit ? visiblePages.slice(half) : visiblePages;
+%>
+<header class="header">
+    <div class="container">
+        <div class="header-content logo-pos-<%= _logoPos %>">
+
+            <%# ── Nav gauche (desktop center, uniquement si > 3 liens) ── %>
+            <% if (leftPages.length > 0) { %>
+            <nav class="nav nav-center-left" aria-hidden="true">
+                <% leftPages.forEach(p => { %>
+                    <% const isActive = (p.slug === '/' && currentPath === '/') || (p.slug !== '/' && currentPath === p.slug); %>
+                    <a href="<%= p.slug %>" class="nav-link<%= isActive ? ' active' : '' %>"><%= p.title %></a>
+                <% }) %>
+            </nav>
+            <% } %>
+
+            <%# ── Logo ───────────────────────────────────────────── %>
+            <div class="logo">
+                <a href="/" class="logo-link">
+                    <% if (_logoUrl && (_logoMode === 'logo-only' || _logoMode === 'logo-name')) { %>
+                        <img src="<%= _logoUrl %>" alt="<%= site.business.name %>" class="logo-img">
+                    <% } %>
+                    <% if (_logoMode === 'name-only' || _logoMode === 'logo-name' || !_logoUrl) { %>
+                        <div class="logo-text">
+                            <span class="logo-name"><%= site.business.name %></span>
+                            <span class="logo-tagline"><%= site.business.tagline %></span>
+                        </div>
+                    <% } %>
+                </a>
+            </div>
+
+            <%# ── Burger (mobile) ────────────────────────────────── %>
+            <button class="nav-burger" id="nav-burger" aria-label="Menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+
+            <%# ── Nav principale ─────────────────────────────────── %>
+            <%# En mode center : contient tous les liens (mobile) + moitié droite (desktop) %>
+            <nav class="nav" id="main-nav">
+
+                <% if (_logoPos === 'center') { %>
+                    <%# Liens gauche dupliqués — visibles uniquement sur mobile via burger %>
+                    <% leftPages.forEach(p => { %>
+                        <% const isActive = (p.slug === '/' && currentPath === '/') || (p.slug !== '/' && currentPath === p.slug); %>
+                        <a href="<%= p.slug %>" class="nav-link nav-link-left<%= isActive ? ' active' : '' %>"><%= p.title %></a>
+                    <% }) %>
+                    <%# Liens droite %>
+                    <% rightPages.forEach(p => { %>
+                        <% const isActive = (p.slug === '/' && currentPath === '/') || (p.slug !== '/' && currentPath === p.slug); %>
+                        <a href="<%= p.slug %>" class="nav-link<%= isActive ? ' active' : '' %>"><%= p.title %></a>
+                    <% }) %>
+                <% } else { %>
+                    <% visiblePages.forEach(p => { %>
+                        <% const isActive = (p.slug === '/' && currentPath === '/') || (p.slug !== '/' && currentPath === p.slug); %>
+                        <a href="<%= p.slug %>" class="nav-link<%= isActive ? ' active' : '' %>"><%= p.title %></a>
+                    <% }) %>
+                <% } %>
+
+                <% if (overflowPages.length > 0) { %>
+                    <div class="nav-dropdown">
+                        <button class="nav-link nav-dropdown-toggle">Plus ▾</button>
+                        <div class="nav-dropdown-menu">
+                            <% overflowPages.forEach(p => { %>
+                                <% const isActive = currentPath === p.slug; %>
+                                <a href="<%= p.slug %>" class="nav-dropdown-item<%= isActive ? ' active' : '' %>"><%= p.title %></a>
+                            <% }) %>
+                        </div>
+                    </div>
+                <% } %>
+
+                <% if (hasContact) { %>
+                    <a href="<%= currentPath === '/' ? '#contact' : '/#contact' %>" class="nav-link">Contact</a>
+                <% } %>
+            </nav>
+
+        </div>
+    </div>
+</header>
+
+<script>
+(function() {
+    var burger = document.getElementById('nav-burger');
+    var nav    = document.getElementById('main-nav');
+    if (!burger || !nav) return;
+
+    burger.addEventListener('click', function() {
+        var open = nav.classList.toggle('nav-open');
+        burger.setAttribute('aria-expanded', open);
+        burger.classList.toggle('burger-active', open);
+    });
+
+    // Fermer le menu si on clique ailleurs
+    document.addEventListener('click', function(e) {
+        if (!burger.contains(e.target) && !nav.contains(e.target)) {
+            nav.classList.remove('nav-open');
+            burger.setAttribute('aria-expanded', false);
+            burger.classList.remove('burger-active');
+        }
+    });
+
+    // Dropdown "Plus"
+    var toggle = document.querySelector('.nav-dropdown-toggle');
+    var menu   = document.querySelector('.nav-dropdown-menu');
+    if (toggle && menu) {
+        toggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            menu.classList.toggle('dropdown-open');
+        });
+        document.addEventListener('click', function() { menu.classList.remove('dropdown-open'); });
+    }
+})();
+</script>
