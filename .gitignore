@@ -1,0 +1,27 @@
+# Dépendances
+node_modules/
+
+# Variables d'environnement (contient secrets, hash mdp, clés SMTP)
+.env
+
+# Données sensibles générées à l'exécution
+data/admin.json
+
+# Uploads utilisateur (fichiers binaires, hors scope git)
+uploads/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Mémoire Claude (données de session privées)
+.claude/
