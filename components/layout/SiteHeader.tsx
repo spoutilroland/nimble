@@ -47,7 +47,7 @@ export function SiteHeader({ site, pages, currentPath, logoUrl }: Props) {
   return (
     <header className="header">
       <div className="container">
-        <div className={`header-content logo-pos-${logoPos}`}>
+        <div className={`flex justify-between items-center gap-6 flex-nowrap logo-pos-${logoPos}`}>
           {/* Nav gauche (desktop center, uniquement si > 3 liens) */}
           {leftPages.length > 0 && (
             <nav className="nav nav-center-left" aria-hidden="true">
@@ -59,12 +59,12 @@ export function SiteHeader({ site, pages, currentPath, logoUrl }: Props) {
 
           {/* Logo */}
           <div className="logo">
-            <a href="/" className="logo-link">
+            <a href="/" className="flex items-center gap-3 no-underline">
               {logoUrl && (logoMode === 'logo-only' || logoMode === 'logo-name') && (
                 <img src={logoUrl} alt={site.business.name} className="logo-img" />
               )}
               {(logoMode === 'name-only' || logoMode === 'logo-name' || !logoUrl) && (
-                <div className="logo-text">
+                <div className="flex flex-col">
                   <span className="logo-name">{site.business.name}</span>
                   <span className="logo-tagline">{site.business.tagline}</span>
                 </div>
