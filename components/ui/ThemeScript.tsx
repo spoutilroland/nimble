@@ -1,0 +1,34 @@
+// Anti-FOUC : applique le thème avant le premier paint
+// Port de _old/views/partials/theme-script.ejs
+export function ThemeScript() {
+  const script = `
+(function() {
+  var cached = localStorage.getItem('site-theme');
+  if (cached) document.documentElement.setAttribute('data-theme', cached);
+  try {
+    var cachedVars = localStorage.getItem('site-theme-vars');
+    if (cachedVars) {
+      Object.entries(JSON.parse(cachedVars)).forEach(function(e) {
+        document.documentElement.style.setProperty(e[0], e[1]);
+      });
+    }
+  } catch(e) {}
+  fetch('/api/theme').then(function(r) { return r.json(); }).then(function(d) {
+    document.documentElement.setAttribute('data-theme', d.theme);
+    localStorage.setItem('site-theme', d.theme);
+    if (d.vars) {
+      Object.entries(d.vars).forEach(function(e) {
+        document.documentElement.style.setProperty(e[0], e[1]);
+      });
+      localStorage.setItem('site-theme-vars', JSON.stringify(d.vars));
+    } else {
+      localStorage.removeItem('site-theme-vars');
+      ['--primary','--primary-dark','--primary-light','--secondary','--secondary-dark','--accent','--accent-dark','--bg','--bg-light','--text','--text-muted'].forEach(function(k) {
+        document.documentElement.style.removeProperty(k);
+      });
+    }
+  }).catch(function() {});
+})();`;
+
+  return <script dangerouslySetInnerHTML={{ __html: script }} />;
+}

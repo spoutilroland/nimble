@@ -1,0 +1,16 @@
+services:
+  nimble:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file: .env
+    volumes:
+      # Données persistantes (JSON, admin.json généré)
+      - nimble_data:/app/data
+      # Uploads images du client
+      - nimble_uploads:/app/public/uploads
+
+volumes:
+  nimble_data:
+  nimble_uploads:

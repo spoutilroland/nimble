@@ -1,0 +1,19 @@
+export const runtime = 'nodejs';
+
+import { NextRequest, NextResponse } from 'next/server';
+import path from 'path';
+import { withAuth } from '@/lib/auth';
+import { readSiteConfig, writeSiteConfig } from '@/lib/data';
+import { pushUndo } from '@/lib/undoManager';
+
+export const POST = withAuth(async (req: NextRequest) => {
+  try {
+    const siteFile = path.join(process.cwd(), 'data', 'site.json');
+    pushUndo('Identité du site', { 'site.json': siteFile });
+    const body = await req.json();
+    await writeSiteConfig(body);
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json({ error: 'Save failed' }, { status: 500 });
+  }
+});

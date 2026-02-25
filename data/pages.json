@@ -7,87 +7,20 @@
       "showInNav": true,
       "navOrder": 0,
       "seo": {
-        "title": "Accueil",
-        "description": "sert à l'accueil",
-        "ogImage": null
-      },
-      "sections": [
-        {
-          "type": "hero",
-          "carouselId": "hero",
-          "dividerAfter": {
-            "type": "wave",
-            "color": "var(--primary)"
-          }
-        },
-        {
-          "type": "about",
-          "dividerAfter": {
-            "type": "triangle",
-            "color": "var(--primary)"
-          }
-        },
-        {
-          "type": "custom-layout",
-          "layoutId": "roland-spoutilaaa",
-          "carouselId": "aaa",
-          "blockCarousels": {}
-        },
-        {
-          "type": "services"
-        },
-        {
-          "type": "gallery",
-          "carouselId": "gallery"
-        },
-        {
-          "type": "contact"
-        }
-      ]
-    },
-    {
-      "id": "nos-travaux",
-      "slug": "/nos-travaux",
-      "title": "Nos Travaux",
-      "showInNav": true,
-      "navOrder": 1,
-      "seo": {
         "title": "",
         "description": "",
         "ogImage": null
       },
       "sections": [
         {
-          "type": "hero-simple",
-          "carouselId": "hero_travaux",
-          "dividerAfter": {
-            "type": "wave-double",
-            "color": "#1e2c3a"
-          }
+          "type": "hero",
+          "carouselId": "hero"
         },
         {
-          "type": "bento-grid",
-          "carouselId": "maconnerie",
-          "dividerAfter": {
-            "type": "diagonal",
-            "color": "#1e2c3a"
-          }
+          "type": "about"
         },
         {
-          "type": "cinematic-split",
-          "carouselId": "renovation",
-          "dividerAfter": {
-            "type": "curve",
-            "color": "#1e2c3a"
-          }
-        },
-        {
-          "type": "polaroids",
-          "carouselId": "exterieur",
-          "dividerAfter": {
-            "type": "triangle",
-            "color": "#1e2c3a"
-          }
+          "type": "contact"
         }
       ]
     }

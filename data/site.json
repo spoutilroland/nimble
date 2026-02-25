@@ -1,25 +1,25 @@
 {
   "business": {
-    "name": "Renovation Azur",
-    "tagline": "Artisants sur la côte d'Azur depuis 2002",
-    "description": "Expert en renovation et construction",
+    "name": "Mon Entreprise",
+    "tagline": "Votre slogan ici",
+    "description": "Description de votre activité",
     "phone": "01 23 45 67 89",
-    "email": "contact@renovation-azur.fr",
-    "address": "PACA",
+    "email": "contact@mon-entreprise.fr",
+    "address": "123 Rue de la Paix, 75000 Paris",
     "hours": {
-      "weekdays": "Lundi - Vendredi : 9h - 19h",
-      "saturday": "Samedi : 8h - 16h",
-      "note": "Déplacements en région gratuit"
+      "weekdays": "Lundi - Vendredi : 9h - 18h",
+      "saturday": "Samedi : sur rendez-vous",
+      "note": ""
     },
     "legal": {
-      "siret": "111 3333 444 589796",
-      "certifications": "RGE - Assurance tout court",
-      "copyright": "2026 Renovation Azur"
+      "siret": "",
+      "certifications": "",
+      "copyright": "2025 Mon Entreprise"
     }
   },
   "seo": {
-    "defaultTitle": "Renovation Alpine | Artisans en Savoie",
-    "defaultDescription": "Expert en renovation alpine depuis plus de 15 ans",
+    "defaultTitle": "Mon Entreprise",
+    "defaultDescription": "Description de votre activité",
     "ogImage": null
   },
   "fonts": {
@@ -28,24 +28,22 @@
     "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Raleway:wght@300;400;500;600;700&display=swap"
   },
   "captcha": {
-    "provider": "turnstile",
-    "siteKey": "0x4AAAAAACaxH5ibx3vlXzfZ"
+    "provider": "",
+    "siteKey": ""
   },
   "design": {
-    "borderStyle": "custom",
+    "borderStyle": "square",
     "customRadius": {
-      "tl": 48,
-      "tr": 48,
-      "br": 48,
+      "tl": 0,
+      "tr": 0,
+      "br": 0,
       "bl": 0
     }
   },
   "logoMode": "logo-name",
   "logoPosition": "left",
   "languages": {
-    "available": [
-      "fr"
-    ],
+    "available": ["fr"],
     "default": "fr"
   },
   "social": {
@@ -81,13 +79,6 @@
         "row": 1,
         "col": 3,
         "colSpan": 1
-      },
-      {
-        "blockId": "f4",
-        "type": "legal",
-        "row": 2,
-        "col": 1,
-        "colSpan": 3
       }
     ]
   }

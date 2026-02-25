@@ -1,0 +1,17 @@
+export type {
+  BusinessHours,
+  BusinessLegal,
+  BusinessInfo,
+  SEOConfig,
+  FontConfig,
+  CaptchaConfig,
+  CaptchaProvider,
+  CustomRadius,
+  DesignConfig,
+  SocialLinks,
+  FooterBlockType,
+  FooterBlock,
+  FooterConfig,
+  LanguagesConfig,
+  SiteConfig,
+} from '@/lib/schemas/site';

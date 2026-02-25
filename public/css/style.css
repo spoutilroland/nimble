@@ -3062,6 +3062,21 @@ body.admin-mode #accueil [data-content-key]:hover {
   transition: border-radius 0.2s;
 }
 
+/* ── Sélecteur de langues (back office config) ── */
+#site-langs-available {
+  width: 100%;
+  border: 1px solid var(--bo-border);
+  border-radius: var(--radius);
+  background: var(--bo-bg);
+  color: var(--bo-text);
+  font-size: 0.9rem;
+  padding: 0.3rem 0;
+  cursor: pointer;
+}
+#site-langs-available option {
+  padding: 0.45rem 0.75rem;
+}
+
 .border-lock-row {
   display: flex;
   align-items: center;
