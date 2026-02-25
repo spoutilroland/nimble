@@ -22,18 +22,19 @@ ENV HOSTNAME=0.0.0.0
 RUN addgroup --system --gid 1001 nodejs \
  && adduser --system --uid 1001 nextjs
 
-# Copier le build standalone (server.js + node_modules runtime + data + locales)
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone/nimble/ ./
+# Copier le build standalone (server.js + node_modules runtime)
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone/ ./
 
 # Fichiers statiques et assets publics
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
-# Sauvegarder les données par défaut (hors admin.json, géré via variables d'env)
-RUN cp -r data data-defaults && rm -f data-defaults/admin.json
+# Copier les données et en faire une sauvegarde par défaut
+COPY --from=builder --chown=nextjs:nodejs /app/data ./data
+RUN cp -r data/. data-defaults/ && rm -f data-defaults/admin.json
 
-# Préparer les répertoires persistants (volumes Docker)
-RUN mkdir -p data public/uploads \
+# Créer les répertoires persistants APRÈS les COPYs
+RUN mkdir -p data data-defaults public/uploads \
  && chown -R nextjs:nodejs data data-defaults public/uploads
 
 # Script d'initialisation
