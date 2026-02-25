@@ -1,14 +1,20 @@
 # Dépendances
 node_modules/
 
+# Build Next.js
+.next/
+tsconfig.tsbuildinfo
+
 # Variables d'environnement (contient secrets, hash mdp, clés SMTP)
 .env
 
 # Données sensibles générées à l'exécution
 data/admin.json
+data/snapshots/
 
 # Uploads utilisateur (fichiers binaires, hors scope git)
 uploads/
+public/uploads/
 
 # Logs
 logs/
@@ -24,5 +30,11 @@ Thumbs.db
 .idea/
 
 # Mémoire Claude (données de session privées)
-CLAUDE.md
 .claude/
+CLAUDE.md
+
+# Repomix / Repopack output
+repomix-output.xml
+repomix-output.txt
+repopack-output.xml
+repopack-output.txt

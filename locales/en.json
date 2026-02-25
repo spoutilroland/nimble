@@ -28,7 +28,8 @@
     "footer": "Footer",
     "languages": "Languages",
     "password": "Password",
-    "captcha": "Captcha"
+    "captcha": "Captcha",
+    "snapshots": "Snapshots"
   },
   "footer": {
     "contact": "Contact",
@@ -432,6 +433,26 @@
     "btnSave": "Save",
     "saved": "Style saved.",
     "saveError": "Error saving"
+  },
+  "snapshots": {
+    "sectionTitle": "Snapshots",
+    "sectionInfo": "Save and restore your site state (images excluded)",
+    "btnCreate": "Create snapshot",
+    "namePlaceholder": "Before homepage redesign",
+    "created": "Snapshot \"{name}\" created",
+    "createError": "Error creating snapshot",
+    "restored": "Snapshot \"{name}\" restored",
+    "restoreError": "Error restoring snapshot",
+    "confirmRestore": "Restore snapshot \"{name}\"? Current data will be replaced.",
+    "confirmDelete": "Delete snapshot \"{name}\"?",
+    "deleted": "Snapshot deleted",
+    "deleteError": "Error deleting snapshot",
+    "empty": "No snapshots yet. Click \"Create snapshot\" to save the current state.",
+    "loading": "Loading...",
+    "maxReached": "Maximum 5 snapshots reached. The oldest will be replaced.",
+    "fileCount": "files",
+    "btnRestore": "Restore",
+    "btnDelete": "Delete"
   },
   "common": {
     "save": "Save",

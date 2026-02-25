@@ -28,7 +28,8 @@
     "footer": "Footer",
     "languages": "Langues",
     "password": "Mot de passe",
-    "captcha": "Captcha"
+    "captcha": "Captcha",
+    "snapshots": "Snapshots"
   },
   "footer": {
     "contact": "Contact",
@@ -432,6 +433,26 @@
     "btnSave": "Enregistrer",
     "saved": "Style sauvegardé.",
     "saveError": "Erreur lors de la sauvegarde"
+  },
+  "snapshots": {
+    "sectionTitle": "Snapshots",
+    "sectionInfo": "Sauvegardez et restaurez l'état de votre site (hors images)",
+    "btnCreate": "Créer un snapshot",
+    "namePlaceholder": "Avant refonte homepage",
+    "created": "Snapshot \"{name}\" créé",
+    "createError": "Erreur lors de la création",
+    "restored": "Snapshot \"{name}\" restauré",
+    "restoreError": "Erreur lors de la restauration",
+    "confirmRestore": "Restaurer le snapshot \"{name}\" ? Les données actuelles seront remplacées.",
+    "confirmDelete": "Supprimer le snapshot \"{name}\" ?",
+    "deleted": "Snapshot supprimé",
+    "deleteError": "Erreur lors de la suppression",
+    "empty": "Aucun snapshot. Cliquez sur \"Créer un snapshot\" pour sauvegarder l'état actuel.",
+    "loading": "Chargement...",
+    "maxReached": "Maximum 5 snapshots atteint. Le plus ancien sera remplacé.",
+    "fileCount": "fichiers",
+    "btnRestore": "Restaurer",
+    "btnDelete": "Supprimer"
   },
   "common": {
     "save": "Enregistrer",

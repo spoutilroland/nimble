@@ -6,3 +6,4 @@ export * from './carousels';
 export * from './media';
 export * from './content';
 export * from './auth';
+export * from './snapshots';

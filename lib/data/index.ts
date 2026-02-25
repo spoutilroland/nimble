@@ -20,6 +20,7 @@ export { readLayoutsConfig, writeLayoutsConfig } from './layouts';
 export { readThemeFile, writeThemeFile } from './theme';
 export { readContent, writeContent } from './content';
 export { readAdminHash, writeAdminHash } from './admin';
+export { listSnapshots, createSnapshot, restoreSnapshot, deleteSnapshot } from './snapshots';
 export {
   getLogoUrl,
   getFaviconUrl,

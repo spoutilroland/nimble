@@ -21,6 +21,7 @@ import { SocialSection } from '@/components/admin/sections/SocialSection';
 import { SecuritySection } from '@/components/admin/sections/SecuritySection';
 import { CaptchaSection } from '@/components/admin/sections/CaptchaSection';
 import { ConfigSection } from '@/components/admin/sections/ConfigSection';
+import { SnapshotsSection } from '@/components/admin/sections/SnapshotsSection/index';
 import { FooterSection } from '@/components/admin/sections/FooterSection/index';
 import { CarouselSection } from '@/components/admin/sections/CarouselSection';
 import { PagesSection } from '@/components/admin/sections/PagesSection/index';
@@ -44,6 +45,7 @@ const SECTION_REGISTRY: SectionDescriptor[] = [
 
   // tab-config
   { id: 'config', tab: 'tab-config', order: 0, anchor: 'config-section', labelKey: 'nav.languages', component: ConfigSection },
+  { id: 'snapshots', tab: 'tab-config', order: 1, anchor: 'snapshots-section', labelKey: 'nav.snapshots', component: SnapshotsSection },
 
   // tab-security
   { id: 'security', tab: 'tab-security', order: 0, anchor: 'security-section', labelKey: 'nav.password', component: SecuritySection },
