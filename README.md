@@ -46,9 +46,23 @@ Default login: `admin` / `changeme123`
 
 ---
 
-## Production — Docker (recommended)
+## Production — Docker on Ubuntu
 
-**Requirements**: Docker + Git
+### 1. Install Docker and Git
+
+```bash
+# Dépendances
+sudo apt update && sudo apt install -y git curl
+
+# Docker (méthode officielle)
+curl -fsSL https://get.docker.com | sudo sh
+
+# Ajouter votre utilisateur au groupe docker (évite sudo)
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+### 2. Clone and deploy
 
 ```bash
 git clone <repo-url> nimble
