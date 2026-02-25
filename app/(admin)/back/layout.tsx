@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import '../../globals.css';
+import './admin.css';
 import { readSiteConfig } from '@/lib/data/site';
 import { getFaviconUrl } from '@/lib/data/helpers';
 

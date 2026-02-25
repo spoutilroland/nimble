@@ -85,7 +85,7 @@ function AdminShellInner() {
   const sections = getSectionsForTab(activeTab);
 
   return (
-    <div id="admin-dashboard" className="admin-dashboard">
+    <div id="admin-dashboard" className="flex flex-col h-screen overflow-hidden">
       <header className="admin-header">
         <div className="container">
           <h1>{t('admin.title')}</h1>
@@ -119,7 +119,7 @@ function AdminShellInner() {
 
       {/* Corps principal : sidebar verticale + zone de contenu */}
       <div id="backoffice-body">
-        <div className="tab-panel active" id={activeTab}>
+        <div className="flex flex-1 overflow-hidden min-w-0" id={activeTab}>
           <nav className="side-nav">
             {sideNavItems.map((item) => (
               <a key={item.anchor} className="side-nav-link" href={`#${item.anchor}`}>
@@ -127,7 +127,7 @@ function AdminShellInner() {
               </a>
             ))}
           </nav>
-          <div className="panel-content" id={`container-${activeTab.replace('tab-', '')}`}>
+          <div className="flex-1 overflow-y-auto p-6 min-w-0" id={`container-${activeTab.replace('tab-', '')}`}>
             {sections.map((s) => {
               const Comp = s.component;
               const el = <Comp key={s.id} />;
