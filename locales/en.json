@@ -375,7 +375,11 @@
     "sectionTitle": "Social networks",
     "sectionInfo": "URLs used in social network widgets (leave empty = network hidden)",
     "saved": "Social networks saved ✓",
-    "saveError": "Error saving"
+    "saveError": "Error saving",
+    "uploadIcon": "Icon",
+    "deleteIcon": "Remove",
+    "uploading": "...",
+    "iconError": "Error uploading icon"
   },
   "footerSection": {
     "sectionTitle": "Footer",

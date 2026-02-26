@@ -24,6 +24,18 @@ export function getFaviconUrl(): string | null {
   }
 }
 
+export function getSocialIconUrl(network: string): string | null {
+  try {
+    const dir = path.join(uploadsDir, 'social');
+    const files = fs.readdirSync(dir).filter(
+      (f) => f.startsWith(network + '.') && /\.(jpg|jpeg|png|webp)$/i.test(f)
+    );
+    return files.length > 0 ? `/uploads/social/${files[0]}` : null;
+  } catch {
+    return null;
+  }
+}
+
 export async function processImageWithSharp(filePath: string): Promise<void> {
   try {
     const dir = path.dirname(filePath);
@@ -49,7 +61,7 @@ export function escapeHtml(str: string): string {
 }
 
 export function ensureUploadDirs(): void {
-  for (const folder of ['media', 'logo', 'favicon']) {
+  for (const folder of ['media', 'logo', 'favicon', 'social']) {
     const dir = path.join(uploadsDir, folder);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });

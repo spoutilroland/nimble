@@ -375,7 +375,11 @@
     "sectionTitle": "Réseaux sociaux",
     "sectionInfo": "URLs utilisées dans les widgets réseaux sociaux (laisser vide = réseau masqué)",
     "saved": "Réseaux sociaux enregistrés ✓",
-    "saveError": "Erreur lors de la sauvegarde"
+    "saveError": "Erreur lors de la sauvegarde",
+    "uploadIcon": "Icône",
+    "deleteIcon": "Supprimer",
+    "uploading": "...",
+    "iconError": "Erreur lors de l'upload de l'icône"
   },
   "footerSection": {
     "sectionTitle": "Footer",

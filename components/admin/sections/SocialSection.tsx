@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useI18n } from '@/lib/i18n/context';
 import { useAdminStore } from '@/lib/admin/store';
 import type { SocialLinks } from '@/lib/types';
@@ -22,22 +22,62 @@ export function SocialSection() {
   const loadSite = useAdminStore((s) => s.loadSite);
   const saveSite = useAdminStore((s) => s.saveSite);
   const [social, setSocial] = useState<Record<string, string>>({});
+  const [icons, setIcons] = useState<Record<string, string>>({});
+  const [uploadingFor, setUploadingFor] = useState<string | null>(null);
   const [collapsed, setCollapsed] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+  const fileRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   useEffect(() => {
     if (!site) loadSite();
   }, [site, loadSite]);
 
   useEffect(() => {
-    if (site) {
-      setSocial(site.social || {});
-    }
+    if (site) setSocial(site.social || {});
   }, [site]);
+
+  useEffect(() => {
+    fetch('/api/social-icons')
+      .then((r) => r.json())
+      .then(setIcons)
+      .catch(() => {});
+  }, []);
 
   const updateField = (key: string, value: string) => {
     setSocial(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleIconUpload = async (network: string, file: File) => {
+    setUploadingFor(network);
+    const formData = new FormData();
+    formData.append('icon', file);
+    try {
+      const res = await fetch(`/api/admin/social-icon?network=${network}`, {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.url) {
+        setIcons(prev => ({ ...prev, [network]: data.url + '?t=' + Date.now() }));
+      } else {
+        setMessage({ text: t('social.iconError'), type: 'error' });
+        setTimeout(() => setMessage(null), 3000);
+      }
+    } catch {
+      setMessage({ text: t('social.iconError'), type: 'error' });
+      setTimeout(() => setMessage(null), 3000);
+    }
+    setUploadingFor(null);
+  };
+
+  const handleIconDelete = async (network: string) => {
+    await fetch(`/api/admin/social-icon?network=${network}`, { method: 'DELETE' });
+    setIcons(prev => {
+      const next = { ...prev };
+      delete next[network];
+      return next;
+    });
   };
 
   const save = async () => {
@@ -88,6 +128,46 @@ export function SocialSection() {
                 {SOCIAL_NETWORKS.map(n => (
                   <div key={n.key} className="form-group">
                     <label>{n.label}</label>
+                    <div className="flex items-center gap-[0.6rem] mb-[0.5rem]">
+                      {icons[n.key] ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={icons[n.key]}
+                          alt={n.label}
+                          style={{ width: 32, height: 32, objectFit: 'contain', borderRadius: 4, border: '1px solid var(--bo-border)' }}
+                        />
+                      ) : (
+                        <div style={{ width: 32, height: 32, borderRadius: 4, border: '1px dashed var(--bo-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', color: 'var(--bo-text-muted)', flexShrink: 0 }}>
+                          {n.label.charAt(0)}
+                        </div>
+                      )}
+                      <button
+                        className="btn btn-sm"
+                        disabled={uploadingFor === n.key}
+                        onClick={() => fileRefs.current[n.key]?.click()}
+                      >
+                        {uploadingFor === n.key ? t('social.uploading') : t('social.uploadIcon')}
+                      </button>
+                      {icons[n.key] && (
+                        <button
+                          className="btn btn-sm btn-danger"
+                          onClick={() => handleIconDelete(n.key)}
+                        >
+                          {t('social.deleteIcon')}
+                        </button>
+                      )}
+                      <input
+                        ref={(el) => { fileRefs.current[n.key] = el; }}
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        style={{ display: 'none' }}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleIconUpload(n.key, file);
+                          e.target.value = '';
+                        }}
+                      />
+                    </div>
                     <input
                       type="url"
                       value={social[n.key] || ''}

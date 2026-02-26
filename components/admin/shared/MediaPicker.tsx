@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useI18n } from '@/lib/i18n/context';
 
 interface PickerImage {
@@ -105,7 +106,7 @@ export function MediaPicker({ targetCarouselId, isOpen, onClose, onCopySuccess }
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="modal media-picker-modal" style={{ display: 'flex' }} onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="modal-content media-picker-content">
         <div className="media-picker-header">
@@ -161,6 +162,7 @@ export function MediaPicker({ targetCarouselId, isOpen, onClose, onCopySuccess }
           <div className={`media-picker-status ${status.type}`}>{status.text}</div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

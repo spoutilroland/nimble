@@ -24,6 +24,7 @@ export { listSnapshots, createSnapshot, restoreSnapshot, deleteSnapshot } from '
 export {
   getLogoUrl,
   getFaviconUrl,
+  getSocialIconUrl,
   processImageWithSharp,
   escapeHtml,
   ensureUploadDirs,

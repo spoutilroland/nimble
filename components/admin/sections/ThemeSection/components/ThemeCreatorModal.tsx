@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useI18n } from '@/lib/i18n/context';
 import { useAdminStore } from '@/lib/admin/store';
 import { useFlashMessage } from '@/lib/hooks/useFlashMessage';
@@ -97,7 +98,7 @@ export function ThemeCreatorModal({ onClose, onSaved }: ThemeCreatorModalProps) 
     { value: 'split', labelKey: 'theme.creator.harmonySplit' },
   ];
 
-  return (
+  const modal = (
     <div className="modal show" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="modal-content theme-creator-content">
         <span className="close" onClick={onClose}>&times;</span>
@@ -174,4 +175,6 @@ export function ThemeCreatorModal({ onClose, onSaved }: ThemeCreatorModalProps) 
       </div>
     </div>
   );
+
+  return createPortal(modal, document.body);
 }
