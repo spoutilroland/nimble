@@ -3,19 +3,19 @@
 /* Variables locales dashboard — dérivées du thème actif via color-mix() */
 .backoffice-body {
     /* Variables fixes — indépendantes du thème site (mode sombre par défaut) */
-    --bo-bg:           #0d1117;
-    --bo-surface:      #161b22;
-    --bo-card:         #1e2c3a;
-    --bo-border:       rgba(74,124,89,0.22);
-    --bo-border-hover: rgba(74,124,89,0.52);
-    --bo-text:         #c9d1d9;
-    --bo-text-dim:     #586069;
-    --bo-green:        #4a7c59;
-    --bo-green-glow:   0 0 20px rgba(74,124,89,0.3);
+    --bo-bg:           #0b0d12;
+    --bo-surface:      #13161f;
+    --bo-card:         #1c2030;
+    --bo-border:       rgba(255,255,255,0.08);
+    --bo-border-hover: rgba(255,255,255,0.16);
+    --bo-text:         #eceef5;
+    --bo-text-dim:     #8892a4;
+    --bo-green:        #34d399;
+    --bo-green-glow:   0 0 24px rgba(52,211,153,0.18);
     /* Remplacement des variables de thème pour les règles CSS qui les utilisent directement */
-    --primary:       #4a7c59;
-    --primary-dark:  #2d5016;
-    --primary-light: #6b9b7a;
+    --primary:       #34d399;
+    --primary-dark:  #059669;
+    --primary-light: #6ee7b7;
 }
 
 /* Reset animations hero sur les boutons */
@@ -29,27 +29,20 @@
 .backoffice-body {
     background: var(--bo-bg);
     min-height: 100vh;
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Figtree', sans-serif;
     color: var(--bo-text);
-    /* Texture diagonale subtile */
-    background-image: repeating-linear-gradient(
-        -60deg,
-        transparent,
-        transparent 40px,
-        rgba(74,124,89,0.06) 40px,
-        rgba(74,124,89,0.06) 41px
-    );
 }
 
 /* Tous les <select> du backoffice : fond solide pour une bonne lisibilité */
 .backoffice-body select {
-    background: var(--bo-bg, #0d1117);
-    color: var(--bo-text, #c9d1d9);
+    background: var(--bo-bg, #0b0d12);
+    color: var(--bo-text, #eceef5);
     border: 1px solid var(--bo-border);
+    border-radius: 6px;
 }
 .backoffice-body select option {
-    background: var(--bo-bg, #0d1117);
-    color: var(--bo-text, #c9d1d9);
+    background: var(--bo-bg, #0b0d12);
+    color: var(--bo-text, #eceef5);
 }
 
 /* ── LOGIN ──────────────────────────────────────────────────── */
@@ -88,14 +81,14 @@
 .login-box {
     background: var(--bo-surface);
     border: 1px solid var(--bo-border);
+    border-radius: 12px;
     padding: 3rem 3rem 2.5rem;
     width: 100%;
-    max-width: 420px;
+    max-width: 400px;
     position: relative;
     z-index: 1;
-    box-shadow: 0 30px 80px rgba(0,0,0,0.6), var(--bo-green-glow);
-    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
-    animation: fadeInUp 0.6s ease-out forwards;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.5), var(--bo-green-glow);
+    animation: fadeInUp 0.5s ease-out forwards;
 }
 
 /* Accent vert sur le coin supérieur droit */
@@ -116,12 +109,12 @@
 }
 
 .login-box h1 {
-    font-family: 'Oswald', sans-serif;
-    font-size: 1.8rem;
-    font-weight: 700;
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 4px;
-    color: white;
+    letter-spacing: 5px;
+    color: var(--bo-text);
     margin-bottom: 0.4rem;
     text-align: center;
 }
@@ -130,10 +123,10 @@
 .login-box .login-subtitle {
     text-align: center;
     font-size: 0.75rem;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--bo-text-dim);
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
 }
 
 .login-box .form-group { margin-bottom: 1.5rem; }
@@ -150,14 +143,13 @@
 
 .login-box .form-group input {
     width: 100%;
-    padding: 0.9rem 1rem;
+    padding: 0.85rem 1rem;
     background: var(--bo-bg);
     border: 1px solid var(--bo-border);
+    border-radius: 6px;
     color: var(--bo-text);
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 0.95rem;
-    clip-path: none;
-    border-radius: 0;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -173,21 +165,21 @@
     width: 100%;
     margin-top: 0.5rem;
     background: var(--bo-green);
-    color: white;
-    font-family: 'Oswald', sans-serif;
-    font-size: 1rem;
+    color: #0b0d12;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
     font-weight: 700;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     text-transform: uppercase;
     padding: 1rem;
     border: none;
+    border-radius: 6px;
     cursor: pointer;
     transition: background 0.2s, box-shadow 0.2s;
-    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
 }
 
 .btn-block:hover {
-    background: var(--primary-dark);
+    background: var(--primary-light);
     box-shadow: var(--bo-green-glow);
 }
 
@@ -212,15 +204,16 @@
     position: sticky;
     top: 0;
     z-index: 200;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    box-shadow: 0 1px 0 var(--bo-border);
 }
 
 /* Barre verte en haut */
 .admin-header::before {
     content: '';
     display: block;
-    height: 3px;
-    background: linear-gradient(90deg, var(--primary-dark), var(--bo-green), var(--primary-light), transparent);
+    height: 2px;
+    background: var(--bo-green);
+    opacity: 0.7;
 }
 
 .admin-header .container {
@@ -232,24 +225,25 @@
 }
 
 .admin-header h1 {
-    font-family: 'Oswald', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 700;
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 4px;
+    letter-spacing: 3px;
     color: var(--bo-text);
     display: flex;
     align-items: center;
-    gap: 0.8rem;
+    gap: 0.7rem;
 }
 
 /* Point vert animé */
 .admin-header h1::before {
     content: '';
-    width: 8px; height: 8px;
+    width: 7px; height: 7px;
     background: var(--bo-green);
     display: inline-block;
-    box-shadow: 0 0 8px var(--bo-green);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--bo-green);
     animation: pulse-dot 2s ease-in-out infinite;
 }
 
@@ -261,46 +255,48 @@
 .admin-header .btn-secondary {
     background: transparent;
     border: 1px solid var(--bo-border);
+    border-radius: 6px;
     color: var(--bo-text-dim);
-    padding: 0.5rem 1.2rem;
-    font-family: 'Oswald', sans-serif;
+    padding: 0.45rem 1rem;
+    font-family: 'Figtree', sans-serif;
     font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.3px;
     cursor: pointer;
-    transition: all 0.2s;
-    clip-path: polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%);
+    transition: all 0.15s;
 }
 
 .admin-header .btn-secondary:hover {
-    border-color: rgba(229,57,53,0.5);
-    color: #ef9a9a;
-    background: rgba(229,57,53,0.06);
+    border-color: var(--bo-border-hover);
+    color: var(--bo-text);
+    background: rgba(255,255,255,0.04);
 }
 
 /* ── SECTIONS ───────────────────────────────────────────────── */
 .carousel-section {
     background: var(--bo-surface);
     border: 1px solid var(--bo-border);
+    border-radius: 8px;
     margin-bottom: 0;
     padding: 1.8rem 2rem;
     position: relative;
-    transition: border-color 0.3s;
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    overflow: hidden;
 }
 
 .carousel-section::before {
     content: '';
     position: absolute;
-    top: 0; left: 0;
-    width: 3px; height: 0;
+    top: 16px; bottom: 16px; left: 0;
+    width: 2px;
     background: var(--bo-green);
-    transition: height 0.4s ease;
+    border-radius: 0 2px 2px 0;
+    opacity: 0;
+    transition: opacity 0.2s;
 }
 
 .carousel-section:hover { border-color: var(--bo-border-hover); }
-.carousel-section:hover::before { height: 100%; }
+.carousel-section:hover::before { opacity: 1; }
 
 .carousel-section-header {
     display: flex;
@@ -312,12 +308,12 @@
 }
 
 .carousel-section-header h2 {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Syne', sans-serif;
     font-size: 1rem;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    color: white;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--bo-text);
     margin-bottom: 0.2rem;
 }
 
@@ -350,9 +346,9 @@
     position: relative;
     overflow: hidden;
     background: var(--bo-bg);
-    clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+    border-radius: 6px;
     border: 1px solid transparent;
-    transition: border-color 0.25s, opacity 0.2s;
+    transition: border-color 0.2s, opacity 0.2s;
     cursor: grab;
 }
 
@@ -410,36 +406,36 @@
 /* ── BOUTONS BACK OFFICE ────────────────────────────────────── */
 .btn-success {
     background: var(--bo-green);
-    color: white;
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.85rem;
+    color: #0b0d12;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.82rem;
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
     padding: 0.65rem 1.5rem;
     border: none;
+    border-radius: 6px;
     cursor: pointer;
     transition: background 0.2s, box-shadow 0.2s;
-    clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
 }
 
 .btn-success:hover {
-    background: var(--primary-dark);
+    background: var(--primary-light);
     box-shadow: var(--bo-green-glow);
 }
 
 .btn-danger {
-    background: rgba(229,57,53,0.15);
-    color: #ef9a9a;
-    border: 1px solid rgba(229,57,53,0.3);
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
+    background: rgba(239,68,68,0.1);
+    color: #fca5a5;
+    border: 1px solid rgba(239,68,68,0.25);
+    border-radius: 6px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
     padding: 0.4rem 1rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.15s;
 }
 
 .btn-danger:hover {
@@ -458,15 +454,15 @@
 .theme-card {
     background: var(--bo-bg);
     border: 1px solid var(--bo-border);
+    border-radius: 8px;
     padding: 0;
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
     display: flex;
     flex-direction: column;
     min-width: 120px;
     position: relative;
     overflow: hidden;
-    clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
 }
 
 .theme-card:hover {
@@ -492,7 +488,7 @@
 }
 
 .theme-label {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Syne', sans-serif;
     font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -537,15 +533,15 @@
 .modal-content {
     background: var(--bo-surface);
     border: 1px solid var(--bo-border);
-    padding: 2.5rem;
+    border-radius: 12px;
+    padding: 2rem 2.5rem 2.5rem;
     width: 100%;
     max-width: 480px;
     position: relative;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.7), var(--bo-green-glow);
-    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
-    animation: fadeInUp 0.25s ease-out forwards;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6), var(--bo-green-glow);
+    animation: fadeInUp 0.2s ease-out forwards;
 }
 
 .modal-content::before {
@@ -565,13 +561,13 @@
 }
 
 .modal-content h2 {
-    font-family: 'Oswald', sans-serif;
-    font-size: 1.3rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 1.15rem;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    color: white;
-    margin-bottom: 2rem;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--bo-text);
+    margin-bottom: 1.5rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--bo-border);
 }
@@ -610,7 +606,7 @@
     color: var(--bo-text);
     cursor: pointer;
     width: 100%;
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 0.9rem;
     transition: border-color 0.2s;
 }
@@ -649,7 +645,7 @@
 }
 
 .empty-text {
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 0.9rem;
     color: var(--bo-text);
     line-height: 1.5;
@@ -726,7 +722,7 @@
 }
 
 .section-upload-msg {
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 0.8rem;
     color: var(--bo-text-dim);
 }
@@ -739,7 +735,7 @@
     background: none;
     border: 1px solid rgba(229,57,53,0.4);
     color: rgba(229,57,53,0.7);
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 0.72rem;
     font-weight: 600;
     letter-spacing: 0.5px;
@@ -756,24 +752,24 @@
 
 .modal-content .btn-primary {
     background: var(--bo-green);
-    color: white;
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.95rem;
+    color: #0b0d12;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.88rem;
     font-weight: 700;
-    letter-spacing: 3px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
     padding: 0.9rem 2rem;
     border: none;
+    border-radius: 6px;
     cursor: pointer;
     width: 100%;
     transition: background 0.2s, box-shadow 0.2s;
-    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
     animation: none;
     opacity: 1;
 }
 
 .modal-content .btn-primary:hover {
-    background: var(--primary-dark);
+    background: var(--primary-light);
     box-shadow: var(--bo-green-glow);
 }
 
@@ -836,7 +832,7 @@
   align-items: center;
   justify-content: center;
   gap: 1.5rem;
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Figtree', sans-serif;
   font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -844,8 +840,6 @@
   backdrop-filter: blur(4px);
   pointer-events: none;
 }
-
-.admin-bar-lang { pointer-events: none; }
 
 .lang-btn {
   background: rgba(255,255,255,0.15);
@@ -855,11 +849,12 @@
   font-weight: 700;
   padding: 2px 8px;
   cursor: pointer;
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Figtree', sans-serif;
   letter-spacing: 1px;
   transition: background 0.2s;
 }
 
+.lang-btn { pointer-events: all; }
 .lang-btn:hover { background: rgba(255,255,255,0.3); }
 .lang-btn.active { background: rgba(255,255,255,0.9); color: #2d5016; }
 
@@ -939,7 +934,7 @@ body.admin-mode #accueil [data-content-key]:hover {
 }
 
 .edit-toolbar button {
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Figtree', sans-serif;
   font-size: 0.78rem;
   font-weight: 600;
   border: none;
@@ -966,7 +961,7 @@ body.admin-mode #accueil [data-content-key]:hover {
   bottom: 1.5rem;
   right: 1.5rem;
   z-index: 9002;
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Figtree', sans-serif;
   font-size: 0.85rem;
   font-weight: 600;
   padding: 10px 18px;
@@ -1056,7 +1051,7 @@ body.admin-mode #accueil [data-content-key]:hover {
 
 /* Label de section séparant natifs / customs */
 .theme-custom-label {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Syne', sans-serif;
     font-size: 0.65rem;
     font-weight: 700;
     letter-spacing: 3px;
@@ -1100,7 +1095,7 @@ body.admin-mode #accueil [data-content-key]:hover {
 }
 
 .tc-pickers-label {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Syne', sans-serif;
     font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 2px;
@@ -1138,7 +1133,7 @@ body.admin-mode #accueil [data-content-key]:hover {
 }
 
 .color-picker-item label {
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: 0.5px;
@@ -1185,7 +1180,7 @@ body.admin-mode #accueil [data-content-key]:hover {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 0.82rem;
     color: var(--bo-text-dim);
     cursor: pointer;
@@ -1213,20 +1208,20 @@ body.admin-mode #accueil [data-content-key]:hover {
 
 /* Bouton "Appliquer l'harmonie" */
 .btn-harmony {
-    background: rgba(74,124,89,0.15);
-    color: var(--primary-light, #6b9b7a);
-    border: 1px solid rgba(74,124,89,0.4);
-    font-family: 'Oswald', sans-serif;
+    background: rgba(52,211,153,0.08);
+    color: var(--bo-green);
+    border: 1px solid rgba(52,211,153,0.25);
+    border-radius: 6px;
+    font-family: 'Syne', sans-serif;
     font-size: 0.8rem;
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
     padding: 0.6rem 1.2rem;
     cursor: pointer;
     width: 100%;
-    transition: all 0.2s;
+    transition: all 0.15s;
     margin-bottom: 1.4rem;
-    clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
 }
 
 .btn-harmony:hover {
@@ -1250,7 +1245,7 @@ body.admin-mode #accueil [data-content-key]:hover {
 }
 
 .site-form-category {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Syne', sans-serif;
     font-size: 0.8rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -1271,6 +1266,8 @@ body.admin-mode #accueil [data-content-key]:hover {
 /* ── Section Pages ────────────────────────────────────── */
 .page-card {
     border: 1px solid var(--bo-border);
+    border-radius: 8px;
+    overflow: hidden;
     margin-bottom: 0.8rem;
 }
 
@@ -1290,7 +1287,7 @@ body.admin-mode #accueil [data-content-key]:hover {
 }
 
 .page-card-title {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Syne', sans-serif;
     font-size: 1rem;
     color: var(--bo-text);
 }
@@ -1400,14 +1397,14 @@ body.admin-mode #accueil [data-content-key]:hover {
 .add-section-select {
     flex: 1;
     padding: 0.4rem 0.6rem;
-    background: var(--bo-bg, #0d1117);
+    background: var(--bo-bg, #0b0d12);
     border: 1px solid var(--bo-border);
     color: var(--bo-text);
     font-size: 0.85rem;
 }
 .add-section-select option {
-    background: var(--bo-bg, #0d1117);
-    color: var(--bo-text, #c9d1d9);
+    background: var(--bo-bg, #0b0d12);
+    color: var(--bo-text, #eceef5);
 }
 
 .checkbox-label {
@@ -1572,6 +1569,7 @@ body.admin-mode #accueil [data-content-key]:hover {
   gap: 0.6rem;
   padding: 1rem 1.5rem;
   border: 2px solid var(--bo-border);
+  border-radius: 8px;
   background: var(--bo-card);
   transition: border-color 0.2s, box-shadow 0.2s;
   min-width: 100px;
@@ -1594,7 +1592,7 @@ body.admin-mode #accueil [data-content-key]:hover {
   align-items: center;
   justify-content: center;
   color: white;
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Figtree', sans-serif;
   font-weight: 700;
   font-size: 1rem;
   transition: border-radius 0.3s;
@@ -1603,7 +1601,7 @@ body.admin-mode #accueil [data-content-key]:hover {
 .border-preview-label {
   font-size: 0.8rem;
   color: var(--bo-text-dim);
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Figtree', sans-serif;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -1630,7 +1628,7 @@ body.admin-mode #accueil [data-content-key]:hover {
   align-items: center;
   justify-content: center;
   color: white;
-  font-family: 'Oswald', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 1.1rem;
   letter-spacing: 2px;
   transition: border-radius 0.2s;
@@ -1658,14 +1656,14 @@ body.admin-mode #accueil [data-content-key]:hover {
   margin-bottom: 1.2rem;
   font-size: 0.85rem;
   color: var(--bo-text-dim);
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Figtree', sans-serif;
 }
 
 .border-corner label {
   display: block;
   font-size: 0.8rem;
   color: var(--bo-text-dim);
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Figtree', sans-serif;
   margin-bottom: 0.3rem;
 }
 
@@ -1686,7 +1684,7 @@ body.admin-mode #accueil [data-content-key]:hover {
   text-align: right;
   font-size: 0.8rem;
   color: var(--bo-text);
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Figtree', sans-serif;
 }
 
 /* ─── DESIGN BORDURES ─────────────────────────────────────────── */
@@ -1748,7 +1746,7 @@ body.admin-mode #accueil [data-content-key]:hover {
   right: 0;
   top: 6px;
   font-size: 0.68rem;
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Figtree', sans-serif;
   letter-spacing: 0.05em;
   color: inherit;
   white-space: nowrap;
@@ -1953,7 +1951,7 @@ body.admin-mode #accueil [data-content-key]:hover {
   color: rgba(255,255,255,0.9);
 }
 .footer-block h3 {
-  font-family: 'Oswald', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 1.4rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -2419,7 +2417,7 @@ body.admin-mode #accueil [data-content-key]:hover {
 .section-divider-color {
   font-size: 0.78rem;
   padding: 0.2rem 0.4rem;
-  background: var(--bo-bg, #0d1117);
+  background: var(--bo-bg, #0b0d12);
   border: 1px solid var(--bo-border);
   color: var(--bo-text);
   border-radius: 3px;
@@ -2434,8 +2432,8 @@ body.admin-mode #accueil [data-content-key]:hover {
 }
 .section-divider-type option,
 .section-divider-color option {
-  background: var(--bo-bg, #0d1117);
-  color: var(--bo-text, #c9d1d9);
+  background: var(--bo-bg, #0b0d12);
+  color: var(--bo-text, #eceef5);
 }
 .section-divider-flip-label {
   display: inline-flex;
@@ -2595,47 +2593,47 @@ body.admin-mode #accueil [data-content-key]:hover {
 
 /* ── Variables mode sombre backoffice (défaut) ──────────────── */
 .is-backoffice {
-    --back-bg:           #0d1117;
-    --back-surface:      #161b22;
-    --back-border:       rgba(74,124,89,0.22);
-    --back-text:         #c9d1d9;
-    --back-text-muted:   #586069;
-    --back-primary:      #4a7c59;
-    --back-tab-active:   rgba(74,124,89,0.15);
-    --back-side-active:  rgba(74,124,89,0.12);
+    --back-bg:           #0b0d12;
+    --back-surface:      #13161f;
+    --back-border:       rgba(255,255,255,0.08);
+    --back-text:         #eceef5;
+    --back-text-muted:   #8892a4;
+    --back-primary:      #34d399;
+    --back-tab-active:   rgba(52,211,153,0.08);
+    --back-side-active:  rgba(52,211,153,0.07);
 }
 
 /* Mode clair backoffice */
 html:not([data-back-theme="dark"]) .is-backoffice {
-    --back-bg:           #f4f6f9;
+    --back-bg:           #f7f8fc;
     --back-surface:      #ffffff;
-    --back-border:       #e2e8f0;
-    --back-text:         #1a202c;
-    --back-text-muted:   #718096;
-    --back-primary:      #4a7c59;
-    --back-tab-active:   rgba(74,124,89,0.1);
-    --back-side-active:  rgba(74,124,89,0.08);
+    --back-border:       #dde2ee;
+    --back-text:         #0f1117;
+    --back-text-muted:   #64748b;
+    --back-primary:      #059669;
+    --back-tab-active:   rgba(5,150,105,0.07);
+    --back-side-active:  rgba(5,150,105,0.06);
     /* Réécrire --bo-* pour le mode clair */
-    --bo-bg:           #f4f6f9;
+    --bo-bg:           #f7f8fc;
     --bo-surface:      #ffffff;
-    --bo-card:         #f8fafc;
-    --bo-border:       #e2e8f0;
-    --bo-border-hover: rgba(74,124,89,0.4);
-    --bo-text:         #1a202c;
-    --bo-text-dim:     #718096;
-    --bo-green:        #4a7c59;
-    --bo-green-glow:   0 0 16px rgba(74,124,89,0.2);
-    --primary:         #4a7c59;
-    --primary-dark:    #2d5016;
-    --primary-light:   #6b9b7a;
+    --bo-card:         #eef1f8;
+    --bo-border:       #dde2ee;
+    --bo-border-hover: rgba(5,150,105,0.35);
+    --bo-text:         #0f1117;
+    --bo-text-dim:     #64748b;
+    --bo-green:        #059669;
+    --bo-green-glow:   0 0 16px rgba(5,150,105,0.15);
+    --primary:         #059669;
+    --primary-dark:    #047857;
+    --primary-light:   #34d399;
     background-image: none;
 }
 
 /* ── Barre d'onglets horizontaux ────────────────────────────── */
 #main-tabs {
     display: flex;
-    gap: 2px;
-    padding: 0 16px;
+    gap: 0;
+    padding: 0 20px;
     border-bottom: 1px solid var(--back-border, var(--bo-border));
     background: var(--back-surface, var(--bo-surface));
     position: sticky;
@@ -2645,21 +2643,24 @@ html:not([data-back-theme="dark"]) .is-backoffice {
 }
 
 .main-tab {
-    padding: 11px 20px;
+    padding: 13px 22px;
     border: none;
     background: transparent;
     color: var(--back-text-muted, var(--bo-text-dim));
     cursor: pointer;
-    border-bottom: 3px solid transparent;
+    border-bottom: 2px solid transparent;
+    font-family: 'Figtree', sans-serif;
     font-weight: 600;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
-    transition: color 0.18s, border-color 0.18s;
+    font-size: 0.875rem;
+    letter-spacing: 0.2px;
+    transition: color 0.15s, background 0.15s;
     white-space: nowrap;
+    margin-bottom: -1px;
 }
 
 .main-tab:hover {
-    color: var(--back-primary, var(--bo-green));
+    color: var(--back-text, var(--bo-text));
+    background: rgba(255,255,255,0.03);
 }
 
 .main-tab.active {
@@ -2678,38 +2679,39 @@ html:not([data-back-theme="dark"]) .is-backoffice {
 
 /* ── Sidebar verticale ──────────────────────────────────────── */
 .side-nav {
-    width: 170px;
+    width: 180px;
     flex-shrink: 0;
-    padding: 20px 10px;
+    padding: 16px 10px;
     border-right: 1px solid var(--back-border, var(--bo-border));
     background: var(--back-surface, var(--bo-surface));
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1px;
 }
 
 .side-nav-link {
     display: block;
-    padding: 9px 12px;
-    border-radius: 5px;
+    padding: 9px 14px;
+    border-radius: 6px;
     color: var(--back-text-muted, var(--bo-text-dim));
     text-decoration: none;
+    font-family: 'Figtree', sans-serif;
     font-size: 0.875rem;
     font-weight: 500;
-    transition: background 0.14s, color 0.14s;
+    transition: background 0.12s, color 0.12s;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .side-nav-link:hover {
-    background: var(--back-side-active, rgba(74,124,89,0.1));
+    background: var(--back-side-active, rgba(52,211,153,0.07));
     color: var(--back-text, var(--bo-text));
 }
 
 .side-nav-link.active {
-    background: var(--back-side-active, rgba(74,124,89,0.1));
+    background: var(--back-side-active, rgba(52,211,153,0.07));
     color: var(--back-primary, var(--bo-green));
     font-weight: 600;
 }
@@ -2724,7 +2726,7 @@ html:not([data-back-theme="dark"]) .is-backoffice {
 
 /* ── Mode clair : surcharger le fond backoffice ──────────────── */
 html:not([data-back-theme="dark"]) .backoffice-body {
-    background: #f4f6f9;
+    background: #f7f8fc;
     background-image: none;
-    color: #1a202c;
+    color: #0f1117;
 }

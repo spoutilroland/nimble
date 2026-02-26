@@ -97,7 +97,7 @@ function AdminShellInner({ needsRestart, adminSlug }: { needsRestart?: boolean; 
               title={isDark ? t('auth.toggleLight') : t('auth.toggleDark')}
               onClick={toggleTheme}
             >
-              {isDark ? '\u2600\uFE0F' : '\uD83C\uDF19'}
+              {isDark ? '◑' : '●'}
             </button>
             <button className="btn btn-secondary" onClick={handleLogout}>
               {t('admin.logout')}

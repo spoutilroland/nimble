@@ -23,6 +23,9 @@ export default async function BackLayout({
   return (
     <html lang="fr" data-border={borderStyle} suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){var t=localStorage.getItem('back-theme');if(t==='dark')document.documentElement.setAttribute('data-back-theme','dark');})();`,
