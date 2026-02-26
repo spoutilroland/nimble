@@ -36,6 +36,7 @@ const defaultSiteConfig: SiteConfig = {
       { blockId: 'f4', type: 'legal', row: 2, col: 1, colSpan: 3 },
     ],
   },
+  mail: undefined,
 };
 
 export function readSiteConfig(): SiteConfig {

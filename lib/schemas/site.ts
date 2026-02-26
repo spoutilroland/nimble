@@ -38,6 +38,18 @@ export const FontConfigSchema = z.object({
 export const CaptchaConfigSchema = z.object({
   provider: z.enum(['turnstile', 'recaptcha', 'hcaptcha', 'none', '']),
   siteKey: z.string(),
+  secretKey: z.string().optional(),
+});
+
+export const MailConfigSchema = z.object({
+  enabled: z.boolean(),
+  host: z.string(),
+  port: z.number(),
+  secure: z.boolean(),
+  user: z.string(),
+  pass: z.string(),
+  from: z.string(),
+  to: z.string(),
 });
 
 export const CustomRadiusSchema = z.object({
@@ -105,6 +117,7 @@ export const SiteConfigSchema = z.object({
   languages: LanguagesConfigSchema,
   social: SocialLinksSchema,
   footer: FooterConfigSchema,
+  mail: MailConfigSchema.optional(),
 });
 
 export type BusinessHours = z.infer<typeof BusinessHoursSchema>;
@@ -114,6 +127,7 @@ export type SEOConfig = z.infer<typeof SEOConfigSchema>;
 export type FontConfig = z.infer<typeof FontConfigSchema>;
 export type CaptchaConfig = z.infer<typeof CaptchaConfigSchema>;
 export type CaptchaProvider = CaptchaConfig['provider'];
+export type MailConfig = z.infer<typeof MailConfigSchema>;
 export type CustomRadius = z.infer<typeof CustomRadiusSchema>;
 export type DesignConfig = z.infer<typeof DesignConfigSchema>;
 export type SocialLinks = z.infer<typeof SocialLinksSchema>;

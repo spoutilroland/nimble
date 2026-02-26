@@ -7,3 +7,4 @@ export * from './media';
 export * from './content';
 export * from './auth';
 export * from './snapshots';
+export * from './setup';

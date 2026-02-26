@@ -8,6 +8,8 @@ import { LoginScreen } from './LoginScreen';
 
 interface AdminShellProps {
   locale: Record<string, unknown>;
+  needsRestart?: boolean;
+  adminSlug?: string;
 }
 
 interface TabDef {
@@ -23,15 +25,15 @@ const TABS: TabDef[] = [
   { id: 'tab-security', labelKey: 'tabs.security' },
 ];
 
-export function AdminShell({ locale }: AdminShellProps) {
+export function AdminShell({ locale, needsRestart, adminSlug }: AdminShellProps) {
   return (
     <I18nProvider locale={locale}>
-      <AdminShellInner />
+      <AdminShellInner needsRestart={needsRestart} adminSlug={adminSlug} />
     </I18nProvider>
   );
 }
 
-function AdminShellInner() {
+function AdminShellInner({ needsRestart, adminSlug }: { needsRestart?: boolean; adminSlug?: string }) {
   const { t } = useI18n();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
@@ -116,6 +118,30 @@ function AdminShellInner() {
           </button>
         ))}
       </nav>
+
+      {/* Banner : redémarrage requis pour activer l'URL sécurisée */}
+      {needsRestart && adminSlug && (
+        <div style={{
+          background: '#fffbeb',
+          borderBottom: '1px solid #fde68a',
+          padding: '8px 16px',
+          fontSize: '12px',
+          color: '#92400e',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+        }}>
+          <span style={{ fontWeight: 700 }}>Redémarrage requis</span>
+          {' — '}
+          Relancez le serveur pour activer votre URL sécurisée :
+          <code style={{
+            background: '#fef3c7', padding: '1px 6px',
+            borderRadius: '4px', fontFamily: 'monospace',
+          }}>
+            /{adminSlug}
+          </code>
+        </div>
+      )}
 
       {/* Corps principal : sidebar verticale + zone de contenu */}
       <div id="backoffice-body">

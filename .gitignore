@@ -8,8 +8,8 @@ tsconfig.tsbuildinfo
 # Variables d'environnement (contient secrets, hash mdp, clés SMTP)
 .env
 
-# Données sensibles générées à l'exécution
-data/admin.json
+# Données client générées à l'exécution (ne jamais écraser via git)
+data/*.json
 data/snapshots/
 
 # Uploads utilisateur (fichiers binaires, hors scope git)

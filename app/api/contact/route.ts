@@ -78,9 +78,16 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Email
-    const emailUser = process.env.EMAIL_USER;
-    const emailPass = process.env.EMAIL_PASS;
+    // Email — priorité : siteConfig.mail, fallback env vars
+    const mailConfig = siteConfig.mail;
+
+    const emailHost = mailConfig?.host || process.env.EMAIL_HOST || 'smtp.gmail.com';
+    const emailPort = mailConfig?.port || parseInt(process.env.EMAIL_PORT || '587');
+    const emailSecure = mailConfig?.secure ?? (process.env.EMAIL_SECURE === 'true');
+    const emailUser = mailConfig?.user || process.env.EMAIL_USER;
+    const emailPass = mailConfig?.pass || process.env.EMAIL_PASS;
+    const emailFrom = mailConfig?.from || process.env.EMAIL_FROM || 'noreply@nimble.com';
+    const emailTo = mailConfig?.to || process.env.EMAIL_TO || 'admin@nimble.com';
 
     if (!emailUser || !emailPass) {
       console.log('Email not configured. Contact form data:', { name, email, phone, message });
@@ -91,9 +98,9 @@ export async function POST(req: NextRequest) {
     }
 
     const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-      port: parseInt(process.env.EMAIL_PORT || '587'),
-      secure: process.env.EMAIL_SECURE === 'true',
+      host: emailHost,
+      port: emailPort,
+      secure: emailSecure,
       auth: { user: emailUser, pass: emailPass },
     });
 
@@ -103,8 +110,8 @@ export async function POST(req: NextRequest) {
     const safeMessage = escapeHtml(message).replace(/\n/g, '<br>');
 
     await transporter.sendMail({
-      from: process.env.EMAIL_FROM || 'noreply@nimble.com',
-      to: process.env.EMAIL_TO || 'admin@nimble.com',
+      from: emailFrom,
+      to: emailTo,
       subject: `Nouveau message de ${safeName}`,
       html: `
         <h2>Nouveau message via le formulaire de contact</h2>
