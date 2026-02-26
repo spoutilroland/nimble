@@ -4,9 +4,9 @@
   "private": true,
   "description": "A light and intuitive CMS for showcase website",
   "scripts": {
-    "dev": "next dev",
+    "dev": "node scripts/show-admin-url.mjs && next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node scripts/show-admin-url.mjs && next start",
     "lint": "eslint ."
   },
   "dependencies": {
