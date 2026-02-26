@@ -137,8 +137,8 @@ export function SetupWizard() {
         }
         setAdminUrl(data.adminUrl as string);
         setStep(5);
-      } catch {
-        setError('Impossible de contacter le serveur.');
+      } catch (err) {
+        setError('Impossible de contacter le serveur. Vérifiez que l\'application est bien démarrée.' + (err instanceof Error ? ' (' + err.message + ')' : ''));
       } finally {
         setLoading(false);
       }

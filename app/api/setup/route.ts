@@ -58,63 +58,76 @@ export async function POST(req: NextRequest) {
 
   const data = parsed.data;
 
-  // Hash du mot de passe admin
-  const passwordHash = await hashPassword(data.password);
-  await writeAdminHash(passwordHash);
-
-  // Mise à jour site.json
-  const siteConfig = readSiteConfig();
-  siteConfig.business.name = data.siteName;
-  siteConfig.business.tagline = data.tagline ?? '';
-  siteConfig.business.email = data.email ?? '';
-  siteConfig.business.phone = data.phone ?? '';
-
-  if (data.captchaProvider && data.captchaProvider !== 'none') {
-    siteConfig.captcha = {
-      provider: data.captchaProvider,
-      siteKey: data.captchaSiteKey ?? '',
-      secretKey: data.captchaSecretKey ?? '',
-    };
-  }
-
-  if (data.contactEnabled && data.mail) {
-    siteConfig.mail = {
-      enabled: true,
-      host: data.mail.host,
-      port: data.mail.port,
-      secure: data.mail.secure,
-      user: data.mail.user,
-      pass: data.mail.pass,
-      from: data.mail.from,
-      to: data.mail.to,
-    };
-  }
-
-  await writeSiteConfig(siteConfig);
-
-  // Génération du slug admin aléatoire (6 chars)
-  const randomSlug = Math.random().toString(36).slice(2, 8);
-  const adminSlug = `back-${randomSlug}`;
-
-  // Écriture dans data/setup.json
-  await writeSetupConfig({ setupDone: true, adminSlug });
-
-  // Écriture de ADMIN_SLUG dans .env.local
-  const envFile = path.join(process.cwd(), '.env.local');
-  let envContent = '';
   try {
-    envContent = await fsp.readFile(envFile, 'utf8');
-  } catch {
-    // fichier inexistant, on part d'un contenu vide
-  }
+    // S'assurer que data/ existe (premier déploiement sur Hostinger)
+    const dataDir = path.join(process.cwd(), 'data');
+    await fsp.mkdir(dataDir, { recursive: true });
 
-  // Remplacer ou ajouter ADMIN_SLUG
-  if (/^ADMIN_SLUG=/m.test(envContent)) {
-    envContent = envContent.replace(/^ADMIN_SLUG=.*/m, `ADMIN_SLUG=${adminSlug}`);
-  } else {
-    envContent = envContent.trimEnd() + (envContent ? '\n' : '') + `ADMIN_SLUG=${adminSlug}\n`;
-  }
-  await fsp.writeFile(envFile, envContent, 'utf8');
+    // Hash du mot de passe admin
+    const passwordHash = await hashPassword(data.password);
+    await writeAdminHash(passwordHash);
 
-  return NextResponse.json({ adminUrl: `/${adminSlug}` });
+    // Mise à jour site.json
+    const siteConfig = readSiteConfig();
+    siteConfig.business.name = data.siteName;
+    siteConfig.business.tagline = data.tagline ?? '';
+    siteConfig.business.email = data.email ?? '';
+    siteConfig.business.phone = data.phone ?? '';
+
+    if (data.captchaProvider && data.captchaProvider !== 'none') {
+      siteConfig.captcha = {
+        provider: data.captchaProvider,
+        siteKey: data.captchaSiteKey ?? '',
+        secretKey: data.captchaSecretKey ?? '',
+      };
+    }
+
+    if (data.contactEnabled && data.mail) {
+      siteConfig.mail = {
+        enabled: true,
+        host: data.mail.host,
+        port: data.mail.port,
+        secure: data.mail.secure,
+        user: data.mail.user,
+        pass: data.mail.pass,
+        from: data.mail.from,
+        to: data.mail.to,
+      };
+    }
+
+    await writeSiteConfig(siteConfig);
+
+    // Génération du slug admin aléatoire (6 chars)
+    const randomSlug = Math.random().toString(36).slice(2, 8);
+    const adminSlug = `back-${randomSlug}`;
+
+    // Écriture dans data/setup.json
+    await writeSetupConfig({ setupDone: true, adminSlug });
+
+    // Écriture de ADMIN_SLUG dans .env.local
+    const envFile = path.join(process.cwd(), '.env.local');
+    let envContent = '';
+    try {
+      envContent = await fsp.readFile(envFile, 'utf8');
+    } catch {
+      // fichier inexistant, on part d'un contenu vide
+    }
+
+    if (/^ADMIN_SLUG=/m.test(envContent)) {
+      envContent = envContent.replace(/^ADMIN_SLUG=.*/m, `ADMIN_SLUG=${adminSlug}`);
+    } else {
+      envContent = envContent.trimEnd() + (envContent ? '\n' : '') + `ADMIN_SLUG=${adminSlug}\n`;
+    }
+    await fsp.writeFile(envFile, envContent, 'utf8').catch(() => {
+      // .env.local non critique : adminSlug est déjà dans data/setup.json
+    });
+
+    return NextResponse.json({ adminUrl: `/${adminSlug}` });
+  } catch (err) {
+    console.error('[setup] POST error:', err);
+    return NextResponse.json(
+      { error: 'Erreur serveur lors de la configuration. Vérifiez les permissions du dossier data/.' },
+      { status: 500 }
+    );
+  }
 }
