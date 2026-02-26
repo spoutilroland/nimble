@@ -25,14 +25,14 @@ export function AdminBar() {
       <div className="flex items-center gap-3">
         <a
           href="/back"
-          className="underline underline-offset-2 hover:text-white transition-colors"
+          className="text-neutral-200 underline underline-offset-2 hover:text-white transition-colors"
         >
           Back office
         </a>
         <span className="opacity-30">|</span>
         <button
           onClick={handleLogout}
-          className="underline underline-offset-2 hover:text-white transition-colors cursor-pointer"
+          className="text-neutral-200 underline underline-offset-2 hover:text-white transition-colors cursor-pointer"
         >
           Déconnexion
         </button>
