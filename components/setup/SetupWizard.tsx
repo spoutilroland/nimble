@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import Link from 'next/link';
 import {
   Eye, EyeOff, Copy, Check, AlertTriangle,
   ChevronLeft, ChevronRight,
@@ -600,7 +601,7 @@ function StepContact({
         Formulaire de contact
       </h2>
       <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '28px', lineHeight: 1.5 }}>
-        Activez l'envoi d'emails depuis le formulaire de contact.
+        Activez l&apos;envoi d&apos;emails depuis le formulaire de contact.
       </p>
 
       {/* Toggle */}
@@ -843,7 +844,7 @@ function StepComplete({ adminUrl, copied, onCopy }: {
         Configuration terminée !
       </h2>
       <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '32px', lineHeight: 1.5 }}>
-        Nimble est prêt. Conservez précieusement votre URL d'administration sécurisée.
+        Nimble est prêt. Conservez précieusement votre URL d&apos;administration sécurisée.
       </p>
 
       {/* Encadré URL */}
@@ -863,7 +864,7 @@ function StepComplete({ adminUrl, copied, onCopy }: {
           color: '#94a3b8',
           marginBottom: '10px',
         }}>
-          Votre URL d'administration
+          Votre URL d&apos;administration
         </div>
         <div style={{
           fontSize: '15px',
@@ -931,7 +932,7 @@ function StepComplete({ adminUrl, copied, onCopy }: {
       </div>
 
       {/* Bouton dashboard */}
-      <a
+      <Link
         href="/back"
         style={{
           display: 'inline-flex',
@@ -948,7 +949,7 @@ function StepComplete({ adminUrl, copied, onCopy }: {
         }}
       >
         Accéder au dashboard
-      </a>
+      </Link>
     </div>
   );
 }
