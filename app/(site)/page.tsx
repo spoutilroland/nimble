@@ -59,7 +59,7 @@ export default async function HomePage() {
       <SiteFooter site={site} logoUrl={logoUrl} lang={lang} />
       <ScrollReveal />
       <SmoothScroll />
-      <ContentEditor pageId={pageId} lang={lang} />
+      <ContentEditor pageId={pageId} lang={lang} backPath={`/${process.env.ADMIN_SLUG || 'back'}`} />
     </>
   );
 }

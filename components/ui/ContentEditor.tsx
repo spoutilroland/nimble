@@ -5,9 +5,10 @@ import { useEffect } from 'react';
 interface Props {
   pageId: string;
   lang: string;
+  backPath?: string;
 }
 
-export function ContentEditor({ pageId, lang }: Props) {
+export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
   useEffect(() => {
     let editBar: HTMLDivElement | null = null;
     let editTrigger: HTMLButtonElement | null = null;
@@ -142,7 +143,8 @@ export function ContentEditor({ pageId, lang }: Props) {
       editBar = document.createElement('div');
       editBar.className = 'admin-edit-bar';
       editBar.innerHTML = `Mode edition admin
-        <span class="admin-bar-lang">Langue : <strong>${lang.toUpperCase()}</strong></span>`;
+        <span class="admin-bar-lang">Langue : <strong>${lang.toUpperCase()}</strong></span>
+        <a href="${backPath}" class="admin-bar-backlink">Aller au back office</a>`;
       document.body.prepend(editBar);
 
       const header = document.querySelector<HTMLElement>('.header');

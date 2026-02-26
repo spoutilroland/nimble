@@ -1302,7 +1302,6 @@ body {
   letter-spacing: 0.05em;
   padding: 6px 1rem;
   backdrop-filter: blur(4px);
-  pointer-events: none;
 }
 
 .lang-btn {
@@ -1316,11 +1315,17 @@ body {
   font-family: sans-serif;
   letter-spacing: 1px;
   transition: background 0.2s;
-  pointer-events: all;
 }
 
 .lang-btn:hover { background: rgba(255,255,255,0.3); }
 .lang-btn.active { background: rgba(255,255,255,0.9); color: #2d5016; }
+
+.admin-bar-backlink {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-size: 0.75rem;
+}
 
 .edit-trigger {
   position: absolute;

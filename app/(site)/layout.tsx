@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { readSiteConfig } from '@/lib/data/site';
+import { readThemeFile } from '@/lib/data/theme';
 import { detectLang } from '@/lib/i18n/server';
 import { ThemeScript } from '@/components/ui/ThemeScript';
 import { AdminBar } from '@/components/layout/AdminBar';
@@ -24,11 +25,12 @@ export default async function SiteLayout({
   children: React.ReactNode;
 }>) {
   const site = readSiteConfig();
+  const { theme } = readThemeFile();
   const lang = await detectLang();
   const borderStyle = site.design?.borderStyle || 'angular';
 
   return (
-    <html lang={lang} data-border={borderStyle} data-lang={lang}>
+    <html lang={lang} data-border={borderStyle} data-lang={lang} data-theme={theme}>
       <head>
         {site.fonts.googleFontsUrl && (
           <link href={site.fonts.googleFontsUrl} rel="stylesheet" />
