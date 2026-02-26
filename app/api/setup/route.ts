@@ -101,26 +101,8 @@ export async function POST(req: NextRequest) {
     const randomSlug = Math.random().toString(36).slice(2, 8);
     const adminSlug = `back-${randomSlug}`;
 
-    // Écriture dans data/setup.json
+    // Écriture dans data/setup.json (source de vérité pour adminSlug)
     await writeSetupConfig({ setupDone: true, adminSlug });
-
-    // Écriture de ADMIN_SLUG dans .env.local
-    const envFile = path.join(process.cwd(), '.env.local');
-    let envContent = '';
-    try {
-      envContent = await fsp.readFile(envFile, 'utf8');
-    } catch {
-      // fichier inexistant, on part d'un contenu vide
-    }
-
-    if (/^ADMIN_SLUG=/m.test(envContent)) {
-      envContent = envContent.replace(/^ADMIN_SLUG=.*/m, `ADMIN_SLUG=${adminSlug}`);
-    } else {
-      envContent = envContent.trimEnd() + (envContent ? '\n' : '') + `ADMIN_SLUG=${adminSlug}\n`;
-    }
-    await fsp.writeFile(envFile, envContent, 'utf8').catch(() => {
-      // .env.local non critique : adminSlug est déjà dans data/setup.json
-    });
 
     return NextResponse.json({ adminUrl: `/${adminSlug}` });
   } catch (err) {

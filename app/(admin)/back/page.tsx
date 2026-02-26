@@ -15,8 +15,5 @@ export default async function BackPage() {
   const lang = await detectLang();
   const locale = loadLocale(lang);
 
-  // Setup terminé mais ADMIN_SLUG pas encore en env (pas de redémarrage)
-  const needsRestart = setup.setupDone && !process.env.ADMIN_SLUG;
-
-  return <AdminShell locale={locale} needsRestart={needsRestart} adminSlug={setup.adminSlug} />;
+  return <AdminShell locale={locale} adminSlug={setup.adminSlug} />;
 }

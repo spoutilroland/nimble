@@ -10,6 +10,7 @@ import { SectionDivider } from '@/components/layout/SectionDivider';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
 import { SmoothScroll } from '@/components/ui/SmoothScroll';
 import { ContentEditor } from '@/components/ui/ContentEditor';
+import { getAdminSlug } from '@/lib/data/setup';
 import type { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -59,7 +60,7 @@ export default async function HomePage() {
       <SiteFooter site={site} logoUrl={logoUrl} lang={lang} />
       <ScrollReveal />
       <SmoothScroll />
-      <ContentEditor pageId={pageId} lang={lang} backPath={`/${process.env.ADMIN_SLUG || 'back'}`} />
+      <ContentEditor pageId={pageId} lang={lang} backPath={`/${getAdminSlug()}`} />
     </>
   );
 }

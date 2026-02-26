@@ -21,3 +21,8 @@ export function readSetupConfig(): SetupConfig {
 export async function writeSetupConfig(data: SetupConfig): Promise<void> {
   await fsp.writeFile(setupFile, JSON.stringify(data, null, 2));
 }
+
+/** Retourne le slug admin depuis data/setup.json — lu à chaque requête, pas de restart nécessaire */
+export function getAdminSlug(): string {
+  return readSetupConfig().adminSlug || 'back';
+}
