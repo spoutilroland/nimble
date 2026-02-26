@@ -15,18 +15,27 @@
  * → hPanel : Entry point = server.js
  */
 
-import { cpSync, rmSync, existsSync, mkdirSync } from 'fs';
+import { cpSync, rmSync, existsSync, mkdirSync, readdirSync, statSync } from 'fs';
 import { resolve } from 'path';
 
 const root = resolve('.');
 
 // Le standalone Next.js place tout dans un sous-dossier = nom du package
-const standaloneApp = resolve('.next/standalone/nimble');
-
-if (!existsSync(standaloneApp)) {
-  console.error('❌ .next/standalone/nimble/ introuvable — lance d\'abord : npm run build');
+// On détecte automatiquement ce sous-dossier
+const standaloneDir = resolve('.next/standalone');
+if (!existsSync(standaloneDir)) {
+  console.error('❌ .next/standalone/ introuvable — lance d\'abord : npm run build');
   process.exit(1);
 }
+const appSubdir = readdirSync(standaloneDir).find(
+  f => statSync(resolve(standaloneDir, f)).isDirectory()
+);
+if (!appSubdir) {
+  console.error('❌ Aucun sous-dossier trouvé dans .next/standalone/');
+  process.exit(1);
+}
+const standaloneApp = resolve(standaloneDir, appSubdir);
+console.log(`✓ Standalone détecté : .next/standalone/${appSubdir}/`);
 
 const dist = resolve('dist');
 
@@ -64,14 +73,13 @@ for (const folder of ['uploads/logo', 'uploads/favicon', 'uploads/media', 'uploa
 console.log('✓ uploads/ (dossiers vides créés)');
 
 console.log(`
-✅ dist/ prêt (${Math.round(await folderSize(dist) / 1024 / 1024)} MB)
+✅ dist/ prêt (${Math.round(folderSize(dist) / 1024 / 1024)} MB)
 
   Uploader tout le contenu de dist/ dans nodejs/ sur Hostinger
   hPanel → Node.js → Entry point : server.js → Restart
 `);
 
-async function folderSize(dir) {
-  const { readdirSync, statSync } = await import('fs');
+function folderSize(dir) {
   let total = 0;
   for (const f of readdirSync(dir, { recursive: true })) {
     try { total += statSync(resolve(dir, f)).size; } catch {}
