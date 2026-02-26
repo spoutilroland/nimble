@@ -29,7 +29,8 @@
     "languages": "Languages",
     "password": "Password",
     "captcha": "Captcha",
-    "snapshots": "Snapshots"
+    "snapshots": "Snapshots",
+    "export": "Export"
   },
   "footer": {
     "contact": "Contact",
@@ -457,6 +458,15 @@
     "fileCount": "files",
     "btnRestore": "Restore",
     "btnDelete": "Delete"
+  },
+  "export": {
+    "sectionTitle": "Static export",
+    "sectionInfo": "Download your complete site in HTML/CSS/JS, no Node.js required.",
+    "btnExport": "Download static site",
+    "exporting": "Generating...",
+    "success": "Export generated successfully",
+    "error": "Error generating export",
+    "contactWarning": "The contact form will not work in the static export."
   },
   "common": {
     "save": "Save",

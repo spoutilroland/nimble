@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.2.1",
+    "@types/archiver": "^7.0.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/nodemailer": "^7.0.10",
+    "archiver": "^7.0.1",
     "bcryptjs": "^3.0.3",
     "iron-session": "^8.0.4",
     "lucide-react": "^0.575.0",

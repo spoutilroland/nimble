@@ -26,6 +26,7 @@ import { FooterSection } from '@/components/admin/sections/FooterSection/index';
 import { CarouselSection } from '@/components/admin/sections/CarouselSection';
 import { PagesSection } from '@/components/admin/sections/PagesSection/index';
 import { LayoutsSection } from '@/components/admin/sections/LayoutsSection/index';
+import { ExportSection } from '@/components/admin/sections/ExportSection/index';
 
 const SECTION_REGISTRY: SectionDescriptor[] = [
   // tab-design
@@ -46,6 +47,7 @@ const SECTION_REGISTRY: SectionDescriptor[] = [
   // tab-config
   { id: 'config', tab: 'tab-config', order: 0, anchor: 'config-section', labelKey: 'nav.languages', component: ConfigSection },
   { id: 'snapshots', tab: 'tab-config', order: 1, anchor: 'snapshots-section', labelKey: 'nav.snapshots', component: SnapshotsSection },
+  { id: 'export', tab: 'tab-config', order: 2, anchor: 'export-section', labelKey: 'nav.export', component: ExportSection },
 
   // tab-security
   { id: 'security', tab: 'tab-security', order: 0, anchor: 'security-section', labelKey: 'nav.password', component: SecuritySection },
