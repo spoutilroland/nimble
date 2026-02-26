@@ -99,6 +99,9 @@ function AdminShellInner({ needsRestart, adminSlug }: { needsRestart?: boolean; 
             >
               {isDark ? '◑' : '●'}
             </button>
+            <a href="/" className="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+              {t('admin.viewSite')}
+            </a>
             <button className="btn btn-secondary" onClick={handleLogout}>
               {t('admin.logout')}
             </button>

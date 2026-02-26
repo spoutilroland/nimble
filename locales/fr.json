@@ -8,6 +8,7 @@
   "admin": {
     "title": "Administration",
     "toggleTheme": "Basculer clair / sombre",
+    "viewSite": "Voir le site",
     "logout": "Déconnexion"
   },
   "tabs": {

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { readSiteConfig } from '@/lib/data/site';
 import { detectLang } from '@/lib/i18n/server';
 import { ThemeScript } from '@/components/ui/ThemeScript';
+import { AdminBar } from '@/components/layout/AdminBar';
 import '../globals.css';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -42,6 +43,7 @@ export default async function SiteLayout({
         )}
       </head>
       <body className="site-page">
+        <AdminBar />
         {children}
       </body>
     </html>
