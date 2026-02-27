@@ -19,10 +19,11 @@ interface BlockOptionsRowProps {
   };
   type: string;
   maxCols?: number;
+  context?: 'footer' | 'layout';
   onUpdate: (updates: Record<string, unknown>) => void;
 }
 
-export function BlockOptionsRow({ block, type, maxCols = 3, onUpdate }: BlockOptionsRowProps) {
+export function BlockOptionsRow({ block, type, maxCols = 3, context, onUpdate }: BlockOptionsRowProps) {
   const { t } = useI18n();
   const colOptions = Array.from({ length: maxCols }, (_, i) => i + 1);
 
@@ -51,16 +52,8 @@ export function BlockOptionsRow({ block, type, maxCols = 3, onUpdate }: BlockOpt
       </label>
 
       {/* Social links options */}
-      {type === 'social-links' && (
+      {type === 'social-links' && context !== 'footer' && (
         <>
-          <label className="canvas-block-opt">
-            {t('block.shapeLabel')}
-            <select value={block.shape || 'round'} onChange={(e) => onUpdate({ shape: e.target.value })}>
-              <option value="round">{t('block.shapeRound')}</option>
-              <option value="square">{t('block.shapeSquare')}</option>
-              <option value="rounded">{t('block.shapeRounded')}</option>
-            </select>
-          </label>
           <label className="canvas-block-opt">
             {t('block.directionLabel')}
             <select value={block.direction || 'horizontal'} onChange={(e) => onUpdate({ direction: e.target.value })}>

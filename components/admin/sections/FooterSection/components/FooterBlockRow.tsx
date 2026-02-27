@@ -27,6 +27,7 @@ export function FooterBlockRow({ block, onUpdate, onRemove }: FooterBlockRowProp
             block={block}
             type={block.type}
             maxCols={6}
+            context="footer"
             onUpdate={(updates) => onUpdate(updates as Partial<FooterBlock>)}
           />
         </div>

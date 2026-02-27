@@ -85,9 +85,7 @@ export function useFooterLogic() {
       row: 1, col: 1, colSpan: 1,
     };
     if (type === 'social-links') {
-      newBlock.shape = 'round';
-      newBlock.direction = 'horizontal';
-      newBlock.size = 'md';
+      newBlock.direction = 'vertical';
     }
     if (type === 'map') {
       newBlock.provider = 'leaflet';

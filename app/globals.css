@@ -1282,6 +1282,65 @@ body {
   height: clamp(40px, 6vw, 80px);
 }
 
+/* ─── RÉSEAUX SOCIAUX (widget layout — côté site) ─────────────── */
+
+.layout-social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+.layout-social.layout-social-vertical {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+}
+
+/* Mode horizontal : boutons icône carrés */
+.social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    transition: background 0.2s, transform 0.15s, opacity 0.2s;
+}
+.social-btn:hover { background: var(--primary-dark); opacity: 0.9; }
+.social-btn img    { width: 20px; height: 20px; object-fit: contain; }
+.social-btn.size-sm { width: 32px; height: 32px; }
+.social-btn.size-lg { width: 56px; height: 56px; }
+.social-btn.size-sm img { width: 16px; height: 16px; }
+.social-btn.size-lg img { width: 26px; height: 26px; }
+
+/* Mode vertical : ligne icône + nom du réseau */
+.social-btn-row {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.45rem 0.6rem;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 6px;
+    transition: background 0.15s;
+}
+.social-btn-row:hover { background: rgba(255,255,255,0.09); }
+.social-btn-row img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+.social-btn-row .social-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    opacity: 0.88;
+}
+
 /* ─── FOOTER ─────────────────────────────────────────────────── */
 
 .footer {
