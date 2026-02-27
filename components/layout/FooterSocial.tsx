@@ -29,7 +29,7 @@ export function FooterSocial({ direction = 'vertical', shape = 'round', size = '
           a.title = net;
 
           if (isVertical) {
-            // Ligne icône + nom du réseau
+            // Icône seule (grille)
             a.className = 'social-btn-row';
             if (icons[net]) {
               const img = document.createElement('img');
@@ -38,11 +38,9 @@ export function FooterSocial({ direction = 'vertical', shape = 'round', size = '
               img.width = 22;
               img.height = 22;
               a.appendChild(img);
+            } else {
+              a.textContent = net.charAt(0).toUpperCase();
             }
-            const label = document.createElement('span');
-            label.className = 'social-label';
-            label.textContent = net.charAt(0).toUpperCase() + net.slice(1);
-            a.appendChild(label);
           } else {
             // Bouton icône carré (mode horizontal)
             a.className = `social-btn ${shape} size-${size}`;
