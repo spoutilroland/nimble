@@ -2049,7 +2049,7 @@ body.admin-mode #accueil [data-content-key]:hover {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 8px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1.1rem;
 }
 
 .layout-card-info {
@@ -2605,24 +2605,24 @@ body.admin-mode #accueil [data-content-key]:hover {
 
 /* Mode clair backoffice */
 html:not([data-back-theme="dark"]) .is-backoffice {
-    --back-bg:           #f7f8fc;
-    --back-surface:      #ffffff;
-    --back-border:       #dde2ee;
+    --back-bg:           #cdd3e4;
+    --back-surface:      #dde2f0;
+    --back-border:       #b8c0d6;
     --back-text:         #0f1117;
-    --back-text-muted:   #64748b;
+    --back-text-muted:   #4a5568;
     --back-primary:      #059669;
-    --back-tab-active:   rgba(5,150,105,0.07);
-    --back-side-active:  rgba(5,150,105,0.06);
+    --back-tab-active:   rgba(5,150,105,0.10);
+    --back-side-active:  rgba(5,150,105,0.09);
     /* Réécrire --bo-* pour le mode clair */
-    --bo-bg:           #f7f8fc;
-    --bo-surface:      #ffffff;
-    --bo-card:         #eef1f8;
-    --bo-border:       #dde2ee;
-    --bo-border-hover: rgba(5,150,105,0.35);
+    --bo-bg:           #cdd3e4;
+    --bo-surface:      #dde2f0;
+    --bo-card:         #c4cade;
+    --bo-border:       #b8c0d6;
+    --bo-border-hover: rgba(5,150,105,0.40);
     --bo-text:         #0f1117;
-    --bo-text-dim:     #64748b;
+    --bo-text-dim:     #4a5568;
     --bo-green:        #059669;
-    --bo-green-glow:   0 0 16px rgba(5,150,105,0.15);
+    --bo-green-glow:   0 0 16px rgba(5,150,105,0.18);
     --primary:         #059669;
     --primary-dark:    #047857;
     --primary-light:   #34d399;
@@ -2726,7 +2726,7 @@ html:not([data-back-theme="dark"]) .is-backoffice {
 
 /* ── Mode clair : surcharger le fond backoffice ──────────────── */
 html:not([data-back-theme="dark"]) .backoffice-body {
-    background: #f7f8fc;
+    background: #cdd3e4;
     background-image: none;
     color: #0f1117;
 }
