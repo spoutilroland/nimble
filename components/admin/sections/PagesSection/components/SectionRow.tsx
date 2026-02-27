@@ -3,6 +3,8 @@
 import { useI18n } from '@/lib/i18n/context';
 import { SECTION_TYPES } from '@/lib/admin/constants/pages';
 import { DividerRow } from './DividerRow';
+import { SectionPropsEditor } from './SectionPropsEditor';
+import { BlockImageEditor } from './BlockImageEditor';
 import type { Section, DividerConfig } from '@/lib/types';
 import type { Layout } from '@/lib/schemas/layouts';
 
@@ -32,29 +34,35 @@ export function SectionRow({ section, index, total, layouts, onRemove, onMoveUp,
             <select
               className="section-layout-id"
               value={section.layoutId || ''}
-              onChange={(e) => onUpdate({ layoutId: e.target.value })}
+              onChange={(e) => {
+                const updates: Partial<Section> = { layoutId: e.target.value };
+                if (!section.carouselId && e.target.value) {
+                  updates.carouselId = Math.random().toString(36).slice(2, 8);
+                }
+                onUpdate(updates);
+              }}
             >
               <option value="">-- Choisir un layout --</option>
               {layouts.map(l => (
                 <option key={l.id} value={l.id}>{l.label}</option>
               ))}
             </select>
-            <input
-              type="text"
-              className="section-carousel-id"
-              placeholder="prefixe-carousel"
-              value={section.carouselId || ''}
-              onChange={(e) => onUpdate({ carouselId: e.target.value })}
-            />
+            {section.layoutId && section.carouselId && (() => {
+              const selectedLayout = layouts.find(l => l.id === section.layoutId);
+              const imageBlocks = selectedLayout?.blocks.filter(b => b.type === 'image') ?? [];
+              return imageBlocks.length > 0 ? (
+                <div className="block-images-list">
+                  {imageBlocks.map((b, i) => (
+                    <BlockImageEditor
+                      key={b.blockId}
+                      carouselId={`${section.carouselId}-${b.blockId}`}
+                      label={`${t('block.image')} ${imageBlocks.length > 1 ? i + 1 : ''}`}
+                    />
+                  ))}
+                </div>
+              ) : null;
+            })()}
           </div>
-        ) : info?.needsCarousel ? (
-          <input
-            type="text"
-            className="section-carousel-id"
-            placeholder="id-carousel"
-            value={section.carouselId || ''}
-            onChange={(e) => onUpdate({ carouselId: e.target.value })}
-          />
         ) : (
           <span className="section-no-carousel">—</span>
         )}
@@ -65,6 +73,10 @@ export function SectionRow({ section, index, total, layouts, onRemove, onMoveUp,
           <button className="btn-section-remove" title={t('common.delete')} onClick={onRemove}>×</button>
         </div>
       </div>
+
+      {(section.type === 'stats' || section.type === 'polaroids') && (
+        <SectionPropsEditor section={section} onUpdate={onUpdate} />
+      )}
 
       <DividerRow
         divider={section.dividerAfter as DividerConfig | undefined}

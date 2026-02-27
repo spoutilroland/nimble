@@ -9,6 +9,9 @@ export interface CarouselImageData {
 export interface CarouselApiEntry {
   carousel: { id: string; title: string; maxImages: number };
   images: CarouselImageData[];
+  groupKey?: string;
+  groupLabel?: string;
+  blockLabel?: string;
 }
 
 // L'API /api/admin/images retourne Record<string, CarouselApiEntry>

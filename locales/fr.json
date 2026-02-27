@@ -171,6 +171,25 @@
     "stats": "Statistiques",
     "custom-layout": "Layout personnalisé"
   },
+  "blockImage": {
+    "upload": "+ Ajouter une image",
+    "uploading": "Upload...",
+    "clickToChange": "Cliquer pour changer l'image"
+  },
+  "sectionProps": {
+    "configTitle": "Configuration",
+    "statsCountPlaceholder": "Chiffre",
+    "statsLabelPlaceholder": "Libellé",
+    "statsAddItem": "+ Ajouter une statistique",
+    "polaroidTagPlaceholder": "Tag section (ex: Extérieur & Paysage)",
+    "polaroidTitlePlaceholder": "Titre de la section",
+    "polaroidItemTitle": "Titre de la carte",
+    "polaroidItemTag": "Tag",
+    "polaroidAddItem": "+ Ajouter un polaroid",
+    "tagColor_bois": "Bois",
+    "tagColor_green": "Vert",
+    "tagColor_slate": "Ardoise"
+  },
   "divider": {
     "none": "Aucun",
     "wave": "Vague douce",

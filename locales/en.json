@@ -171,6 +171,25 @@
     "stats": "Statistics",
     "custom-layout": "Custom layout"
   },
+  "blockImage": {
+    "upload": "+ Add an image",
+    "uploading": "Uploading...",
+    "clickToChange": "Click to change image"
+  },
+  "sectionProps": {
+    "configTitle": "Configuration",
+    "statsCountPlaceholder": "Number",
+    "statsLabelPlaceholder": "Label",
+    "statsAddItem": "+ Add statistic",
+    "polaroidTagPlaceholder": "Section tag (e.g.: Exterior & Landscape)",
+    "polaroidTitlePlaceholder": "Section title",
+    "polaroidItemTitle": "Card title",
+    "polaroidItemTag": "Tag",
+    "polaroidAddItem": "+ Add polaroid",
+    "tagColor_bois": "Wood",
+    "tagColor_green": "Green",
+    "tagColor_slate": "Slate"
+  },
   "divider": {
     "none": "None",
     "wave": "Soft wave",

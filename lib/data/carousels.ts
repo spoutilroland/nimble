@@ -44,9 +44,12 @@ export function ensureCarouselExists(
     data.carousels[carouselId] = {
       id: carouselId,
       title: title || carouselId,
-      maxImages: maxImages || 20,
+      maxImages: maxImages ?? 20,
       images: [],
     };
+    writeCarouselsConfigSync(data);
+  } else if (maxImages !== undefined && data.carousels[carouselId].maxImages !== maxImages) {
+    data.carousels[carouselId].maxImages = maxImages;
     writeCarouselsConfigSync(data);
   }
   return data.carousels[carouselId];

@@ -3,7 +3,7 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import { withAuth } from '@/lib/auth';
-import { writePagesConfig, extractCarouselIds, ensureCarouselExists, cleanOrphanedCarousels } from '@/lib/data';
+import { writePagesConfig, ensureCarouselExists, cleanOrphanedCarousels, readLayoutsConfig } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
 
 export const POST = withAuth(async (req: NextRequest) => {
@@ -18,8 +18,24 @@ export const POST = withAuth(async (req: NextRequest) => {
     const body = await req.json();
     await writePagesConfig(body);
 
-    // Créer les carousels manquants
-    extractCarouselIds(body).forEach((id) => ensureCarouselExists(id));
+    // Créer les carousels manquants avec le bon maxImages selon le type de bloc
+    const layoutsData = readLayoutsConfig();
+    for (const page of body.pages || []) {
+      for (const section of page.sections || []) {
+        if (section.carouselId && !section.blockCarousels) {
+          ensureCarouselExists(section.carouselId, `${page.title} — ${section.type}`);
+        }
+        if (section.blockCarousels && section.layoutId) {
+          const layout = layoutsData.layouts?.[section.layoutId];
+          for (const [blockId, carouselId] of Object.entries(section.blockCarousels as Record<string, string>)) {
+            if (!carouselId) continue;
+            const block = layout?.blocks?.find((b: { blockId: string; type: string }) => b.blockId === blockId);
+            const maxImages = block?.type === 'image' ? 1 : 20;
+            ensureCarouselExists(carouselId, carouselId, maxImages);
+          }
+        }
+      }
+    }
 
     // Supprimer les carousels et media orphelins
     cleanOrphanedCarousels(body).catch(() => {});

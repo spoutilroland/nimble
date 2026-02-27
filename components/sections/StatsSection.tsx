@@ -1,9 +1,24 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import type { Section } from '@/lib/types';
 
-export function StatsSection() {
+interface StatItem { count: number; label: string; }
+
+interface Props {
+  section: Section;
+}
+
+const DEFAULT_ITEMS: StatItem[] = [
+  { count: 150, label: 'Chantiers realises' },
+  { count: 15, label: "Annees d'experience" },
+  { count: 98, label: 'Clients satisfaits %' },
+  { count: 3, label: 'Departements' },
+];
+
+export function StatsSection({ section }: Props) {
   const barRef = useRef<HTMLDivElement>(null);
+  const items: StatItem[] = (section.props?.items as StatItem[] | undefined) || DEFAULT_ITEMS;
 
   useEffect(() => {
     const statsBar = barRef.current;
@@ -37,38 +52,14 @@ export function StatsSection() {
 
   return (
     <div className="stats-bar reveal" ref={barRef}>
-      <div className="stat-item">
-        <span className="stat-number" data-count="150">
-          <span>0</span>
-        </span>
-        <span className="stat-label" data-content-key="stat-1-label">
-          Chantiers realises
-        </span>
-      </div>
-      <div className="stat-item">
-        <span className="stat-number" data-count="15">
-          <span>0</span>
-        </span>
-        <span className="stat-label" data-content-key="stat-2-label">
-          Annees d&apos;experience
-        </span>
-      </div>
-      <div className="stat-item">
-        <span className="stat-number" data-count="98">
-          <span>0</span>
-        </span>
-        <span className="stat-label" data-content-key="stat-3-label">
-          Clients satisfaits %
-        </span>
-      </div>
-      <div className="stat-item">
-        <span className="stat-number" data-count="3">
-          <span>0</span>
-        </span>
-        <span className="stat-label" data-content-key="stat-4-label">
-          Departements
-        </span>
-      </div>
+      {items.map((item, i) => (
+        <div key={i} className="stat-item">
+          <span className="stat-number" data-count={item.count}>
+            <span>0</span>
+          </span>
+          <span className="stat-label">{item.label}</span>
+        </div>
+      ))}
     </div>
   );
 }

@@ -12,7 +12,6 @@ import { MediaPicker } from '../shared/MediaPicker';
 // ============================================================
 
 export function CarouselSection() {
-  const { t } = useI18n();
   const carousels = useAdminStore((s) => s.carousels);
   const carouselsLoading = useAdminStore((s) => s.carouselsLoading);
   const loadCarousels = useAdminStore((s) => s.loadCarousels);
@@ -23,22 +22,183 @@ export function CarouselSection() {
 
   if (carouselsLoading && Object.keys(carousels).length === 0) return null;
 
+  // Séparer les carousels standalone vs ceux appartenant à un layout groupé
+  const standalone: [string, CarouselApiEntry][] = [];
+  const groups = new Map<string, [string, CarouselApiEntry][]>();
+
+  for (const [id, data] of Object.entries(carousels)) {
+    if (data.groupKey) {
+      const key = data.groupKey;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key)!.push([id, data]);
+    } else {
+      standalone.push([id, data]);
+    }
+  }
+
   return (
     <>
-      {Object.entries(carousels).map(([carouselId, data]) => (
-        <SingleCarousel
-          key={carouselId}
-          carouselId={carouselId}
-          data={data}
+      {/* Un seul panneau par layout personnalisé */}
+      {[...groups.entries()].map(([groupKey, entries]) => (
+        <GroupedCarouselPanel
+          key={groupKey}
+          groupLabel={entries[0][1].groupLabel || groupKey}
+          entries={entries}
           onReload={loadCarousels}
         />
+      ))}
+
+      {/* Carousels standalone (non liés à un layout) */}
+      {standalone.map(([id, data]) => (
+        <SingleCarousel key={id} carouselId={id} data={data} onReload={loadCarousels} />
       ))}
     </>
   );
 }
 
 // ============================================================
-//  CAROUSEL INDIVIDUEL
+//  PANNEAU GROUPÉ — un panel pour tout un layout personnalisé
+// ============================================================
+
+interface GroupedCarouselPanelProps {
+  groupLabel: string;
+  entries: [string, CarouselApiEntry][];
+  onReload: () => Promise<void>;
+}
+
+function GroupedCarouselPanel({ groupLabel, entries, onReload }: GroupedCarouselPanelProps) {
+  const [collapsed, setCollapsed] = useState(true);
+
+  const totalImages = entries.reduce((sum, [, data]) => sum + data.images.length, 0);
+  const totalMax = entries.reduce((sum, [, data]) => sum + data.carousel.maxImages, 0);
+
+  return (
+    <div className="carousel-section">
+      <div className="carousel-section-header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+          <button
+            className="btn-collapse"
+            onClick={() => setCollapsed(!collapsed)}
+          >
+            {collapsed ? '\u25B6' : '\u25BC'}
+          </button>
+          <div>
+            <h2>{groupLabel}</h2>
+            <div className="carousel-info">{totalImages} / {totalMax} images</div>
+          </div>
+        </div>
+      </div>
+
+      {!collapsed && (
+        <div className="grouped-carousel-slots">
+          {entries.map(([carouselId, data]) => (
+            <GroupedImageSlot
+              key={carouselId}
+              carouselId={carouselId}
+              data={data}
+              onReload={onReload}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+//  SLOT IMAGE — un bloc image dans un layout groupé
+// ============================================================
+
+interface GroupedImageSlotProps {
+  carouselId: string;
+  data: CarouselApiEntry;
+  onReload: () => Promise<void>;
+}
+
+function GroupedImageSlot({ carouselId, data, onReload }: GroupedImageSlotProps) {
+  const { t } = useI18n();
+  const storeDeleteImage = useAdminStore((s) => s.deleteImage);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const { images, blockLabel } = data;
+
+  const uploadFile = useCallback(async (file: File) => {
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      await fetch(`/api/admin/upload/${encodeURIComponent(carouselId)}`, { method: 'POST', body: formData });
+      setTimeout(onReload, 500);
+    } finally {
+      setUploading(false);
+    }
+  }, [carouselId, onReload]);
+
+  const deleteImage = useCallback(async (filename: string) => {
+    if (!confirm(t('deleteImage.confirm', { filename }))) return;
+    await storeDeleteImage(carouselId, filename);
+  }, [carouselId, t, storeDeleteImage]);
+
+  return (
+    <div className="grouped-image-slot">
+      <div className="grouped-slot-label">{blockLabel || data.carousel.title}</div>
+      <div className="grouped-slot-content">
+        {images.map((img) => (
+          <div key={img.filename} className="grouped-slot-thumb">
+            <img src={img.webpUrl || img.url} alt="" />
+            <button
+              className="grouped-slot-delete"
+              onClick={() => deleteImage(img.filename)}
+              title={t('deleteImage.confirm', { filename: img.filename })}
+            >
+              &times;
+            </button>
+          </div>
+        ))}
+        {images.length < data.carousel.maxImages && (
+          <>
+            <button
+              className="grouped-slot-add"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              title={t('carousel.uploadFromPcTitle')}
+            >
+              {uploading ? '...' : '+'}
+            </button>
+            <button
+              className="grouped-slot-add grouped-slot-add--pick"
+              onClick={() => setPickerOpen(true)}
+              title={t('carousel.pickFromSiteTitle')}
+            >
+              📂
+            </button>
+          </>
+        )}
+      </div>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/jpeg,image/jpg,image/png,image/webp"
+        style={{ display: 'none' }}
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) uploadFile(file);
+          e.target.value = '';
+        }}
+      />
+      <MediaPicker
+        targetCarouselId={carouselId}
+        isOpen={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onCopySuccess={onReload}
+      />
+    </div>
+  );
+}
+
+// ============================================================
+//  CAROUSEL INDIVIDUEL (standalone)
 // ============================================================
 
 interface SingleCarouselProps {
@@ -101,7 +261,7 @@ function SingleCarousel({ carouselId, data, onReload }: SingleCarouselProps) {
     }
 
     setTimeout(() => onReload(), 1500);
-  }, [carouselId, t, tp, showMessage, onReload]);  // upload reste local (FormData + progress)
+  }, [carouselId, t, tp, showMessage, onReload]);
 
   // Supprimer une image
   const deleteImage = useCallback(async (filename: string) => {
@@ -161,13 +321,6 @@ function SingleCarousel({ carouselId, data, onReload }: SingleCarouselProps) {
             <div className="carousel-info">{images.length} / {carousel.maxImages} images</div>
           </div>
         </div>
-        <button
-          className="btn btn-secondary btn-sm btn-pick-media"
-          title={t('carousel.pickFromSiteTitle')}
-          onClick={() => setPickerOpen(true)}
-        >
-          {t('carousel.pickFromSiteLabel')}
-        </button>
       </div>
 
       {!collapsed && (
@@ -213,29 +366,29 @@ function SingleCarousel({ carouselId, data, onReload }: SingleCarouselProps) {
                 >
                   <span>+</span>
                 </label>
-
-                <button
-                  className="grid-add-btn grid-add-btn--pick"
-                  type="button"
-                  title={t('carousel.pickFromSiteBtn')}
-                  onClick={() => setPickerOpen(true)}
-                >
-                  <span>📂</span>
-                </button>
               </>
             )}
           </div>
 
-          {/* Footer : message + bouton tout supprimer */}
+          {/* Footer : message + actions */}
           <div className="section-footer">
             {message.text && (
               <div className={`section-upload-msg ${message.type}`}>{message.text}</div>
             )}
-            {images.length > 0 && (
-              <button className="btn-delete-all" onClick={deleteAll}>
-                {t('carousel.deleteAllBtn')}
+            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+              <button
+                className="btn btn-secondary btn-sm btn-pick-media"
+                title={t('carousel.pickFromSiteTitle')}
+                onClick={() => setPickerOpen(true)}
+              >
+                {t('carousel.pickFromSiteLabel')}
               </button>
-            )}
+              {images.length > 0 && (
+                <button className="btn-delete-all" onClick={deleteAll}>
+                  {t('carousel.deleteAllBtn')}
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Input fichier caché */}

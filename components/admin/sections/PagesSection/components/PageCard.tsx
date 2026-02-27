@@ -39,7 +39,9 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
   }, [page]);
 
   const addSection = () => {
-    setSections(prev => [...prev, { type: addSectionType as Section['type'], carouselId: '' }]);
+    const info = SECTION_TYPES.find(st => st.type === addSectionType);
+    const carouselId = info?.needsCarousel ? Math.random().toString(36).slice(2, 8) : '';
+    setSections(prev => [...prev, { type: addSectionType as Section['type'], carouselId }]);
   };
 
   const removeSection = (idx: number) => {

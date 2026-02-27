@@ -108,19 +108,6 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
         </div>
       </header>
 
-      {/* Barre d'onglets horizontaux */}
-      <nav id="main-tabs">
-        {TABS.map((tab) => (
-          <button
-            key={tab.id}
-            className={`main-tab${activeTab === tab.id ? ' active' : ''}`}
-            onClick={() => setActiveTab(tab.id)}
-          >
-            {t(tab.labelKey)}
-          </button>
-        ))}
-      </nav>
-
       {/* Corps principal : sidebar verticale + zone de contenu */}
       <div id="backoffice-body">
         <div className="flex flex-1 overflow-hidden min-w-0" id={activeTab}>
@@ -131,12 +118,36 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
               </a>
             ))}
           </nav>
-          <div className="flex-1 overflow-y-auto p-6 min-w-0" id={`container-${activeTab.replace('tab-', '')}`}>
-            {sections.map((s) => {
-              const Comp = s.component;
-              const el = <Comp key={s.id} />;
-              return s.wrapper ? <div id={s.wrapper} key={s.id}>{el}</div> : el;
-            })}
+          {/* Colonne droite : onglets + contenu scrollable */}
+          <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+            {/* Barre d'onglets horizontaux — commence après la side-nav */}
+            <nav id="main-tabs">
+              {TABS.map((tab) => (
+                <button
+                  key={tab.id}
+                  className={`main-tab${activeTab === tab.id ? ' active' : ''}`}
+                  onClick={() => setActiveTab(tab.id)}
+                >
+                  {t(tab.labelKey)}
+                </button>
+              ))}
+            </nav>
+            <div className="flex-1 overflow-y-auto px-6 pb-6 min-w-0 min-h-0" id={`container-${activeTab.replace('tab-', '')}`}>
+              {sections.map((s) => {
+                const Comp = s.component;
+                const content = (
+                  <>
+                    <div className="section-divider">
+                      <span className="section-divider-label">{t(s.labelKey)}</span>
+                    </div>
+                    <Comp />
+                  </>
+                );
+                // Chaque section a son id pour que les ancres de la sidebar fonctionnent
+                const sectionId = s.wrapper ?? s.anchor;
+                return <div id={sectionId} key={s.id}>{content}</div>;
+              })}
+            </div>
           </div>
         </div>
       </div>

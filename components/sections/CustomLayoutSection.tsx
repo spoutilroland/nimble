@@ -104,7 +104,7 @@ export function CustomLayoutSection({ section, layout }: Props) {
               );
             }
 
-            if (block.type === 'text') {
+            if (block.type === 'richtext') {
               return (
                 <div
                   key={block.blockId}

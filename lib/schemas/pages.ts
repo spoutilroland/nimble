@@ -26,6 +26,8 @@ export const SectionSchema = z.object({
   layoutId: z.string().optional(),
   blockCarousels: z.record(z.string(), z.string()).optional(),
   dividerAfter: DividerConfigSchema.optional(),
+  // Propriétés spécifiques au type de section (stats, polaroids, etc.)
+  props: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const PageSEOSchema = z.object({

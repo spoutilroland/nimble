@@ -44,7 +44,7 @@ export function SectionRenderer({ section, site, layouts }: Props) {
     case 'polaroids':
       return <PolaroidsSection section={section} />;
     case 'stats':
-      return <StatsSection />;
+      return <StatsSection section={section} />;
     case 'custom-layout': {
       const layout = section.layoutId ? layouts[section.layoutId] : undefined;
       if (!layout) return null;
