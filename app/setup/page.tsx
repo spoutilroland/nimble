@@ -1,14 +1,6 @@
 import { redirect } from 'next/navigation';
-import { readSetupConfig } from '@/lib/data/setup';
-import { SetupWizard } from '@/components/setup/SetupWizard';
 
+// Setup wizard désactivé — redirection directe vers le back office
 export default function SetupPage() {
-  const setup = readSetupConfig();
-
-  // Déjà configuré → redirige vers le backoffice
-  if (setup.setupDone) {
-    redirect('/back');
-  }
-
-  return <SetupWizard />;
+  redirect('/back');
 }

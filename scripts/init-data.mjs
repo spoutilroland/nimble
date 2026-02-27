@@ -2,7 +2,7 @@
  * Initialise data/ si les fichiers n'existent pas encore.
  * Exécuté automatiquement avant chaque build (prebuild).
  *
- * - data/setup.json : setupDone=true + slug aléatoire unique par déploiement
+ * - data/setup.json : setupDone=true, adminSlug=back (fixe)
  * - data/admin.json : hash du mot de passe par défaut "changeme123"
  *
  * Ces fichiers ne sont JAMAIS écrasés s'ils existent déjà.
@@ -24,13 +24,18 @@ if (!existsSync(dataDir)) {
 
 // setup.json — générer seulement si absent
 if (!existsSync(setupFile)) {
-  const randomSlug = Math.random().toString(36).slice(2, 8);
-  const adminSlug = `back-${randomSlug}`;
-  writeFileSync(setupFile, JSON.stringify({ setupDone: true, adminSlug }, null, 2));
-  console.log(`[init-data] setup.json créé — slug admin : /${adminSlug}`);
+  writeFileSync(setupFile, JSON.stringify({ setupDone: true, adminSlug: 'back' }, null, 2));
+  console.log('[init-data] setup.json créé — back office : /back');
 } else {
   const setup = JSON.parse(readFileSync(setupFile, 'utf8'));
-  console.log(`[init-data] setup.json existant — slug admin : /${setup.adminSlug || 'back'}`);
+  // Migrer un ancien slug aléatoire vers /back
+  if (setup.adminSlug && setup.adminSlug !== 'back') {
+    setup.adminSlug = 'back';
+    writeFileSync(setupFile, JSON.stringify(setup, null, 2));
+    console.log('[init-data] setup.json migré — adminSlug forcé à /back');
+  } else {
+    console.log('[init-data] setup.json existant — inchangé');
+  }
 }
 
 // admin.json — générer seulement si absent
