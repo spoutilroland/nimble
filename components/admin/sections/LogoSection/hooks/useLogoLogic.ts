@@ -27,10 +27,15 @@ export function useLogoLogic() {
     try { const r = await fetch('/api/favicon'); setFaviconUrl((await r.json()).url); } catch { /* ignore */ }
   }, []);
 
+  // Charge le site si pas encore en store
   useEffect(() => {
     if (!site) loadSite();
+  }, [site, loadSite]);
+
+  // Charge logo + favicon une seule fois au mount
+  useEffect(() => {
     loadMedia();
-  }, [site, loadSite, loadMedia]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (site) {
