@@ -118,6 +118,7 @@ export const SiteConfigSchema = z.object({
   social: SocialLinksSchema,
   footer: FooterConfigSchema,
   mail: MailConfigSchema.optional(),
+  homepageRedirect: z.string().optional(),
 });
 
 export type BusinessHours = z.infer<typeof BusinessHoursSchema>;

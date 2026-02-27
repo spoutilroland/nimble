@@ -16,17 +16,33 @@ export function usePagesLogic() {
   const storeUpdatePage = useAdminStore((s) => s.updatePage);
   const layouts = useAdminStore((s) => s.layouts);
   const loadLayouts = useAdminStore((s) => s.loadLayouts);
+  const site = useAdminStore((s) => s.site);
+  const loadSite = useAdminStore((s) => s.loadSite);
+  const saveSite = useAdminStore((s) => s.saveSite);
   const [showNewForm, setShowNewForm] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newSlug, setNewSlug] = useState('');
   const [newNav, setNewNav] = useState(true);
   const { message: newMessage, show: showNewMsg } = useFlashMessage();
   const { message: globalMessage, show: showGlobalMsg } = useFlashMessage();
+  const { message: redirectMessage, show: showRedirectMsg } = useFlashMessage();
 
   useEffect(() => {
     loadPages();
     loadLayouts();
-  }, [loadPages, loadLayouts]);
+    loadSite();
+  }, [loadPages, loadLayouts, loadSite]);
+
+  const homepageRedirect = site?.homepageRedirect ?? '';
+
+  const saveRedirect = async (slug: string) => {
+    const ok = await saveSite({ homepageRedirect: slug || undefined });
+    if (ok) {
+      showRedirectMsg(t('pages.redirectSaved'), 'success');
+    } else {
+      showRedirectMsg(t('pages.saveError'), 'error');
+    }
+  };
 
   const createNewPage = async () => {
     if (!newTitle.trim() || !newSlug.trim()) {
@@ -100,6 +116,9 @@ export function usePagesLogic() {
     deletePage,
     savePage,
     handleTitleChange,
+    homepageRedirect,
+    saveRedirect,
+    redirectMessage,
     t,
     tp,
   };

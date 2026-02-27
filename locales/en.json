@@ -152,7 +152,11 @@
     "slugExists": "This slug already exists",
     "confirmDelete": "Permanently delete this page?",
     "saved": "Saved ✓",
-    "saveError": "Error saving"
+    "saveError": "Error saving",
+    "redirectTitle": "Homepage redirect",
+    "redirectLabel": "Redirect / to",
+    "redirectNone": "— No redirect (normal homepage)",
+    "redirectSaved": "Redirect saved ✓"
   },
   "sectionType": {
     "hero": "Full-screen hero",

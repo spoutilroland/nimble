@@ -20,6 +20,9 @@ export function PagesSection() {
     deletePage,
     savePage,
     handleTitleChange,
+    homepageRedirect,
+    saveRedirect,
+    redirectMessage,
     t,
     tp,
   } = usePagesLogic();
@@ -34,6 +37,26 @@ export function PagesSection() {
         <button className="btn btn-success" onClick={() => setShowNewForm(!showNewForm)}>
           {t('pages.btnNew')}
         </button>
+      </div>
+
+      {/* Redirection de la page d'accueil */}
+      <div className="p-4 mb-4 border border-[var(--bo-border)] rounded">
+        <h3 className="site-form-category mt-0 mb-3">{t('pages.redirectTitle')}</h3>
+        <div className="flex items-center gap-3">
+          <div className="form-group mb-0 flex-1">
+            <label>{t('pages.redirectLabel')}</label>
+            <select
+              value={homepageRedirect}
+              onChange={(e) => saveRedirect(e.target.value)}
+            >
+              <option value="">{t('pages.redirectNone')}</option>
+              {pages.filter(p => p.slug !== '/').map(p => (
+                <option key={p.id} value={p.slug}>{p.title} ({p.slug})</option>
+              ))}
+            </select>
+          </div>
+        </div>
+        {redirectMessage && <div className={`form-message ${redirectMessage.type}`}>{redirectMessage.text}</div>}
       </div>
 
       <div>

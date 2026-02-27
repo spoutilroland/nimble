@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import { readSiteConfig } from '@/lib/data/site';
 import { readPagesConfig } from '@/lib/data/pages';
 import { readLayoutsConfig } from '@/lib/data/layouts';
@@ -25,6 +26,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   const site = readSiteConfig();
+
+  // Redirection de la page d'accueil vers une autre page si configuré
+  if (site.homepageRedirect && site.homepageRedirect !== '/') {
+    redirect(site.homepageRedirect);
+  }
+
   const pagesConfig = readPagesConfig();
   const layoutsConfig = readLayoutsConfig();
   const logoUrl = getLogoUrl();

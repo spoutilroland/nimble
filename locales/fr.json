@@ -152,7 +152,11 @@
     "slugExists": "Ce slug existe déjà",
     "confirmDelete": "Supprimer cette page définitivement ?",
     "saved": "Enregistré ✓",
-    "saveError": "Erreur lors de la sauvegarde"
+    "saveError": "Erreur lors de la sauvegarde",
+    "redirectTitle": "Redirection de l'accueil",
+    "redirectLabel": "Rediriger / vers",
+    "redirectNone": "— Aucune redirection (page d'accueil normale)",
+    "redirectSaved": "Redirection enregistrée ✓"
   },
   "sectionType": {
     "hero": "Hero plein écran",
