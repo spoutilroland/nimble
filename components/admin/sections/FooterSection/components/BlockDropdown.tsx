@@ -17,12 +17,12 @@ export function BlockDropdown({ show, onToggle, onAdd }: BlockDropdownProps) {
     <div className="relative">
       <button
         className="btn btn-secondary btn-sm"
-        onClick={(e) => { e.stopPropagation(); onToggle(); }}
+        onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); onToggle(); }}
       >
         {t('footerSection.btnAddBlock')}
       </button>
       {show && (
-        <div className="footer-block-dropdown" onClick={(e) => e.stopPropagation()}>
+        <div className="footer-block-dropdown" onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); }}>
           {FOOTER_BLOCK_TYPES.map((bt) => (
             <div
               key={bt.type}

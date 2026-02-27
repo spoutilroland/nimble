@@ -45,6 +45,30 @@
     color: var(--bo-text, #eceef5);
 }
 
+/* Inputs et textareas : fond et texte cohérents avec le thème */
+.backoffice-body input:not([type="radio"]):not([type="checkbox"]):not([type="color"]):not([type="range"]),
+.backoffice-body textarea {
+    background: var(--bo-surface, #13161f);
+    color: var(--bo-text, #eceef5);
+    border: 1px solid var(--bo-border);
+    border-radius: 6px;
+    padding: 0.45rem 0.7rem;
+    font-family: 'Figtree', sans-serif;
+    font-size: 0.875rem;
+    width: 100%;
+    transition: border-color 0.15s;
+}
+.backoffice-body input:not([type="radio"]):not([type="checkbox"]):not([type="color"]):not([type="range"]):focus,
+.backoffice-body textarea:focus {
+    outline: none;
+    border-color: var(--bo-green, #34d399);
+}
+.backoffice-body input::placeholder,
+.backoffice-body textarea::placeholder {
+    color: var(--bo-text-dim, #8892a4);
+    opacity: 1;
+}
+
 /* ── LOGIN ──────────────────────────────────────────────────── */
 .login-screen {
     display: flex;
