@@ -410,7 +410,9 @@
     "blockRichtext": "Free text",
     "blockSocialLinks": "Social links",
     "blockMap": "Map",
-    "blockDeleteTitle": "Delete this block"
+    "blockDeleteTitle": "Delete this block",
+    "overlapWarning": "Overlap detected! Two blocks cannot occupy the same cell.",
+    "validationOverlap": "Fix overlaps before saving"
   },
   "config": {
     "sectionTitle": "Languages",

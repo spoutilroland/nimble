@@ -410,7 +410,9 @@
     "blockRichtext": "Texte libre",
     "blockSocialLinks": "Réseaux sociaux",
     "blockMap": "Carte",
-    "blockDeleteTitle": "Supprimer ce bloc"
+    "blockDeleteTitle": "Supprimer ce bloc",
+    "overlapWarning": "Chevauchement détecté ! Deux blocs ne peuvent pas occuper la même case.",
+    "validationOverlap": "Corrigez les chevauchements avant de sauvegarder"
   },
   "config": {
     "sectionTitle": "Langues",

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useI18n } from '@/lib/i18n/context';
 import { useAdminStore } from '@/lib/admin/store';
 import { useFlashMessage } from '@/lib/hooks/useFlashMessage';
@@ -61,6 +61,18 @@ export function useFooterLogic() {
     return () => document.removeEventListener('click', close);
   }, []);
 
+  const checkOverlaps = useCallback((): boolean => {
+    const cells: Record<string, string> = {};
+    for (const b of blocks) {
+      for (let c = b.col; c < b.col + (b.colSpan || 1) && c <= cols; c++) {
+        const key = b.row + '-' + c;
+        if (cells[key]) return true;
+        cells[key] = b.blockId;
+      }
+    }
+    return false;
+  }, [blocks, cols]);
+
   const updateField = (field: FooterFormField, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
@@ -94,6 +106,10 @@ export function useFooterLogic() {
   };
 
   const save = async () => {
+    if (checkOverlaps()) {
+      show(t('footerSection.validationOverlap'), 'error');
+      return;
+    }
     setSaving(true);
     const d = formData;
     const ok = await saveSite({
@@ -135,6 +151,7 @@ export function useFooterLogic() {
     message,
     showDropdown,
     setShowDropdown,
+    hasOverlap: checkOverlaps(),
     addBlock,
     removeBlock,
     updateBlock,

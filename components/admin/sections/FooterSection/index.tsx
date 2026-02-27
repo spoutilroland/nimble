@@ -18,6 +18,7 @@ export function FooterSection() {
     message,
     showDropdown,
     setShowDropdown,
+    hasOverlap,
     addBlock,
     removeBlock,
     updateBlock,
@@ -43,7 +44,7 @@ export function FooterSection() {
         </div>
         <div className="flex items-center gap-[0.8rem]">
           {message && <div className={`form-message ${message.type}`}>{message.text}</div>}
-          <button className="btn btn-success" disabled={saving} onClick={save}>
+          <button className="btn btn-success" disabled={saving || hasOverlap} onClick={save}>
             {t('common.save')}
           </button>
         </div>
@@ -79,6 +80,11 @@ export function FooterSection() {
                   onRemove={() => removeBlock(block.blockId)}
                 />
               ))}
+              {hasOverlap && (
+                <div className="layout-overlap-warning">
+                  {t('footerSection.overlapWarning')}
+                </div>
+              )}
             </div>
           </div>
 
@@ -86,7 +92,7 @@ export function FooterSection() {
 
           <div className="flex justify-end items-center gap-[0.8rem] mt-4">
             {message && <div className={`form-message ${message.type}`}>{message.text}</div>}
-            <button className="btn btn-success" disabled={saving} onClick={save}>
+            <button className="btn btn-success" disabled={saving || hasOverlap} onClick={save}>
               {t('common.save')}
             </button>
           </div>
