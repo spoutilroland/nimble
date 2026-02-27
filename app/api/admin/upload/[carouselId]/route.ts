@@ -47,6 +47,9 @@ export const POST = withAuth(async (
       'media.json': path.join(dataDir, 'media.json'),
     });
 
+    // Créer le dossier uploads/media/ s'il n'existe pas encore (premier déploiement)
+    await fsp.mkdir(mediaDir, { recursive: true });
+
     const ext = MIME_TO_EXT[file.type] || '.jpg';
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     const filename = uniqueSuffix + ext;

@@ -3,9 +3,9 @@
 /* Variables locales dashboard — dérivées du thème actif via color-mix() */
 .backoffice-body {
     /* Variables fixes — indépendantes du thème site (mode sombre par défaut) */
-    --bo-bg:           #0b0d12;
-    --bo-surface:      #13161f;
-    --bo-card:         #1c2030;
+    --bo-bg:           #161922;
+    --bo-surface:      #1e2232;
+    --bo-card:         #252a3c;
     --bo-border:       rgba(255,255,255,0.08);
     --bo-border-hover: rgba(255,255,255,0.16);
     --bo-text:         #eceef5;
@@ -35,13 +35,13 @@
 
 /* Tous les <select> du backoffice : fond solide pour une bonne lisibilité */
 .backoffice-body select {
-    background: var(--bo-bg, #0b0d12);
+    background: var(--bo-bg, #161922);
     color: var(--bo-text, #eceef5);
     border: 1px solid var(--bo-border);
     border-radius: 6px;
 }
 .backoffice-body select option {
-    background: var(--bo-bg, #0b0d12);
+    background: var(--bo-bg, #161922);
     color: var(--bo-text, #eceef5);
 }
 
@@ -2629,19 +2629,19 @@ body.admin-mode #accueil [data-content-key]:hover {
 
 /* Mode clair backoffice */
 html:not([data-back-theme="dark"]) .is-backoffice {
-    --back-bg:           #cdd3e4;
-    --back-surface:      #dde2f0;
-    --back-border:       #b8c0d6;
+    --back-bg:           #e9eaec;
+    --back-surface:      #f4f5f6;
+    --back-border:       #c8cacd;
     --back-text:         #0f1117;
     --back-text-muted:   #4a5568;
     --back-primary:      #059669;
     --back-tab-active:   rgba(5,150,105,0.10);
     --back-side-active:  rgba(5,150,105,0.09);
     /* Réécrire --bo-* pour le mode clair */
-    --bo-bg:           #cdd3e4;
-    --bo-surface:      #dde2f0;
-    --bo-card:         #c4cade;
-    --bo-border:       #b8c0d6;
+    --bo-bg:           #e9eaec;
+    --bo-surface:      #f4f5f6;
+    --bo-card:         #dfe0e3;
+    --bo-border:       #c8cacd;
     --bo-border-hover: rgba(5,150,105,0.40);
     --bo-text:         #0f1117;
     --bo-text-dim:     #4a5568;
@@ -2750,7 +2750,7 @@ html:not([data-back-theme="dark"]) .is-backoffice {
 
 /* ── Mode clair : surcharger le fond backoffice ──────────────── */
 html:not([data-back-theme="dark"]) .backoffice-body {
-    background: #cdd3e4;
+    background: #e9eaec;
     background-image: none;
     color: #0f1117;
 }
