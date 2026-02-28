@@ -52,7 +52,7 @@ export function LayoutsSection() {
             key={layout.id}
             layout={layout}
             isEditing={editingLayout !== 'new' && editingLayout?.id === layout.id}
-            onEdit={() => setEditingLayout(editingLayout?.id === layout.id ? null : layout)}
+            onEdit={() => setEditingLayout(editingLayout !== 'new' && editingLayout?.id === layout.id ? null : layout)}
             onDelete={() => deleteLayout(layout.id)}
             onSaved={handleSaved}
             onCancel={() => setEditingLayout(null)}
