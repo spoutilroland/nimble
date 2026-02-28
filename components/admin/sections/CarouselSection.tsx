@@ -12,6 +12,7 @@ import { MediaPicker } from '../shared/MediaPicker';
 // ============================================================
 
 export function CarouselSection() {
+  const { t } = useI18n();
   const carousels = useAdminStore((s) => s.carousels);
   const carouselsLoading = useAdminStore((s) => s.carouselsLoading);
   const loadCarousels = useAdminStore((s) => s.loadCarousels);
@@ -37,7 +38,8 @@ export function CarouselSection() {
   }
 
   return (
-    <>
+    <div className="carousel-section carousel-list">
+      <h2>{t('nav.carousels')}</h2>
       {/* Un seul panneau par layout personnalisé */}
       {[...groups.entries()].map(([groupKey, entries]) => (
         <GroupedCarouselPanel
@@ -52,7 +54,7 @@ export function CarouselSection() {
       {standalone.map(([id, data]) => (
         <SingleCarousel key={id} carouselId={id} data={data} onReload={loadCarousels} />
       ))}
-    </>
+    </div>
   );
 }
 
@@ -90,15 +92,17 @@ function GroupedCarouselPanel({ groupLabel, entries, onReload }: GroupedCarousel
       </div>
 
       {!collapsed && (
-        <div className="grouped-carousel-slots">
-          {entries.map(([carouselId, data]) => (
-            <GroupedImageSlot
-              key={carouselId}
-              carouselId={carouselId}
-              data={data}
-              onReload={onReload}
-            />
-          ))}
+        <div className="carousel-images-bento">
+          <div className="grouped-carousel-slots">
+            {entries.map(([carouselId, data]) => (
+              <GroupedImageSlot
+                key={carouselId}
+                carouselId={carouselId}
+                data={data}
+                onReload={onReload}
+              />
+            ))}
+          </div>
         </div>
       )}
     </div>
@@ -146,7 +150,7 @@ function GroupedImageSlot({ carouselId, data, onReload }: GroupedImageSlotProps)
       <div className="grouped-slot-content">
         {images.map((img) => (
           <div key={img.filename} className="grouped-slot-thumb">
-            <img src={img.webpUrl || img.url} alt="" />
+            <img src={img.webpUrl || img.url} alt="" loading="lazy" decoding="async" />
             <button
               className="grouped-slot-delete"
               onClick={() => deleteImage(img.filename)}
@@ -324,7 +328,7 @@ function SingleCarousel({ carouselId, data, onReload }: SingleCarouselProps) {
       </div>
 
       {!collapsed && (
-        <div>
+        <div className="carousel-images-bento">
           {/* Grille d'images */}
           <div
             className="images-grid"

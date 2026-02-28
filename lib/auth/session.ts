@@ -9,7 +9,7 @@ export const sessionOptions: SessionOptions = {
     httpOnly: true,
     sameSite: 'strict' as const,
     secure: process.env.COOKIE_SECURE === 'true',
-    maxAge: 3600, // 1 heure
+    maxAge: 60 * 60 * 8, // 8 heures
   },
 };
 

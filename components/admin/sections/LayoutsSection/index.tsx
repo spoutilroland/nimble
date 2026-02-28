@@ -12,7 +12,6 @@ export function LayoutsSection() {
   const layouts = useAdminStore((s) => s.layouts);
   const loadLayouts = useAdminStore((s) => s.loadLayouts);
   const storeDeleteLayout = useAdminStore((s) => s.deleteLayout);
-  const [collapsed, setCollapsed] = useState(true);
   const [editingLayout, setEditingLayout] = useState<Layout | null | 'new'>(null);
   const { message, show } = useFlashMessage();
 
@@ -36,60 +35,82 @@ export function LayoutsSection() {
   return (
     <div className="carousel-section" id="layouts-section">
       <div className="carousel-section-header">
-        <div className="flex items-center gap-[0.8rem]">
-          <button
-            className="btn-collapse"
-            title={t('layouts.collapseTitle')}
-            onClick={() => setCollapsed(!collapsed)}
-          >
-            {collapsed ? '\u25B6' : '\u25BC'}
-          </button>
-          <div>
-            <h2>{t('layouts.sectionTitle')}</h2>
-            <div className="carousel-info">
-              {layouts.length} layout{layouts.length !== 1 ? 's' : ''} — {t('layouts.sectionInfo')}
-            </div>
-          </div>
+        <div>
+          <h2>{t('layouts.sectionTitle')}</h2>
+          <div className="carousel-info">{tp('layouts.blockCount', layouts.length)}</div>
         </div>
-        <button className="btn btn-success" onClick={() => { setCollapsed(false); setEditingLayout('new'); }}>
+        <button className="btn btn-success" onClick={() => setEditingLayout('new')}>
           {t('layouts.btnNew')}
         </button>
       </div>
 
-      {!collapsed && (
-        <div>
-          {layouts.length === 0 ? (
-            <p className="text-[var(--text-muted)] p-4">{t('layouts.empty')}</p>
-          ) : (
-            layouts.map(layout => (
-              <div key={layout.id} className="layout-card">
-                <div className="layout-card-info">
-                  <span className="layout-card-name">{layout.label}</span>
-                  <span className="layout-card-meta">
-                    {tp('layouts.blockCount', layout.blocks.length)} — {t('layouts.idPrefix')} {layout.id}
-                  </span>
-                </div>
-                <div className="layout-card-actions">
-                  <button className="btn btn-secondary btn-sm" onClick={() => setEditingLayout(layout)}>
-                    {t('layouts.btnEdit')}
-                  </button>
-                  <button className="btn btn-danger btn-sm" onClick={() => deleteLayout(layout.id)}>
-                    {t('layouts.btnDelete')}
-                  </button>
-                </div>
-              </div>
-            ))
-          )}
+      {layouts.length === 0 ? (
+        <p className="text-[var(--bo-text-dim)] p-4">{t('layouts.empty')}</p>
+      ) : (
+        layouts.map(layout => (
+          <LayoutCard
+            key={layout.id}
+            layout={layout}
+            isEditing={editingLayout !== 'new' && editingLayout?.id === layout.id}
+            onEdit={() => setEditingLayout(editingLayout?.id === layout.id ? null : layout)}
+            onDelete={() => deleteLayout(layout.id)}
+            onSaved={handleSaved}
+            onCancel={() => setEditingLayout(null)}
+          />
+        ))
+      )}
 
-          {editingLayout !== null && (
-            <LayoutEditor
-              existingLayout={editingLayout === 'new' ? null : editingLayout}
-              onCancel={() => setEditingLayout(null)}
-              onSaved={handleSaved}
-            />
-          )}
+      {editingLayout === 'new' && (
+        <LayoutEditor
+          existingLayout={null}
+          onCancel={() => setEditingLayout(null)}
+          onSaved={handleSaved}
+        />
+      )}
 
-          {message && <div className={`form-message ${message.type}`}>{message.text}</div>}
+      {message && <div className={`form-message ${message.type}`}>{message.text}</div>}
+    </div>
+  );
+}
+
+// ─── Carte individuelle d'un layout ───────────────────────────────────────────
+
+interface LayoutCardProps {
+  layout: Layout;
+  isEditing: boolean;
+  onEdit: () => void;
+  onDelete: () => void;
+  onSaved: () => void;
+  onCancel: () => void;
+}
+
+function LayoutCard({ layout, isEditing, onEdit, onDelete, onSaved, onCancel }: LayoutCardProps) {
+  const { t, tp } = useI18n();
+
+  return (
+    <div className="page-card">
+      <div className="page-card-header">
+        <div className="page-card-info">
+          <span className="page-card-title">{layout.label}</span>
+          <span className="page-card-slug">{layout.id} — {tp('layouts.blockCount', layout.blocks.length)}</span>
+        </div>
+        <div className="page-card-actions">
+          <button className="btn btn-secondary btn-sm" onClick={onEdit}>
+            {isEditing ? t('layouts.btnCancel') : t('layouts.btnEdit')}
+          </button>
+          <button className="btn btn-danger btn-sm" onClick={onDelete}>
+            {t('layouts.btnDelete')}
+          </button>
+        </div>
+      </div>
+
+      {isEditing && (
+        <div className="page-card-edit">
+          <LayoutEditor
+            existingLayout={layout}
+            onCancel={onCancel}
+            onSaved={onSaved}
+          />
         </div>
       )}
     </div>

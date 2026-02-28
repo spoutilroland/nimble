@@ -27,7 +27,13 @@ export function ImageCard({ image, onDelete, onDragStart, onDragEnd }: ImageCard
       onDragEnd={onDragEnd}
     >
       <div className="drag-handle" title={t('imageCard.dragHandle')}>⠿</div>
-      <img src={image.url} alt={image.filename} draggable={false} />
+      <img
+        src={image.webpUrl || image.url}
+        alt={image.filename}
+        draggable={false}
+        loading="lazy"
+        decoding="async"
+      />
       <div className="image-card-actions">
         <button className="btn btn-danger" onClick={onDelete}>
           {t('imageCard.deleteBtn')}

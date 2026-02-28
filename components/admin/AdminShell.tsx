@@ -108,19 +108,33 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
         </div>
       </header>
 
-      {/* Corps principal : sidebar verticale + zone de contenu */}
+      {/* Corps principal — Flex row : sidebar | colonne principale (tabs + sections) */}
       <div id="backoffice-body">
-        <div className="flex flex-1 overflow-hidden min-w-0" id={activeTab}>
+        <div className="bo-layout-grid" id={activeTab}>
           <nav className="side-nav">
+            {/* Label de l'onglet actif */}
+            <span className="side-nav-label">
+              {t(TABS.find((tab) => tab.id === activeTab)?.labelKey ?? '').replace(/\p{Emoji_Presentation}\s*/gu, '').trim()}
+            </span>
+            <div className="side-nav-sep" />
+            {/* Liens de navigation */}
             {sideNavItems.map((item) => (
               <a key={item.anchor} className="side-nav-link" href={`#${item.anchor}`}>
                 {t(item.labelKey)}
               </a>
             ))}
+            {/* Spacer pour pousser le pied en bas */}
+            <div className="side-nav-spacer" />
+            {/* Pied de sidebar */}
+            <div className="side-nav-footer">
+              <div className="side-nav-sep" />
+              <a href="/" target="_blank" rel="noopener noreferrer" className="side-nav-footer-link">
+                {t('admin.viewSite')}
+              </a>
+              <span className="side-nav-version">Nimble v2.0</span>
+            </div>
           </nav>
-          {/* Colonne droite : onglets + contenu scrollable */}
-          <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-            {/* Barre d'onglets horizontaux — commence après la side-nav */}
+          <div className="bo-main-col">
             <nav id="main-tabs">
               {TABS.map((tab) => (
                 <button
@@ -132,20 +146,15 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
                 </button>
               ))}
             </nav>
-            <div className="flex-1 overflow-y-auto px-6 pb-6 min-w-0 min-h-0" id={`container-${activeTab.replace('tab-', '')}`}>
+            <div className="bo-sections-container" id={`container-${activeTab.replace('tab-', '')}`}>
               {sections.map((s) => {
                 const Comp = s.component;
-                const content = (
-                  <>
-                    <div className="section-divider">
-                      <span className="section-divider-label">{t(s.labelKey)}</span>
-                    </div>
-                    <Comp />
-                  </>
-                );
-                // Chaque section a son id pour que les ancres de la sidebar fonctionnent
                 const sectionId = s.wrapper ?? s.anchor;
-                return <div id={sectionId} key={s.id}>{content}</div>;
+                return (
+                  <div id={sectionId} key={s.id} className="bo-section-slot">
+                    <Comp />
+                  </div>
+                );
               })}
             </div>
           </div>

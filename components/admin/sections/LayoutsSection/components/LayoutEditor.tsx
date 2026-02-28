@@ -95,7 +95,7 @@ export function LayoutEditor({ existingLayout, onCancel, onSaved }: LayoutEditor
       <LayoutPreview blocks={blocks} />
 
       {/* Actions */}
-      <div className="flex justify-between items-center mt-4">
+      <div style={{ borderTop: '1px solid var(--bo-border)', marginTop: '0.5rem', paddingTop: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <button className="btn btn-secondary" onClick={onCancel}>{t('layouts.btnCancel')}</button>
         <div className="flex items-center gap-[0.8rem]">
           {message && <span className={`form-message ${message.type}`}>{message.text}</span>}

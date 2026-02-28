@@ -352,7 +352,7 @@
     "saved": "Mot de passe mis à jour ✓"
   },
   "logo": {
-    "sectionTitle": "Logo",
+    "sectionTitle": "Logo & Favicon",
     "sectionInfo": "Affiché dans le header et le footer",
     "modeLabel": "Mode d'affichage",
     "modeLogoOnly": "Logo seul",

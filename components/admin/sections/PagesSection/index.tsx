@@ -40,10 +40,14 @@ export function PagesSection() {
       </div>
 
       {/* Redirection de la page d'accueil */}
-      <div className="p-4 mb-4 border border-[var(--bo-border)] rounded">
-        <h3 className="site-form-category mt-0 mb-3">{t('pages.redirectTitle')}</h3>
-        <div className="flex items-center gap-3">
-          <div className="form-group mb-0 flex-1">
+      <div className="page-card">
+        <div className="page-card-header">
+          <div className="page-card-info">
+            <span className="page-card-title">{t('pages.redirectTitle')}</span>
+          </div>
+        </div>
+        <div className="page-card-edit">
+          <div className="form-group mb-0">
             <label>{t('pages.redirectLabel')}</label>
             <select
               value={homepageRedirect}
@@ -55,8 +59,8 @@ export function PagesSection() {
               ))}
             </select>
           </div>
+          {redirectMessage && <div className={`form-message ${redirectMessage.type}`}>{redirectMessage.text}</div>}
         </div>
-        {redirectMessage && <div className={`form-message ${redirectMessage.type}`}>{redirectMessage.text}</div>}
       </div>
 
       <div>

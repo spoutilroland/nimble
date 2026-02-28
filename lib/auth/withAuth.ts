@@ -12,6 +12,8 @@ export function withAuth(handler: RouteHandler): RouteHandler {
     if (!session.isLoggedIn) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    // Rafraîchit le cookie à chaque requête pour éviter l'expiration en cours de session
+    await session.save();
     return handler(req, ctx);
   };
 }
