@@ -131,7 +131,7 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
               <a href="/" target="_blank" rel="noopener noreferrer" className="side-nav-footer-link">
                 {t('admin.viewSite')}
               </a>
-              <span className="side-nav-version">Nimble v2.0</span>
+              <span className="side-nav-version">Nimble v1</span>
             </div>
           </nav>
           <div className="bo-main-col">
