@@ -1,0 +1,42 @@
+{
+  "pages": [
+    {
+      "id": "home",
+      "slug": "/",
+      "title": "Accueil",
+      "showInNav": true,
+      "navOrder": 0,
+      "seo": {
+        "title": "",
+        "description": "",
+        "ogImage": null
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "carouselId": "hero"
+        },
+        {
+          "type": "about"
+        },
+        {
+          "type": "contact",
+          "dividerAfter": {
+            "type": "curve",
+            "color": "var(--primary)",
+            "flip": false
+          }
+        },
+        {
+          "type": "services",
+          "carouselId": "",
+          "dividerAfter": {
+            "type": "zigzag",
+            "color": "var(--primary)",
+            "flip": false
+          }
+        }
+      ]
+    }
+  ]
+}

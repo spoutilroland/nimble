@@ -20,6 +20,7 @@ interface TabDef {
 const TABS: TabDef[] = [
   { id: 'tab-design', labelKey: 'tabs.design' },
   { id: 'tab-content', labelKey: 'tabs.content' },
+  { id: 'tab-media', labelKey: 'tabs.media' },
   { id: 'tab-identity', labelKey: 'tabs.identity' },
   { id: 'tab-config', labelKey: 'tabs.config' },
   { id: 'tab-security', labelKey: 'tabs.security' },

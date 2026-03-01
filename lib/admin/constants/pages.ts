@@ -1,19 +1,21 @@
 export interface SectionTypeDef {
   type: string;
   needsCarousel: boolean;
+  maxImages?: number;
+  imageHint?: string;
   isCustomLayout?: boolean;
 }
 
 export const SECTION_TYPES: SectionTypeDef[] = [
-  { type: 'hero', needsCarousel: true },
-  { type: 'hero-simple', needsCarousel: true },
+  { type: 'hero', needsCarousel: true, imageHint: 'WebP · 1920 × 1080 px (16:9)' },
+  { type: 'hero-simple', needsCarousel: true, maxImages: 1, imageHint: 'WebP · 1920 × 1080 px (16:9)' },
   { type: 'about', needsCarousel: false },
   { type: 'services', needsCarousel: false },
-  { type: 'gallery', needsCarousel: true },
+  { type: 'gallery', needsCarousel: true, imageHint: 'WebP · 800 × 600 px (4:3)' },
   { type: 'contact', needsCarousel: false },
-  { type: 'bento-grid', needsCarousel: true },
-  { type: 'cinematic-split', needsCarousel: true },
-  { type: 'polaroids', needsCarousel: true },
+  { type: 'bento-grid', needsCarousel: true, maxImages: 3, imageHint: 'WebP · 900 × 700 / 600 × 350 px' },
+  { type: 'cinematic-split', needsCarousel: true, maxImages: 3, imageHint: 'WebP · 900 × 550 px (16:9)' },
+  { type: 'polaroids', needsCarousel: true, imageHint: 'WebP · 600 × 480 px (5:4)' },
   { type: 'stats', needsCarousel: false },
   { type: 'custom-layout', needsCarousel: true, isCustomLayout: true },
 ];

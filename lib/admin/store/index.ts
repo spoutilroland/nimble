@@ -5,8 +5,9 @@ import { createSiteSlice, type SiteSlice } from './slices/site';
 import { createPagesSlice, type PagesSlice } from './slices/pages';
 import { createCarouselsSlice, type CarouselsSlice } from './slices/carousels';
 import { createLayoutsSlice, type LayoutsSlice } from './slices/layouts';
+import { createMediaSlice, type MediaSlice } from './slices/media';
 
-export type AdminStore = UISlice & ThemeSlice & SiteSlice & PagesSlice & CarouselsSlice & LayoutsSlice;
+export type AdminStore = UISlice & ThemeSlice & SiteSlice & PagesSlice & CarouselsSlice & LayoutsSlice & MediaSlice;
 
 export const useAdminStore = create<AdminStore>()((...a) => ({
   ...createUISlice(...a),
@@ -15,8 +16,10 @@ export const useAdminStore = create<AdminStore>()((...a) => ({
   ...createPagesSlice(...a),
   ...createCarouselsSlice(...a),
   ...createLayoutsSlice(...a),
+  ...createMediaSlice(...a),
 }));
 
 // Re-exports pour import direct
 export type { TabId, FlashMessage } from './slices/ui';
 export type { CarouselsMap, CarouselApiEntry, CarouselImageData } from './slices/carousels';
+export type { MediaSlice } from './slices/media';

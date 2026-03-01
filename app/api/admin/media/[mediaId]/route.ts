@@ -13,6 +13,47 @@ import { pushUndo } from '@/lib/undoManager';
 const mediaDir = path.join(process.cwd(), 'uploads', 'media');
 const dataDir = path.join(process.cwd(), 'data');
 
+// Champs éditables par le client
+const EDITABLE_FIELDS = ['altText', 'title', 'tags'] as const;
+
+export const PATCH = withAuth(async (
+  req: NextRequest,
+  ctx?: { params: Promise<Record<string, string>> }
+) => {
+  const { mediaId } = await ctx!.params;
+  const mediaData = readMediaRegistry();
+  const entry = mediaData.media[mediaId];
+
+  if (!entry) {
+    return NextResponse.json({ error: 'Media introuvable' }, { status: 404 });
+  }
+
+  try {
+    const body = await req.json();
+
+    pushUndo('Modification media', {
+      'media.json': path.join(dataDir, 'media.json'),
+    });
+
+    for (const field of EDITABLE_FIELDS) {
+      if (field in body) {
+        if (field === 'tags') {
+          entry.tags = Array.isArray(body.tags)
+            ? body.tags.filter((t: unknown) => typeof t === 'string')
+            : [];
+        } else {
+          (entry as Record<string, unknown>)[field] = typeof body[field] === 'string' ? body[field] : '';
+        }
+      }
+    }
+
+    await writeMediaRegistry(mediaData);
+    return NextResponse.json({ success: true, entry });
+  } catch {
+    return NextResponse.json({ error: 'Mise à jour échouée' }, { status: 500 });
+  }
+});
+
 export const DELETE = withAuth(async (
   _req: NextRequest,
   ctx?: { params: Promise<Record<string, string>> }

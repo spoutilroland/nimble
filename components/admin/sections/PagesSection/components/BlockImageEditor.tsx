@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useI18n } from '@/lib/i18n/context';
+import { MediaSourcePicker } from '@/components/admin/shared/MediaSourcePicker';
 
 interface BlockImageEditorProps {
   carouselId: string;
@@ -12,9 +13,9 @@ export function BlockImageEditor({ carouselId, label }: BlockImageEditorProps) {
   const { t } = useI18n();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
-  useEffect(() => {
+  const loadImage = () => {
     if (!carouselId) return;
     fetch(`/api/carousel/${carouselId}/images`)
       .then(r => r.json())
@@ -23,6 +24,10 @@ export function BlockImageEditor({ carouselId, label }: BlockImageEditorProps) {
         if (images.length > 0) setImageUrl(images[0].url);
       })
       .catch(() => {});
+  };
+
+  useEffect(() => {
+    loadImage();
   }, [carouselId]);
 
   const handleUpload = async (file: File) => {
@@ -44,7 +49,7 @@ export function BlockImageEditor({ carouselId, label }: BlockImageEditorProps) {
       <span className="block-image-label">{label}</span>
       <div
         className={`block-image-zone${imageUrl ? ' has-image' : ''}`}
-        onClick={() => inputRef.current?.click()}
+        onClick={() => setPickerOpen(true)}
         title={t('blockImage.clickToChange')}
       >
         {imageUrl ? (
@@ -55,16 +60,16 @@ export function BlockImageEditor({ carouselId, label }: BlockImageEditorProps) {
           </span>
         )}
       </div>
-      <input
-        ref={inputRef}
-        type="file"
-        accept="image/jpeg,image/jpg,image/png,image/webp"
-        style={{ display: 'none' }}
-        onChange={(e) => {
-          const file = e.target.files?.[0];
+      <MediaSourcePicker
+        carouselId={carouselId}
+        isOpen={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onFileUpload={(files) => {
+          const file = files[0];
           if (file) handleUpload(file);
-          e.target.value = '';
         }}
+        onSuccess={() => loadImage()}
+        maxSelection={1}
       />
     </div>
   );

@@ -23,10 +23,10 @@ import { CaptchaSection } from '@/components/admin/sections/CaptchaSection';
 import { ConfigSection } from '@/components/admin/sections/ConfigSection';
 import { SnapshotsSection } from '@/components/admin/sections/SnapshotsSection/index';
 import { FooterSection } from '@/components/admin/sections/FooterSection/index';
-import { CarouselSection } from '@/components/admin/sections/CarouselSection';
 import { PagesSection } from '@/components/admin/sections/PagesSection/index';
 import { LayoutsSection } from '@/components/admin/sections/LayoutsSection/index';
 import { ExportSection } from '@/components/admin/sections/ExportSection/index';
+import { MediaLibrarySection } from '@/components/admin/sections/MediaLibrarySection/index';
 
 const SECTION_REGISTRY: SectionDescriptor[] = [
   // tab-design
@@ -36,8 +36,10 @@ const SECTION_REGISTRY: SectionDescriptor[] = [
 
   // tab-content
   { id: 'pages', tab: 'tab-content', order: 0, anchor: 'pages-section', labelKey: 'nav.pages', component: PagesSection },
-  { id: 'carousels', tab: 'tab-content', order: 1, anchor: 'carousels-top', labelKey: 'nav.carousels', component: CarouselSection, wrapper: 'carousels-top' },
-  { id: 'layouts', tab: 'tab-content', order: 2, anchor: 'layouts-section', labelKey: 'nav.layouts', component: LayoutsSection },
+  { id: 'layouts', tab: 'tab-content', order: 1, anchor: 'layouts-section', labelKey: 'nav.layouts', component: LayoutsSection },
+
+  // tab-media
+  { id: 'media-library', tab: 'tab-media', order: 0, anchor: 'media-library-section', labelKey: 'nav.media', component: MediaLibrarySection },
 
   // tab-identity
   { id: 'site', tab: 'tab-identity', order: 0, anchor: 'site-section', labelKey: 'nav.identity', component: SiteSection },

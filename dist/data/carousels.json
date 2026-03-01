@@ -1,0 +1,10 @@
+{
+  "carousels": {
+    "hero": {
+      "id": "hero",
+      "title": "Accueil — Hero",
+      "maxImages": 5,
+      "images": []
+    }
+  }
+}

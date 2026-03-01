@@ -9,16 +9,14 @@
     "title": "Administration",
     "toggleTheme": "Toggle light / dark",
     "viewSite": "View site",
-    "logout": "Logout",
-    "footerContribute": "Want to contribute?"
+    "logout": "Logout"
   },
   "tabs": {
     "design": "🎨 Design",
     "content": "📄 Content",
     "identity": "🏢 Identity",
     "config": "🌐 Configuration",
-    "security": "⚙️ Security",
-    "media": "🖼 Media Library"
+    "security": "⚙️ Security"
   },
   "nav": {
     "themes": "Themes",
@@ -33,8 +31,7 @@
     "password": "Password",
     "captcha": "Captcha",
     "snapshots": "Snapshots",
-    "export": "Export",
-    "media": "Media Library"
+    "export": "Export"
   },
   "footer": {
     "contact": "Contact",
@@ -105,20 +102,6 @@
     "deletePartial": "{success} deleted, {errors} error{e}",
     "loadError": "Unable to load existing images."
   },
-  "mediaSourcePicker": {
-    "title": "Add an image",
-    "fromPc": "From my computer",
-    "fromPcSub": "Upload a file from your device",
-    "fromLibrary": "From the media library",
-    "fromLibrarySub": "Choose from existing images",
-    "libraryTitle": "Media Library",
-    "noMedia": "No media available.",
-    "confirmAdd": "Add",
-    "adding": "Adding…",
-    "selected_one": "1 selected",
-    "selected_other": "{n} selected",
-    "searchPlaceholder": "Search by name…"
-  },
   "mediaPicker": {
     "title": "Choose an existing image",
     "searchPlaceholder": "Filter by name or section…",
@@ -169,11 +152,7 @@
     "slugExists": "This slug already exists",
     "confirmDelete": "Permanently delete this page?",
     "saved": "Saved ✓",
-    "saveError": "Error saving",
-    "redirectTitle": "Homepage redirect",
-    "redirectLabel": "Redirect / to",
-    "redirectNone": "— No redirect (normal homepage)",
-    "redirectSaved": "Redirect saved ✓"
+    "saveError": "Error saving"
   },
   "sectionType": {
     "hero": "Full-screen hero",
@@ -187,25 +166,6 @@
     "polaroids": "Polaroids",
     "stats": "Statistics",
     "custom-layout": "Custom layout"
-  },
-  "blockImage": {
-    "upload": "+ Add an image",
-    "uploading": "Uploading...",
-    "clickToChange": "Click to change image"
-  },
-  "sectionProps": {
-    "configTitle": "Configuration",
-    "statsCountPlaceholder": "Number",
-    "statsLabelPlaceholder": "Label",
-    "statsAddItem": "+ Add statistic",
-    "polaroidTagPlaceholder": "Section tag (e.g.: Exterior & Landscape)",
-    "polaroidTitlePlaceholder": "Section title",
-    "polaroidItemTitle": "Card title",
-    "polaroidItemTag": "Tag",
-    "polaroidAddItem": "+ Add polaroid",
-    "tagColor_bois": "Wood",
-    "tagColor_green": "Green",
-    "tagColor_slate": "Slate"
   },
   "divider": {
     "none": "None",
@@ -369,7 +329,7 @@
     "saved": "Password updated ✓"
   },
   "logo": {
-    "sectionTitle": "Logo & Favicon",
+    "sectionTitle": "Logo",
     "sectionInfo": "Displayed in the header and footer",
     "modeLabel": "Display mode",
     "modeLogoOnly": "Logo only",
@@ -450,9 +410,7 @@
     "blockRichtext": "Free text",
     "blockSocialLinks": "Social links",
     "blockMap": "Map",
-    "blockDeleteTitle": "Delete this block",
-    "overlapWarning": "Overlap detected! Two blocks cannot occupy the same cell.",
-    "validationOverlap": "Fix overlaps before saving"
+    "blockDeleteTitle": "Delete this block"
   },
   "config": {
     "sectionTitle": "Languages",
@@ -510,67 +468,6 @@
     "success": "Export generated successfully",
     "error": "Error generating export",
     "contactWarning": "The contact form will not work in the static export."
-  },
-  "mediaLibrary": {
-    "sectionTitle": "Media Library",
-    "sectionInfo": "All media uploaded on the site",
-    "count_one": "1 media",
-    "count_other": "{n} media",
-    "empty": "No media yet. Import images to get started.",
-    "loading": "Loading...",
-    "btnImport": "Import images",
-    "dropzoneLabel": "Drag images here or click to import",
-    "dropzoneHint": "JPG, PNG, WebP, SVG · max 5 MB",
-    "dragOverlay": "Drop files here",
-    "filterAll": "All",
-    "filterUsed": "Used",
-    "filterOrphan": "Orphans",
-    "filterJpg": "JPG",
-    "filterPng": "PNG",
-    "filterWebp": "WebP",
-    "filterSvg": "SVG",
-    "filterDimAll": "All dimensions",
-    "sortNewest": "Newest",
-    "sortOldest": "Oldest",
-    "sortLargest": "Largest",
-    "sortSmallest": "Smallest",
-    "selected_one": "1 selected",
-    "selected_other": "{n} selected",
-    "btnDeselect": "Deselect",
-    "btnDeleteSelected": "Delete",
-    "panelTitle": "Media details",
-    "panelAltLabel": "Alt text",
-    "panelAltPlaceholder": "Image description",
-    "panelTitleLabel": "Title",
-    "panelTitlePlaceholder": "Media title",
-    "panelTagsLabel": "Tags",
-    "panelTagsPlaceholder": "Add a tag...",
-    "panelInfoFilename": "File",
-    "panelInfoSize": "Size",
-    "panelInfoDimensions": "Dimensions",
-    "panelInfoUploaded": "Uploaded on",
-    "panelInfoUsedIn": "Used in",
-    "panelNotUsed": "Not used",
-    "panelBtnCopyUrl": "Copy URL",
-    "panelUrlCopied": "URL copied!",
-    "panelBtnDelete": "Delete this media",
-    "panelBtnSave": "Save",
-    "panelSaved": "Media updated ✓",
-    "panelSaveError": "Error saving",
-    "confirmDelete": "Delete this media?",
-    "confirmDeleteUsed": "This media is used in {n} carousel(s). Delete anyway?",
-    "confirmBulkDelete": "Delete {n} media?",
-    "confirmBulkDeleteUsed": "Some media are used in carousels. Delete anyway?",
-    "deleted": "Media deleted ✓",
-    "bulkDeleted": "{n} media deleted ✓",
-    "deleteError": "Error deleting",
-    "uploadSuccess_one": "1 image imported ✓",
-    "uploadSuccess_other": "{n} images imported ✓",
-    "uploadError": "Error importing"
-  },
-  "inlineCarousel": {
-    "deleteConfirm": "Delete this image?",
-    "recommended": "Recommended:"
   },
   "common": {
     "save": "Save",
