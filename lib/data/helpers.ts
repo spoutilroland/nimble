@@ -4,14 +4,15 @@ import sharp from 'sharp';
 
 const uploadsDir = path.join(process.cwd(), 'uploads');
 
-export function getLogoUrl(): string | null {
+export function getLogoUrl(): string {
   try {
     const logoDir = path.join(uploadsDir, 'logo');
-    const files = fs.readdirSync(logoDir).filter((f) => /\.(jpg|jpeg|png|webp)$/i.test(f));
-    return files.length > 0 ? `/uploads/logo/${files[0]}` : null;
+    const files = fs.readdirSync(logoDir).filter((f) => /\.(jpg|jpeg|png|webp|svg)$/i.test(f));
+    if (files.length > 0) return `/uploads/logo/${files[0]}`;
   } catch {
-    return null;
+    // pas de dossier uploads/logo — on utilise le logo par défaut
   }
+  return '/brand/logo.svg';
 }
 
 export function getFaviconUrl(): string | null {
@@ -79,5 +80,5 @@ export const MIME_TO_EXT: Record<string, string> = {
   'image/svg+xml': '.svg',
 };
 
-export const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+export const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml'];
 export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB

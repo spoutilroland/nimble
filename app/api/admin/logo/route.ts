@@ -28,7 +28,7 @@ export const POST = withAuth(async (req: NextRequest) => {
     try {
       const files = await fsp.readdir(logoDir);
       for (const f of files) {
-        if (f !== filename && /\.(jpg|jpeg|png|webp)$/i.test(f)) {
+        if (f !== filename && /\.(jpg|jpeg|png|webp|svg)$/i.test(f)) {
           await fsp.unlink(path.join(logoDir, f)).catch(() => {});
         }
       }
@@ -36,7 +36,10 @@ export const POST = withAuth(async (req: NextRequest) => {
 
     const filePath = path.join(logoDir, filename);
     await fsp.writeFile(filePath, buffer);
-    processImageWithSharp(filePath).catch(() => {});
+    // Sharp ne gère pas le SVG — on skip l'optimisation
+    if (file.type !== 'image/svg+xml') {
+      processImageWithSharp(filePath).catch(() => {});
+    }
 
     return NextResponse.json({ success: true, url: `/uploads/logo/${filename}` });
   } catch {
@@ -48,7 +51,7 @@ export const DELETE = withAuth(async () => {
   try {
     const files = await fsp.readdir(logoDir);
     for (const f of files) {
-      if (/\.(jpg|jpeg|png|webp)$/i.test(f)) {
+      if (/\.(jpg|jpeg|png|webp|svg)$/i.test(f)) {
         await fsp.unlink(path.join(logoDir, f));
       }
     }

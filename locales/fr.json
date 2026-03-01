@@ -9,7 +9,8 @@
     "title": "Administration",
     "toggleTheme": "Basculer clair / sombre",
     "viewSite": "Voir le site",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "footerContribute": "Envie de contribuer ?"
   },
   "tabs": {
     "design": "🎨 Design",

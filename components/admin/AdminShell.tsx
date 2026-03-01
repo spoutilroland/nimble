@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { Github } from 'lucide-react';
 import { I18nProvider, useI18n } from '@/lib/i18n/context';
 import { useAdminStore, type TabId } from '@/lib/admin/store';
 import { getSectionsForTab, getSideNavForTab } from '@/lib/admin/registry';
@@ -108,9 +109,24 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
         </div>
       </header>
 
-      {/* Corps principal — Flex row : sidebar | colonne principale (tabs + sections) */}
+      {/* Corps principal — CSS Grid 2 colonnes × 2 lignes : vide | tabs / sidebar | sections */}
       <div id="backoffice-body">
         <div className="bo-layout-grid" id={activeTab}>
+          {/* Logo — cellule vide (col 1, row 1) */}
+          <div className="bo-logo-cell">
+            <img src="/brand/logo.svg" alt="Nimble" className="bo-logo-img" />
+          </div>
+          <nav id="main-tabs">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                className={`main-tab${activeTab === tab.id ? ' active' : ''}`}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                {t(tab.labelKey)}
+              </button>
+            ))}
+          </nav>
           <nav className="side-nav">
             {/* Label de l'onglet actif */}
             <span className="side-nav-label">
@@ -131,35 +147,48 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
               <a href="/" target="_blank" rel="noopener noreferrer" className="side-nav-footer-link">
                 {t('admin.viewSite')}
               </a>
-              <span className="side-nav-version">Nimble v1</span>
             </div>
           </nav>
-          <div className="bo-main-col">
-            <nav id="main-tabs">
-              {TABS.map((tab) => (
-                <button
-                  key={tab.id}
-                  className={`main-tab${activeTab === tab.id ? ' active' : ''}`}
-                  onClick={() => setActiveTab(tab.id)}
-                >
-                  {t(tab.labelKey)}
-                </button>
-              ))}
-            </nav>
-            <div className="bo-sections-container" id={`container-${activeTab.replace('tab-', '')}`}>
-              {sections.map((s) => {
-                const Comp = s.component;
-                const sectionId = s.wrapper ?? s.anchor;
-                return (
-                  <div id={sectionId} key={s.id} className="bo-section-slot">
-                    <Comp />
-                  </div>
-                );
-              })}
-            </div>
+          <div className="bo-sections-container" id={`container-${activeTab.replace('tab-', '')}`}>
+            {sections.map((s) => {
+              const Comp = s.component;
+              const sectionId = s.wrapper ?? s.anchor;
+              return (
+                <div id={sectionId} key={s.id} className="bo-section-slot">
+                  <Comp />
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
+
+      <footer className="admin-footer">
+        <div className="admin-footer-inner">
+          <div className="admin-footer-left">
+            <img src="/brand/head-logo.svg" alt="" className="admin-footer-bird" aria-hidden="true" />
+            <span className="admin-footer-brand">Nimble</span>
+            <span className="admin-footer-version">v1</span>
+            <span className="admin-footer-sep">·</span>
+            <span>Licence MIT</span>
+            <span className="admin-footer-sep">·</span>
+            <span>© {new Date().getFullYear()}</span>
+          </div>
+          <div className="admin-footer-contribute">
+            <span>{t('admin.footerContribute')}</span>
+            <a
+              href="https://github.com/spoutilroland/nimble"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="admin-footer-contribute-link"
+            >
+              <Github size={13} />
+              spoutilroland/nimble
+            </a>
+          </div>
+          <span className="admin-footer-tagline">CMS léger — zéro base de données</span>
+        </div>
+      </footer>
     </div>
   );
 }

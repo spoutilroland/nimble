@@ -11,6 +11,13 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: site.seo.defaultTitle || site.business.name,
     description: site.seo.defaultDescription || '',
+    icons: {
+      icon: [
+        { url: '/icon.png', sizes: '32x32', type: 'image/png' },
+        { url: '/favicon.ico', sizes: '48x48' },
+      ],
+      apple: { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+    },
     openGraph: {
       title: site.seo.defaultTitle || site.business.name,
       description: site.seo.defaultDescription || '',
@@ -30,7 +37,7 @@ export default async function SiteLayout({
   const borderStyle = site.design?.borderStyle || 'angular';
 
   return (
-    <html lang={lang} data-border={borderStyle} data-lang={lang} data-theme={theme}>
+    <html lang={lang} data-border={borderStyle} data-lang={lang} data-theme={theme} suppressHydrationWarning>
       <head>
         {site.fonts.googleFontsUrl && (
           <link href={site.fonts.googleFontsUrl} rel="stylesheet" />

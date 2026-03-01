@@ -9,7 +9,8 @@
     "title": "Administration",
     "toggleTheme": "Toggle light / dark",
     "viewSite": "View site",
-    "logout": "Logout"
+    "logout": "Logout",
+    "footerContribute": "Want to contribute?"
   },
   "tabs": {
     "design": "🎨 Design",

@@ -122,6 +122,15 @@ body {
 }
 
 
+.logo { flex-shrink: 0; }
+
+img.logo-img {
+    height: 60px;
+    width: auto;
+    max-width: 220px;
+    object-fit: contain;
+}
+
 .logo-name {
     font-family: 'Oswald', sans-serif;
     color: var(--primary-dark);
@@ -140,6 +149,7 @@ body {
     margin-top: 0.3rem;
     letter-spacing: 3px;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .nav { display: flex; gap: 2.5rem; }
@@ -211,8 +221,9 @@ body {
     top: calc(100% + 10px);
     right: 0;
     min-width: 160px;
-    background: var(--secondary);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: var(--bg-light);
+    border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
+    box-shadow: 0 4px 15px color-mix(in srgb, var(--primary) 12%, transparent);
     z-index: 200;
     flex-direction: column;
 }
@@ -228,7 +239,7 @@ body {
 }
 
 .nav-dropdown-item:hover,
-.nav-dropdown-item.active { background: rgba(255,255,255,0.07); color: var(--primary); }
+.nav-dropdown-item.active { background: color-mix(in srgb, var(--primary) 8%, transparent); color: var(--primary); }
 
 /* ── Positions du logo (desktop) ─────────────────────────── */
 
@@ -241,23 +252,12 @@ body {
     .logo-pos-right .nav-burger { order: 3; }
 }
 
-/* Logo au centre : nav divisée en 2 */
-@media (min-width: 769px) {
-    .logo-pos-center { justify-content: center; }
-    .logo-pos-center .logo { order: 2; flex: 0 0 auto; }
-    .logo-pos-center .nav-center-left {
-        order: 1;
-        flex: 1;
-        justify-content: flex-end;
-    }
-    .logo-pos-center #main-nav {
-        order: 3;
-        flex: 1;
-        justify-content: flex-start;
-    }
-    /* Masquer les liens gauche dupliqués dans #main-nav sur desktop */
-    .logo-pos-center #main-nav .nav-link-left { display: none; }
-    .logo-pos-center .nav-burger { order: 4; }
+/* ── Mode centré : un seul bloc logo+nav centré dans le header ── */
+.nav-center-layout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
 }
 
 /* ── Responsive mobile ────────────────────────────────────── */
@@ -277,16 +277,12 @@ body {
     /* Réinitialiser les ordres pour le mobile */
     .logo-pos-right .logo,
     .logo-pos-right #main-nav,
-    .logo-pos-right .nav-burger,
-    .logo-pos-center .logo,
-    .logo-pos-center #main-nav,
-    .logo-pos-center .nav-burger { order: unset; }
+    .logo-pos-right .nav-burger { order: unset; }
 
-    /* Masquer la nav gauche desktop en mobile */
-    .nav-center-left { display: none !important; }
-
-    /* Tous les liens gauche redeviennent visibles dans le burger */
-    .logo-pos-center #main-nav .nav-link-left { display: block; }
+    /* Mode centré sur mobile : logo à gauche, burger à droite */
+    .nav-center-layout {
+        justify-content: space-between;
+    }
 
     .nav {
         display: none;
@@ -296,7 +292,7 @@ body {
         right: 0;
         flex-direction: column;
         gap: 0;
-        background: var(--secondary);
+        background: var(--bg-light);
         border-top: 2px solid var(--primary);
         z-index: 100;
         padding: 0.5rem 0;
@@ -306,7 +302,7 @@ body {
 
     .nav .nav-link {
         padding: 0.9rem 1.5rem;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
+        border-bottom: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
     }
 
     .nav .nav-link::after { display: none; }
@@ -315,8 +311,8 @@ body {
     .nav-dropdown-menu {
         position: static;
         border: none;
-        border-top: 1px solid rgba(255,255,255,0.05);
-        background: rgba(0,0,0,0.2);
+        border-top: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+        background: color-mix(in srgb, var(--primary) 5%, transparent);
     }
     .nav-dropdown-menu.dropdown-open { display: flex; }
     .nav-dropdown-item { padding-left: 2rem; }

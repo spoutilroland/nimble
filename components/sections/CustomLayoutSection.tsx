@@ -84,7 +84,13 @@ export function CustomLayoutSection({ section, layout }: Props) {
     >
       <div className="container">
         <div className="custom-layout-grid">
-          {layout.blocks.map((block) => {
+          {/* Tri par col puis row : l'ordre DOM est ainsi cohérent en mobile (une personne = nom → image → texte) */}
+          {[...layout.blocks].sort((a, b) => {
+            const colA = a.col || 1;
+            const colB = b.col || 1;
+            if (colA !== colB) return colA - colB;
+            return (a.row || 1) - (b.row || 1);
+          }).map((block) => {
             const contentKey = `layout-${section.layoutId}-${block.blockId}`;
             const bcId = section.blockCarousels?.[block.blockId];
             const gridStyle = `grid-row:${block.row || 1}; grid-column:${block.col || 1} / span ${block.colSpan || 1}`;

@@ -55,7 +55,7 @@ export function LogoSection() {
 
         <MediaUploader
           url={logoUrl}
-          accept="image/jpeg,image/jpg,image/png,image/webp"
+          accept="image/jpeg,image/jpg,image/png,image/webp,image/svg+xml,.svg"
           imgAltKey="logo.imgAlt"
           noMediaKey="logo.noLogo"
           uploadLabelKey="logo.btnUpload"

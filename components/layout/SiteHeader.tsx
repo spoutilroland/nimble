@@ -11,16 +11,17 @@ interface Props {
 }
 
 const MAX_NAV = 5;
+// Seuil à partir duquel le mode centré s'active (logo centré + liens à droite)
+const SPLIT_AT = 5;
+// Nombre de liens visibles directement en mode centré (le reste va dans le burger)
+const SPLIT_VISIBLE = 2;
 
-function NavLink({ page, currentPath, extraClass }: { page: PageData; currentPath: string; extraClass?: string }) {
+function NavLink({ page, currentPath }: { page: PageData; currentPath: string }) {
   const isActive =
     (page.slug === '/' && currentPath === '/') ||
     (page.slug !== '/' && currentPath === page.slug);
   return (
-    <a
-      href={page.slug}
-      className={`nav-link${extraClass ? ' ' + extraClass : ''}${isActive ? ' active' : ''}`}
-    >
+    <a href={page.slug} className={`nav-link${isActive ? ' active' : ''}`}>
       {page.title}
     </a>
   );
@@ -31,81 +32,68 @@ export function SiteHeader({ site, pages, currentPath, logoUrl }: Props) {
   const logoPos = site.logoPosition || 'left';
 
   const navPages = pages.filter((p) => p.showInNav).sort((a, b) => a.navOrder - b.navOrder);
-  const visiblePages = navPages.slice(0, MAX_NAV);
-  const overflowPages = navPages.slice(MAX_NAV);
 
   const homePage = pages.find((p) => p.slug === '/');
   const hasContact = homePage?.sections.some((s) => s.type === 'contact') ?? false;
+  const contactLink = hasContact ? (
+    <a href={currentPath === '/' ? '#contact' : '/#contact'} className="nav-link">
+      Contact
+    </a>
+  ) : null;
 
-  // Mode center : split en deux moitiés si > 3 liens
-  const totalLinks = visiblePages.length + overflowPages.length + (hasContact ? 1 : 0);
-  const shouldSplit = logoPos === 'center' && totalLinks > 3;
-  const half = shouldSplit ? Math.ceil(visiblePages.length / 2) : 0;
-  const leftPages = shouldSplit ? visiblePages.slice(0, half) : [];
-  const rightPages = shouldSplit ? visiblePages.slice(half) : visiblePages;
+  const totalLinks = navPages.length + (hasContact ? 1 : 0);
+  // En mode centré, on réduit à SPLIT_VISIBLE liens visibles dès SPLIT_AT liens
+  const limitLinks = logoPos === 'center' && totalLinks >= SPLIT_AT;
+  const visibleLinks = limitLinks ? navPages.slice(0, SPLIT_VISIBLE) : navPages.slice(0, MAX_NAV);
+  const overflowLinks = limitLinks ? navPages.slice(SPLIT_VISIBLE) : navPages.slice(MAX_NAV);
+
+  // Logo JSX — partagé entre les deux modes
+  const logoJsx = (
+    <div className="logo">
+      <a href="/" className="flex items-center gap-5 no-underline">
+        {logoUrl && (logoMode === 'logo-only' || logoMode === 'logo-name') && (
+          <img src={logoUrl} alt={site.business.name} className="logo-img" />
+        )}
+        {(logoMode === 'name-only' || logoMode === 'logo-name' || !logoUrl) && (
+          <div className="flex flex-col">
+            <span className="logo-name">{site.business.name}</span>
+            <span className="logo-tagline">{site.business.tagline}</span>
+          </div>
+        )}
+      </a>
+    </div>
+  );
 
   return (
     <header className="header">
       <div className="container">
-        <div className={`flex justify-between items-center gap-6 flex-nowrap logo-pos-${logoPos}`}>
-          {/* Nav gauche (desktop center, uniquement si > 3 liens) */}
-          {leftPages.length > 0 && (
-            <nav className="nav nav-center-left" aria-hidden="true">
-              {leftPages.map((p) => (
+        {logoPos === 'center' ? (
+          /* ── Mode centré : un seul bloc logo+nav, centré dans le header ── */
+          <div className="nav-center-layout">
+            {logoJsx}
+            <nav className="nav" id="main-nav">
+              {visibleLinks.map((p) => (
                 <NavLink key={p.id} page={p} currentPath={currentPath} />
               ))}
+              <NavDropdown pages={overflowLinks} currentPath={currentPath} />
+              {contactLink}
             </nav>
-          )}
-
-          {/* Logo */}
-          <div className="logo">
-            <a href="/" className="flex items-center gap-3 no-underline">
-              {logoUrl && (logoMode === 'logo-only' || logoMode === 'logo-name') && (
-                <img src={logoUrl} alt={site.business.name} className="logo-img" />
-              )}
-              {(logoMode === 'name-only' || logoMode === 'logo-name' || !logoUrl) && (
-                <div className="flex flex-col">
-                  <span className="logo-name">{site.business.name}</span>
-                  <span className="logo-tagline">{site.business.tagline}</span>
-                </div>
-              )}
-            </a>
+            <NavBurger />
           </div>
-
-          {/* Burger (mobile) */}
-          <NavBurger />
-
-          {/* Nav principale */}
-          <nav className="nav" id="main-nav">
-            {logoPos === 'center' ? (
-              <>
-                {/* Liens gauche dupliqués — visibles uniquement sur mobile via burger */}
-                {leftPages.map((p) => (
-                  <NavLink key={`left-${p.id}`} page={p} currentPath={currentPath} extraClass="nav-link-left" />
-                ))}
-                {/* Liens droite */}
-                {rightPages.map((p) => (
-                  <NavLink key={p.id} page={p} currentPath={currentPath} />
-                ))}
-              </>
-            ) : (
-              visiblePages.map((p) => (
+        ) : (
+          /* ── Mode gauche / droite : flex [logo] [nav] ── */
+          <div className={`flex justify-between items-center gap-6 flex-nowrap logo-pos-${logoPos}`}>
+            {logoJsx}
+            <NavBurger />
+            <nav className="nav" id="main-nav">
+              {visibleLinks.map((p) => (
                 <NavLink key={p.id} page={p} currentPath={currentPath} />
-              ))
-            )}
-
-            <NavDropdown pages={overflowPages} currentPath={currentPath} />
-
-            {hasContact && (
-              <a
-                href={currentPath === '/' ? '#contact' : '/#contact'}
-                className="nav-link"
-              >
-                Contact
-              </a>
-            )}
-          </nav>
-        </div>
+              ))}
+              <NavDropdown pages={overflowLinks} currentPath={currentPath} />
+              {contactLink}
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   );
