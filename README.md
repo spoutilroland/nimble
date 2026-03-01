@@ -1,5 +1,7 @@
 **[FR](README.fr.md) | EN**
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # Nimble
 <!-- last updated: 2026-02-27 -->
 

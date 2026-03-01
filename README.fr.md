@@ -1,5 +1,7 @@
 **FR | [EN](README.md)**
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # Nimble
 
 Un CMS léger, sans base de données, pour les sites vitrines. Gérez les pages, sections, carrousels, thème, contenu et formulaire de contact depuis un back-office — tout est stocké en fichiers JSON.
