@@ -2831,6 +2831,14 @@ body.admin-mode #accueil [data-content-key]:hover {
   flex-shrink: 0;
 }
 
+.section-subsection-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--back-text-muted, var(--bo-text-dim));
+  margin-top: 0.5rem;
+}
+
 .block-image-zone {
   flex: 1;
   height: 36px;

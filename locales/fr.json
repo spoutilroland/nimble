@@ -175,6 +175,12 @@
     "redirectNone": "— Aucune redirection (page d'accueil normale)",
     "redirectSaved": "Redirection enregistrée ✓"
   },
+  "section": {
+    "imagesLabel": "Images",
+    "configLabel": "Configuration",
+    "dividerLabel": "Séparateur",
+    "layoutLabel": "Disposition"
+  },
   "sectionType": {
     "hero": "Hero plein écran",
     "hero-simple": "Hero bandeau",

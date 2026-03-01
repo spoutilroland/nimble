@@ -62,6 +62,7 @@ export function SectionRow({ section, index, total, layouts, onRemove, onMoveUp,
         <>
           {isCustomLayout ? (
             <div className="flex flex-col gap-[0.3rem] mt-2">
+              <span className="section-subsection-label">{t('section.layoutLabel')}</span>
               <select
                 className="section-layout-id"
                 value={section.layoutId || ''}
@@ -82,26 +83,36 @@ export function SectionRow({ section, index, total, layouts, onRemove, onMoveUp,
                 const selectedLayout = layouts.find(l => l.id === section.layoutId);
                 const imageBlocks = selectedLayout?.blocks.filter(b => b.type === 'image') ?? [];
                 return imageBlocks.length > 0 ? (
-                  <div className="block-images-list">
-                    {imageBlocks.map((b, i) => (
-                      <BlockImageEditor
-                        key={b.blockId}
-                        carouselId={`${section.carouselId}-${b.blockId}`}
-                        label={`${t('block.image')} ${imageBlocks.length > 1 ? i + 1 : ''}`}
-                      />
-                    ))}
-                  </div>
+                  <>
+                    <span className="section-subsection-label">{t('section.imagesLabel')}</span>
+                    <div className="block-images-list">
+                      {imageBlocks.map((b, i) => (
+                        <BlockImageEditor
+                          key={b.blockId}
+                          carouselId={`${section.carouselId}-${b.blockId}`}
+                          label={`${t('block.image')} ${imageBlocks.length > 1 ? i + 1 : ''}`}
+                        />
+                      ))}
+                    </div>
+                  </>
                 ) : null;
               })()}
             </div>
           ) : info?.needsCarousel && section.carouselId ? (
-            <InlineCarouselEditor carouselId={section.carouselId} maxImages={info?.maxImages} imageHint={info?.imageHint} />
+            <>
+              <span className="section-subsection-label">{t('section.imagesLabel')}</span>
+              <InlineCarouselEditor carouselId={section.carouselId} maxImages={info?.maxImages} imageHint={info?.imageHint} />
+            </>
           ) : null}
 
           {(section.type === 'stats' || section.type === 'polaroids') && (
-            <SectionPropsEditor section={section} onUpdate={onUpdate} />
+            <>
+              <span className="section-subsection-label">{t('section.configLabel')}</span>
+              <SectionPropsEditor section={section} onUpdate={onUpdate} />
+            </>
           )}
 
+          <span className="section-subsection-label">{t('section.dividerLabel')}</span>
           <DividerRow
             divider={section.dividerAfter as DividerConfig | undefined}
             onChange={(d) => onUpdate({ dividerAfter: d as Section['dividerAfter'] })}
