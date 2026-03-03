@@ -4,7 +4,7 @@
 
 # Nimble
 <!-- last updated: 2026-02-27 -->
-
+<!-- persistence user data test -->
 A lightweight, database-free CMS for showcase websites. Manage pages, sections, carousels, theme, content and contact form entirely from a back-office — all stored in JSON files.
 
 ## Stack
