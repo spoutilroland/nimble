@@ -2,6 +2,7 @@ import fs from 'fs';
 import fsp from 'fs/promises';
 import path from 'path';
 import type { SetupConfig } from '@/lib/schemas/setup';
+import { syncJsonToBlob } from '@/lib/storage';
 
 const setupFile = path.join(process.cwd(), 'data', 'setup.json');
 
@@ -20,6 +21,7 @@ export function readSetupConfig(): SetupConfig {
 
 export async function writeSetupConfig(data: SetupConfig): Promise<void> {
   await fsp.writeFile(setupFile, JSON.stringify(data, null, 2));
+  syncJsonToBlob('setup.json', data).catch(() => {});
 }
 
 /** Retourne le slug admin depuis data/setup.json — lu à chaque requête, pas de restart nécessaire */

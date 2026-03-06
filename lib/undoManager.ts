@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { syncJsonToBlob } from '@/lib/storage';
 
 interface UndoEntry {
   label: string;
@@ -63,6 +64,7 @@ export function undo(): UndoResult {
     const key = Object.keys(entry.filePaths).find((k) => entry.filePaths[k] === filePath)!;
     if (entry.snapshots[key] !== null) {
       fs.writeFileSync(filePath, entry.snapshots[key]!);
+      syncJsonToBlob(key, JSON.parse(entry.snapshots[key]!)).catch(() => {});
     }
   }
 
@@ -89,6 +91,7 @@ export function redo(): UndoResult {
   for (const [key, filePath] of Object.entries(entry.filePaths)) {
     if (entry.snapshots[key] !== null) {
       fs.writeFileSync(filePath, entry.snapshots[key]!);
+      syncJsonToBlob(key, JSON.parse(entry.snapshots[key]!)).catch(() => {});
     }
   }
 

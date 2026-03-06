@@ -2,6 +2,7 @@ import fs from 'fs';
 import fsp from 'fs/promises';
 import path from 'path';
 import type { SiteConfig } from '@/lib/types';
+import { syncJsonToBlob } from '@/lib/storage';
 
 const siteFile = path.join(process.cwd(), 'data', 'site.json');
 
@@ -49,4 +50,5 @@ export function readSiteConfig(): SiteConfig {
 
 export async function writeSiteConfig(data: SiteConfig): Promise<void> {
   await fsp.writeFile(siteFile, JSON.stringify(data, null, 2));
+  syncJsonToBlob('site.json', data).catch(() => {});
 }

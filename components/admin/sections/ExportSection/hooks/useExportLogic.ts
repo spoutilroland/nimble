@@ -8,6 +8,8 @@ export function useExportLogic() {
   const { t } = useI18n();
   const { message, show } = useFlashMessage();
   const [exporting, setExporting] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [syncSummary, setSyncSummary] = useState<{ ok: number; skipped: number; errors: number; total: number } | null>(null);
 
   const handleExport = async () => {
     setExporting(true);
@@ -38,5 +40,24 @@ export function useExportLogic() {
     }
   };
 
-  return { t, exporting, message, handleExport };
+  const handleSyncToBlob = async () => {
+    setSyncing(true);
+    setSyncSummary(null);
+    try {
+      const res = await fetch('/api/admin/sync-to-blob', { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        show(data.error || t('syncBlob.error'), 'error');
+        return;
+      }
+      setSyncSummary(data.summary);
+      show(t('syncBlob.success'), 'success');
+    } catch {
+      show(t('syncBlob.error'), 'error');
+    } finally {
+      setSyncing(false);
+    }
+  };
+
+  return { t, exporting, syncing, syncSummary, message, handleExport, handleSyncToBlob };
 }

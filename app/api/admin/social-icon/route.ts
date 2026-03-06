@@ -5,6 +5,7 @@ import path from 'path';
 import fsp from 'fs/promises';
 import { withAuth } from '@/lib/auth';
 import { processImageWithSharp, MIME_TO_EXT, ALLOWED_TYPES, MAX_FILE_SIZE } from '@/lib/data';
+import { uploadToBlob, deleteFromBlobByPrefix } from '@/lib/storage';
 
 const NETWORKS = ['linkedin', 'facebook', 'instagram', 'x', 'tiktok', 'youtube', 'pinterest', 'github'];
 const socialDir = path.join(process.cwd(), 'uploads', 'social');
@@ -45,6 +46,8 @@ export const POST = withAuth(async (req: NextRequest) => {
     const buffer = Buffer.from(await file.arrayBuffer());
     const filePath = path.join(socialDir, filename);
     await fsp.writeFile(filePath, buffer);
+    await deleteFromBlobByPrefix(`uploads/social/${network}.`).catch(() => {});
+    await uploadToBlob(`uploads/social/${filename}`, buffer, file.type).catch(() => {});
     processImageWithSharp(filePath).catch(() => {});
 
     return NextResponse.json({ success: true, url: `/uploads/social/${filename}` });
@@ -67,6 +70,7 @@ export const DELETE = withAuth(async (req: NextRequest) => {
         await fsp.unlink(path.join(socialDir, f)).catch(() => {});
       }
     }
+    await deleteFromBlobByPrefix(`uploads/social/${network}.`).catch(() => {});
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: 'Delete failed' }, { status: 500 });

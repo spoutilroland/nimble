@@ -2,6 +2,7 @@ import fs from 'fs';
 import fsp from 'fs/promises';
 import path from 'path';
 import type { AdminData } from '@/lib/types';
+import { syncJsonToBlob } from '@/lib/storage';
 
 const adminFile = path.join(process.cwd(), 'data', 'admin.json');
 
@@ -17,4 +18,5 @@ export function readAdminHash(): string | null {
 export async function writeAdminHash(hash: string): Promise<void> {
   const data: AdminData = { passwordHash: hash };
   await fsp.writeFile(adminFile, JSON.stringify(data, null, 2));
+  syncJsonToBlob('admin.json', data).catch(() => {});
 }

@@ -2,6 +2,7 @@ import fs from 'fs';
 import fsp from 'fs/promises';
 import path from 'path';
 import type { SnapshotMeta, SnapshotsIndex } from '@/lib/schemas';
+import { syncJsonToBlob, deleteFromBlobByPrefix } from '@/lib/storage';
 
 // Fichiers JSON inclus dans un snapshot (admin.json et media.json exclus)
 const SNAPSHOT_FILES = ['site', 'pages', 'carousels', 'layouts', 'theme', 'content'] as const;
@@ -22,6 +23,7 @@ function readSnapshotsIndex(): SnapshotsIndex {
 
 async function writeSnapshotsIndex(data: SnapshotsIndex): Promise<void> {
   await fsp.writeFile(INDEX_FILE, JSON.stringify(data, null, 2));
+  syncJsonToBlob('snapshots/snapshots.json', data).catch(() => {});
 }
 
 async function ensureSnapshotsDir(): Promise<void> {
@@ -49,6 +51,7 @@ export async function createSnapshot(name: string): Promise<SnapshotMeta> {
     const oldest = sorted[0];
     const oldDir = path.join(SNAPSHOTS_DIR, oldest.id);
     await fsp.rm(oldDir, { recursive: true, force: true });
+    await deleteFromBlobByPrefix(`data/snapshots/${oldest.id}/`).catch(() => {});
     index.snapshots = index.snapshots.filter((s) => s.id !== oldest.id);
   }
 
@@ -64,6 +67,8 @@ export async function createSnapshot(name: string): Promise<SnapshotMeta> {
     const dest = path.join(snapshotDir, `${name_}.json`);
     try {
       await fsp.copyFile(src, dest);
+      const content = fs.readFileSync(dest, 'utf8');
+      syncJsonToBlob(`snapshots/${id}/${name_}.json`, JSON.parse(content)).catch(() => {});
       fileCount++;
     } catch {
       // Fichier absent → on ignore
@@ -94,6 +99,8 @@ export async function restoreSnapshot(id: string): Promise<boolean> {
     const dest = path.join(DATA_DIR, `${name_}.json`);
     try {
       await fsp.copyFile(src, dest);
+      const content = fs.readFileSync(dest, 'utf8');
+      syncJsonToBlob(`${name_}.json`, JSON.parse(content)).catch(() => {});
     } catch {
       // Fichier manquant dans le snapshot → on ignore
     }
@@ -109,6 +116,7 @@ export async function deleteSnapshot(id: string): Promise<boolean> {
 
   const snapshotDir = path.join(SNAPSHOTS_DIR, id);
   await fsp.rm(snapshotDir, { recursive: true, force: true });
+  await deleteFromBlobByPrefix(`data/snapshots/${id}/`).catch(() => {});
 
   index.snapshots = index.snapshots.filter((s) => s.id !== id);
   await writeSnapshotsIndex(index);

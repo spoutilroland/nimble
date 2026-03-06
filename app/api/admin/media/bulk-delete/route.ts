@@ -9,6 +9,7 @@ import {
   readCarouselsConfig, writeCarouselsConfig,
 } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
+import { deleteFromBlob } from '@/lib/storage';
 
 const mediaDir = path.join(process.cwd(), 'uploads', 'media');
 const dataDir = path.join(process.cwd(), 'data');
@@ -41,9 +42,11 @@ export const POST = withAuth(async (req: NextRequest) => {
 
       // Supprimer les fichiers
       await fsp.unlink(path.join(mediaDir, entry.filename)).catch(() => {});
+      await deleteFromBlob(`uploads/media/${entry.filename}`).catch(() => {});
       if (entry.hasWebp) {
         const webpName = entry.filename.replace(/\.(jpg|jpeg|png)$/i, '') + '.webp';
         await fsp.unlink(path.join(mediaDir, webpName)).catch(() => {});
+        await deleteFromBlob(`uploads/media/${webpName}`).catch(() => {});
       }
 
       delete mediaData.media[mediaId];

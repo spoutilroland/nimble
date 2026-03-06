@@ -5,6 +5,7 @@ import path from 'path';
 import fsp from 'fs/promises';
 import { withAuth } from '@/lib/auth';
 import { processImageWithSharp, MIME_TO_EXT, ALLOWED_TYPES, MAX_FILE_SIZE } from '@/lib/data';
+import { uploadToBlob, deleteFromBlobByPrefix } from '@/lib/storage';
 
 const logoDir = path.join(process.cwd(), 'uploads', 'logo');
 
@@ -36,6 +37,8 @@ export const POST = withAuth(async (req: NextRequest) => {
 
     const filePath = path.join(logoDir, filename);
     await fsp.writeFile(filePath, buffer);
+    await deleteFromBlobByPrefix('uploads/logo/').catch(() => {});
+    await uploadToBlob(`uploads/logo/${filename}`, buffer, file.type).catch(() => {});
     // Sharp ne gère pas le SVG — on skip l'optimisation
     if (file.type !== 'image/svg+xml') {
       processImageWithSharp(filePath).catch(() => {});
@@ -55,6 +58,7 @@ export const DELETE = withAuth(async () => {
         await fsp.unlink(path.join(logoDir, f));
       }
     }
+    await deleteFromBlobByPrefix('uploads/logo/').catch(() => {});
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: 'Delete failed' }, { status: 500 });

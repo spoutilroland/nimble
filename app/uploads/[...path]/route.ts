@@ -3,6 +3,7 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { proxyBlobFile } from '@/lib/storage';
 
 const uploadsDir = path.join(process.cwd(), 'uploads');
 
@@ -22,12 +23,13 @@ export async function GET(
 ) {
   const { path: segments } = await params;
 
-  // Sécurité : reconstruire le chemin absolu et vérifier qu'il reste dans uploads/
+  // Sécurité : vérifier que le chemin reste dans uploads/
   const filePath = path.resolve(uploadsDir, ...segments);
   if (!filePath.startsWith(uploadsDir + path.sep) && filePath !== uploadsDir) {
     return new NextResponse(null, { status: 403 });
   }
 
+  // 1. Essayer le fichier local
   try {
     const buffer = fs.readFileSync(filePath);
     const ext = path.extname(filePath).toLowerCase();
@@ -40,6 +42,21 @@ export async function GET(
       },
     });
   } catch {
-    return new NextResponse(null, { status: 404 });
+    // Fichier local absent — fallback Blob
   }
+
+  // 2. Fallback : proxy depuis Vercel Blob (store privé)
+  const blobPathname = `uploads/${segments.join('/')}`;
+  const result = await proxyBlobFile(blobPathname);
+
+  if (result) {
+    return new NextResponse(result.buffer as unknown as BodyInit, {
+      headers: {
+        'Content-Type': result.contentType,
+        'Cache-Control': 'public, max-age=31536000, immutable',
+      },
+    });
+  }
+
+  return new NextResponse(null, { status: 404 });
 }
