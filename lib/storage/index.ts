@@ -7,7 +7,7 @@ const blobUrlMap = new Map<string, string>();
 
 let bootstrapped = false;
 
-export function useBlob(): boolean {
+export function isBlobEnabled(): boolean {
   return !!process.env.BLOB_READ_WRITE_TOKEN;
 }
 
@@ -28,7 +28,7 @@ async function fetchPrivateBlob(url: string): Promise<Response> {
  * Synchronise un fichier JSON local vers Vercel Blob (fire-and-forget).
  */
 export async function syncJsonToBlob(filename: string, data: unknown): Promise<void> {
-  if (!useBlob()) return;
+  if (!isBlobEnabled()) return;
   const pathname = `data/${filename}`;
   const blob = await put(pathname, JSON.stringify(data, null, 2), {
     access: 'private',
@@ -46,7 +46,7 @@ export async function uploadToBlob(
   buffer: Buffer,
   contentType: string
 ): Promise<string> {
-  if (!useBlob()) return '';
+  if (!isBlobEnabled()) return '';
   const blob = await put(pathname, buffer, {
     access: 'private',
     addRandomSuffix: false,
@@ -60,7 +60,7 @@ export async function uploadToBlob(
  * Supprime un fichier du Blob par pathname exact.
  */
 export async function deleteFromBlob(pathname: string): Promise<void> {
-  if (!useBlob()) return;
+  if (!isBlobEnabled()) return;
   const url = blobUrlMap.get(pathname);
   if (url) {
     await del(url);
@@ -79,7 +79,7 @@ export async function deleteFromBlob(pathname: string): Promise<void> {
  * Supprime tous les blobs qui matchent un préfixe.
  */
 export async function deleteFromBlobByPrefix(prefix: string): Promise<void> {
-  if (!useBlob()) return;
+  if (!isBlobEnabled()) return;
   const { blobs } = await list({ prefix, limit: 100 });
   if (blobs.length > 0) {
     await del(blobs.map((b) => b.url));
@@ -92,7 +92,7 @@ export async function deleteFromBlobByPrefix(prefix: string): Promise<void> {
  * Retourne null si le pathname n'est pas dans le Blob.
  */
 export async function proxyBlobFile(pathname: string): Promise<{ buffer: Buffer; contentType: string } | null> {
-  if (!useBlob()) return null;
+  if (!isBlobEnabled()) return null;
   const url = blobUrlMap.get(pathname);
   if (!url) return null;
 
@@ -109,7 +109,7 @@ export async function proxyBlobFile(pathname: string): Promise<{ buffer: Buffer;
  * Appelé une seule fois au démarrage via instrumentation.ts.
  */
 export async function bootstrapDataFromBlob(): Promise<void> {
-  if (!useBlob() || bootstrapped) return;
+  if (!isBlobEnabled() || bootstrapped) return;
   bootstrapped = true;
 
   console.log('[storage] Bootstrap depuis Vercel Blob...');

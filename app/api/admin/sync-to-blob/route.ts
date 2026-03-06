@@ -12,7 +12,7 @@ import fs from 'fs';
 import fsp from 'fs/promises';
 import path from 'path';
 import { withAuth } from '@/lib/auth';
-import { useBlob, uploadToBlob } from '@/lib/storage';
+import { isBlobEnabled, uploadToBlob } from '@/lib/storage';
 import { put } from '@vercel/blob';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
@@ -29,7 +29,7 @@ const JSON_FILES = [
 const UPLOAD_FOLDERS = ['logo', 'favicon', 'social', 'media'];
 
 export const POST = withAuth(async () => {
-  if (!useBlob()) {
+  if (!isBlobEnabled()) {
     return NextResponse.json(
       { error: 'BLOB_READ_WRITE_TOKEN non configuré' },
       { status: 400 }
