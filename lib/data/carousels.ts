@@ -5,6 +5,7 @@ import type { CarouselsConfig, CarouselEntry } from '@/lib/types';
 import type { PagesConfig } from '@/lib/types';
 import type { MediaUrls } from '@/lib/types';
 import { readMediaRegistry, writeMediaRegistry, getMediaUrls } from './media';
+import { syncJsonToBlob, deleteFromBlob } from '@/lib/storage';
 
 const carouselsFile = path.join(process.cwd(), 'data', 'carousels.json');
 
@@ -18,10 +19,12 @@ export function readCarouselsConfig(): CarouselsConfig {
 
 export async function writeCarouselsConfig(data: CarouselsConfig): Promise<void> {
   await fsp.writeFile(carouselsFile, JSON.stringify(data, null, 2));
+  syncJsonToBlob('carousels.json', data).catch(() => {});
 }
 
 export function writeCarouselsConfigSync(data: CarouselsConfig): void {
   fs.writeFileSync(carouselsFile, JSON.stringify(data, null, 2));
+  syncJsonToBlob('carousels.json', data).catch(() => {});
 }
 
 export function getCarouselImages(carouselId: string): MediaUrls[] {
@@ -102,9 +105,12 @@ export async function cleanOrphanedCarousels(newPagesData: PagesConfig): Promise
     if (!usedMediaIds.has(mediaId)) {
       const filePath = path.join(mediaDir, entry.filename);
       await fsp.unlink(filePath).catch(() => {});
+      await deleteFromBlob(`uploads/media/${entry.filename}`).catch(() => {});
       if (entry.hasWebp) {
-        const webpPath = path.join(mediaDir, entry.filename.replace(/\.(jpg|jpeg|png)$/i, '') + '.webp');
+        const webpName = entry.filename.replace(/\.(jpg|jpeg|png)$/i, '') + '.webp';
+        const webpPath = path.join(mediaDir, webpName);
         await fsp.unlink(webpPath).catch(() => {});
+        await deleteFromBlob(`uploads/media/${webpName}`).catch(() => {});
       }
       delete mediaData.media[mediaId];
     }

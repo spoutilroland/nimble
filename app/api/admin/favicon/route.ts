@@ -5,6 +5,7 @@ import path from 'path';
 import fsp from 'fs/promises';
 import { withAuth } from '@/lib/auth';
 import { MIME_TO_EXT } from '@/lib/data';
+import { uploadToBlob, deleteFromBlobByPrefix } from '@/lib/storage';
 
 const faviconDir = path.join(process.cwd(), 'uploads', 'favicon');
 const FAVICON_TYPES = [
@@ -39,6 +40,8 @@ export const POST = withAuth(async (req: NextRequest) => {
     } catch {}
 
     await fsp.writeFile(path.join(faviconDir, filename), buffer);
+    await deleteFromBlobByPrefix('uploads/favicon/').catch(() => {});
+    await uploadToBlob(`uploads/favicon/${filename}`, buffer, file.type).catch(() => {});
     return NextResponse.json({ success: true, url: `/uploads/favicon/${filename}` });
   } catch {
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
@@ -53,6 +56,7 @@ export const DELETE = withAuth(async () => {
         await fsp.unlink(path.join(faviconDir, f));
       }
     }
+    await deleteFromBlobByPrefix('uploads/favicon/').catch(() => {});
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: 'Delete failed' }, { status: 500 });

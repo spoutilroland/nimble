@@ -634,5 +634,14 @@
     "loading": "Configuring...",
     "bannerRestart": "Restart required",
     "bannerRestartMsg": "Restart the server to activate your secure URL:"
+  },
+  "syncBlob": {
+    "sectionTitle": "Sync to cloud",
+    "sectionInfo": "Uploads all existing data and files to Vercel Blob to protect them from redeployments.",
+    "btnSync": "Sync now",
+    "syncing": "Syncing...",
+    "success": "Sync successful",
+    "error": "Sync error",
+    "notConfigured": "Vercel Blob not configured (BLOB_READ_WRITE_TOKEN missing)"
   }
 }

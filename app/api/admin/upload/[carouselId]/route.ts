@@ -10,6 +10,7 @@ import {
   processImageWithSharp, MIME_TO_EXT, ALLOWED_TYPES, MAX_FILE_SIZE,
 } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
+import { uploadToBlob } from '@/lib/storage';
 
 const mediaDir = path.join(process.cwd(), 'uploads', 'media');
 const dataDir = path.join(process.cwd(), 'data');
@@ -56,6 +57,7 @@ export const POST = withAuth(async (
     const buffer = Buffer.from(await file.arrayBuffer());
     const filePath = path.join(mediaDir, filename);
     await fsp.writeFile(filePath, buffer);
+    await uploadToBlob(`uploads/media/${filename}`, buffer, file.type).catch(() => {});
 
     const hasWebp = /\.(jpg|jpeg|png)$/i.test(filename);
     if (hasWebp) processImageWithSharp(filePath).catch(() => {});
