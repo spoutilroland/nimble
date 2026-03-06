@@ -17,6 +17,7 @@ export function readAdminHash(): string | null {
 
 export async function writeAdminHash(hash: string): Promise<void> {
   const data: AdminData = { passwordHash: hash };
+  await fsp.mkdir(path.dirname(adminFile), { recursive: true });
   await fsp.writeFile(adminFile, JSON.stringify(data, null, 2));
   syncJsonToBlob('admin.json', data).catch(() => {});
 }

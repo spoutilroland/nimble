@@ -20,7 +20,10 @@ function getActiveHash(): string | null {
   const fileHash = readAdminHash();
   if (fileHash) return fileHash;
 
-  if (process.env.ADMIN_PASSWORD_HASH) return process.env.ADMIN_PASSWORD_HASH;
+  if (process.env.ADMIN_PASSWORD_HASH) {
+    // Supprimer les guillemets simples/doubles laissés par certains parsers dotenv
+    return process.env.ADMIN_PASSWORD_HASH.replace(/^['"]|['"]$/g, '');
+  }
 
   // Fallback : hash synchrone depuis ADMIN_PASSWORD (déconseillé en prod)
   if (process.env.ADMIN_PASSWORD) {
