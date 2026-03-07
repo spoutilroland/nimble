@@ -72,10 +72,10 @@ export function HeroSection({ section }: Props) {
   }, []);
 
   return (
-    <section className="hero" id="accueil">
+    <section className="hero relative h-[80vh] min-h-[600px] flex items-center justify-center overflow-hidden" id="accueil">
       <div className="hero-overlay">
-        <div className="container">
-          <div className="hero-content">
+        <div className="max-w-[1200px] mx-auto px-5">
+          <div className="hero-content text-center text-white relative z-[2] px-4">
             <h2 className="hero-title" data-content-key="hero-title">
               Votre partenaire de confiance
             </h2>
@@ -103,11 +103,11 @@ export function HeroSection({ section }: Props) {
               style={{ backgroundImage: `url('${url}')` }}
             />
           ))}
-          <div className="hero-dots">
+          <div className="hero-dots absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2 z-10">
             {images.map((_, i) => (
               <button
                 key={i}
-                className={`hero-dot${i === current ? ' active' : ''}`}
+                className={`hero-dot border-none cursor-pointer p-0 transition-all duration-[0.4s] h-[3px] ${i === current ? 'w-12 bg-white' : 'w-6 bg-white/35'}`}
                 aria-label={`Slide ${i + 1}`}
                 onClick={() => goToSlide(i)}
               />

@@ -157,9 +157,9 @@ export function MediaLibrarySection() {
       </div>
 
       {/* Barre d'import + filtres */}
-      <div className="media-library-toolbar">
+      <div className="flex items-center gap-[0.6rem] mb-[0.8rem]">
         <button
-          className="btn btn-primary media-import-btn"
+          className="btn btn-primary inline-flex items-center gap-[0.4rem]"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
         >
@@ -171,7 +171,7 @@ export function MediaLibrarySection() {
           type="file"
           multiple
           accept="image/jpeg,image/png,image/webp,image/svg+xml"
-          className="hidden"
+          style={{ display: 'none' }}
           onChange={handleFileInput}
         />
       </div>
@@ -226,8 +226,8 @@ export function MediaLibrarySection() {
 
       {/* Overlay drag & drop */}
       {isDragOver && (
-        <div className="media-dragover-overlay">
-          <div className="media-dragover-content">
+        <div className="fixed inset-0 bg-[rgba(52,211,153,0.12)] backdrop-blur-[2px] z-[400] flex items-center justify-center pointer-events-none">
+          <div className="flex flex-col items-center gap-[0.8rem] text-[var(--bo-green)] text-[1.2rem] font-semibold">
             <Upload size={48} />
             <span>{t('mediaLibrary.dragOverlay')}</span>
           </div>

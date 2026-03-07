@@ -75,49 +75,59 @@ export function MediaPanel({ media, onClose, onSave, onDelete }: MediaPanelProps
   const isSvg = media.mimeType === 'image/svg+xml';
   const src = media.webpUrl ?? media.url;
 
+  const inputClass = 'bg-[var(--bo-bg)] border border-[var(--bo-border)] rounded-[8px] text-[var(--bo-text)] px-[0.6rem] py-[0.45rem] text-[0.85rem] transition-[border-color] duration-150 focus:outline-none focus:border-[var(--bo-green)]';
+
   const panel = (
     <>
-      <div className="media-panel-backdrop" onClick={onClose} />
-      <aside className="media-panel">
-        <div className="media-panel-header">
-          <h3>{t('mediaLibrary.panelTitle')}</h3>
-          <button className="media-panel-close" onClick={onClose} title={t('common.close')}>
+      <div className="fixed inset-0 bg-black/50 z-[200] animate-[media-backdrop-in_0.2s_ease]" onClick={onClose} />
+      <aside className="fixed top-0 right-0 bottom-0 w-[min(420px,90vw)] bg-[var(--bo-surface)] border-l border-[var(--bo-border)] z-[201] flex flex-col animate-[media-panel-in_0.25s_ease] overflow-y-auto">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--bo-border)]">
+          <h3 className="text-[1rem] m-0">{t('mediaLibrary.panelTitle')}</h3>
+          <button
+            className="bg-transparent border-none text-[var(--bo-text-dim)] cursor-pointer p-[0.3rem] rounded-[6px] transition-colors duration-150 hover:bg-[var(--bo-border)] hover:text-[var(--bo-text)]"
+            onClick={onClose}
+            title={t('common.close')}
+          >
             <X size={18} />
           </button>
         </div>
 
-        <div className="media-panel-body">
+        <div className="flex-1 px-5 py-4 flex flex-col gap-4 overflow-y-auto">
           {/* Preview */}
-          <div className="media-panel-preview">
+          <div className="bg-[var(--bo-bg)] rounded-[var(--bo-radius-sm,6px)] p-2 flex items-center justify-center min-h-[180px] max-h-[280px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={src} alt={altText || media.originalName} className={isSvg ? 'media-panel-svg' : ''} />
+            <img
+              src={src}
+              alt={altText || media.originalName}
+              className={`max-w-full max-h-[260px] object-contain rounded-[6px]${isSvg ? ' p-4' : ''}`}
+            />
           </div>
 
           {/* Métadonnées */}
-          <div className="media-panel-meta">
-            <div className="media-panel-meta-row">
-              <span className="media-panel-meta-label">{t('mediaLibrary.panelInfoFilename')}</span>
-              <span className="media-panel-meta-value" title={media.originalName}>{media.originalName}</span>
+          <div className="flex flex-col gap-[0.4rem] text-[0.82rem]">
+            <div className="flex gap-2">
+              <span className="text-[var(--bo-text-dim)] min-w-[80px] shrink-0">{t('mediaLibrary.panelInfoFilename')}</span>
+              <span className="text-[var(--bo-text)] break-all" title={media.originalName}>{media.originalName}</span>
             </div>
             {media.fileSize != null && (
-              <div className="media-panel-meta-row">
-                <span className="media-panel-meta-label">{t('mediaLibrary.panelInfoSize')}</span>
-                <span className="media-panel-meta-value">{formatSize(media.fileSize)}</span>
+              <div className="flex gap-2">
+                <span className="text-[var(--bo-text-dim)] min-w-[80px] shrink-0">{t('mediaLibrary.panelInfoSize')}</span>
+                <span className="text-[var(--bo-text)] break-all">{formatSize(media.fileSize)}</span>
               </div>
             )}
             {media.width != null && media.height != null && media.width > 0 && (
-              <div className="media-panel-meta-row">
-                <span className="media-panel-meta-label">{t('mediaLibrary.panelInfoDimensions')}</span>
-                <span className="media-panel-meta-value">{media.width} x {media.height}</span>
+              <div className="flex gap-2">
+                <span className="text-[var(--bo-text-dim)] min-w-[80px] shrink-0">{t('mediaLibrary.panelInfoDimensions')}</span>
+                <span className="text-[var(--bo-text)] break-all">{media.width} x {media.height}</span>
               </div>
             )}
-            <div className="media-panel-meta-row">
-              <span className="media-panel-meta-label">{t('mediaLibrary.panelInfoUploaded')}</span>
-              <span className="media-panel-meta-value">{formatDate(media.uploadedAt)}</span>
+            <div className="flex gap-2">
+              <span className="text-[var(--bo-text-dim)] min-w-[80px] shrink-0">{t('mediaLibrary.panelInfoUploaded')}</span>
+              <span className="text-[var(--bo-text)] break-all">{formatDate(media.uploadedAt)}</span>
             </div>
-            <div className="media-panel-meta-row">
-              <span className="media-panel-meta-label">{t('mediaLibrary.panelInfoUsedIn')}</span>
-              <span className="media-panel-meta-value">
+            <div className="flex gap-2">
+              <span className="text-[var(--bo-text-dim)] min-w-[80px] shrink-0">{t('mediaLibrary.panelInfoUsedIn')}</span>
+              <span className="text-[var(--bo-text)] break-all">
                 {media.usedIn.length > 0
                   ? media.usedIn.map((u) => u.title).join(', ')
                   : t('mediaLibrary.panelNotUsed')
@@ -127,36 +137,36 @@ export function MediaPanel({ media, onClose, onSave, onDelete }: MediaPanelProps
           </div>
 
           {/* Formulaire édition */}
-          <div className="media-panel-form">
-            <label className="media-panel-label">
+          <div className="flex flex-col gap-[0.8rem]">
+            <label className="flex flex-col gap-[0.3rem] text-[0.82rem] text-[var(--bo-text-dim)]">
               {t('mediaLibrary.panelAltLabel')}
               <input
                 type="text"
                 value={altText}
                 onChange={(e) => setAltText(e.target.value)}
                 placeholder={t('mediaLibrary.panelAltPlaceholder')}
-                className="media-panel-input"
+                className={inputClass}
               />
             </label>
 
-            <label className="media-panel-label">
+            <label className="flex flex-col gap-[0.3rem] text-[0.82rem] text-[var(--bo-text-dim)]">
               {t('mediaLibrary.panelTitleLabel')}
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder={t('mediaLibrary.panelTitlePlaceholder')}
-                className="media-panel-input"
+                className={inputClass}
               />
             </label>
 
-            <div className="media-panel-label">
+            <div className="flex flex-col gap-[0.3rem] text-[0.82rem] text-[var(--bo-text-dim)]">
               {t('mediaLibrary.panelTagsLabel')}
-              <div className="media-panel-tags">
+              <div className="flex flex-wrap gap-[0.3rem] bg-[var(--bo-bg)] border border-[var(--bo-border)] rounded-[8px] px-2 py-[0.35rem] min-h-[36px] items-center">
                 {tags.map((tag) => (
-                  <span key={tag} className="media-panel-tag">
+                  <span key={tag} className="inline-flex items-center gap-[0.2rem] bg-[var(--bo-card)] border border-[var(--bo-border)] rounded-[6px] px-[0.4rem] py-[0.15rem] text-[0.78rem] text-[var(--bo-text)]">
                     {tag}
-                    <button onClick={() => handleRemoveTag(tag)} className="media-panel-tag-remove">x</button>
+                    <button onClick={() => handleRemoveTag(tag)} className="bg-transparent border-none text-[var(--bo-text-dim)] cursor-pointer text-[0.75rem] px-[0.15rem] leading-[1] hover:text-[#ef4444]">x</button>
                   </span>
                 ))}
                 <input
@@ -167,7 +177,7 @@ export function MediaPanel({ media, onClose, onSave, onDelete }: MediaPanelProps
                     if (e.key === 'Enter') { e.preventDefault(); handleAddTag(); }
                   }}
                   placeholder={t('mediaLibrary.panelTagsPlaceholder')}
-                  className="media-panel-tag-input"
+                  className="flex-1 min-w-[80px] border-none bg-transparent text-[var(--bo-text)] text-[0.82rem] outline-none"
                 />
               </div>
             </div>
@@ -175,15 +185,15 @@ export function MediaPanel({ media, onClose, onSave, onDelete }: MediaPanelProps
         </div>
 
         {/* Actions */}
-        <div className="media-panel-actions">
+        <div className="px-5 py-4 border-t border-[var(--bo-border)] flex flex-wrap gap-2">
           <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
             {t('mediaLibrary.panelBtnSave')}
           </button>
-          <button className="btn btn-secondary media-panel-copy-btn" onClick={handleCopyUrl}>
+          <button className="btn btn-secondary inline-flex items-center gap-[0.3rem] text-[0.82rem]" onClick={handleCopyUrl}>
             <Copy size={14} />
             {copied ? t('mediaLibrary.panelUrlCopied') : t('mediaLibrary.panelBtnCopyUrl')}
           </button>
-          <button className="btn btn-danger media-panel-delete-btn" onClick={() => onDelete(media.id)}>
+          <button className="btn btn-danger inline-flex items-center gap-[0.3rem] text-[0.82rem]" onClick={() => onDelete(media.id)}>
             <Trash2 size={14} />
             {t('mediaLibrary.panelBtnDelete')}
           </button>

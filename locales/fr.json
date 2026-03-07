@@ -467,6 +467,7 @@
     "availableLabel": "Langues disponibles",
     "availableHint": "(codes ISO séparés par virgule : fr,en,de)",
     "defaultLabel": "Langue par défaut",
+    "defaultBadge": "défaut",
     "saved": "Langues enregistrées ✓",
     "saveError": "Erreur lors de la sauvegarde"
   },

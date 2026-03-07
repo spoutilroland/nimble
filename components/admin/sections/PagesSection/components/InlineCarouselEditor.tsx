@@ -95,17 +95,17 @@ export function InlineCarouselEditor({ carouselId, maxImages: maxImagesProp, ima
 
   return (
     <div
-      className={`inline-carousel-editor${dragover ? ' inline-carousel-dragover' : ''}`}
+      className={`mt-2 p-[0.4rem] bg-[rgba(255,255,255,0.02)] border border-[var(--bo-border)] rounded-md transition-[border-color,background] duration-150${dragover ? ' !border-[var(--bo-green)] !bg-[rgba(74,124,89,0.08)]' : ''}`}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}
     >
-      <div className="inline-carousel-grid">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(56px,1fr))] gap-1">
         {images.map((img) => (
-          <div key={img.filename} className="inline-carousel-thumb">
+          <div key={img.filename} className="inline-carousel-thumb group relative aspect-square rounded overflow-hidden border border-[var(--bo-border)]">
             <img src={img.url} alt="" />
             <button
-              className="inline-carousel-delete"
+              className="inline-carousel-delete absolute top-px right-px w-[18px] h-[18px] bg-[rgba(0,0,0,0.7)] text-[#e55a2a] border-none rounded-[3px] text-[0.7rem] cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex items-center justify-center leading-none p-0"
               onClick={() => handleDelete(img.filename)}
               title={t('common.delete')}
             >
@@ -115,7 +115,7 @@ export function InlineCarouselEditor({ carouselId, maxImages: maxImagesProp, ima
         ))}
         {canAdd && (
           <button
-            className="inline-carousel-add"
+            className="inline-carousel-add aspect-square bg-[rgba(255,255,255,0.04)] border border-dashed border-[var(--bo-border)] rounded text-[var(--bo-text-dim)] text-[1.2rem] cursor-pointer transition-[background,color] duration-150 flex items-center justify-center"
             onClick={() => setPickerOpen(true)}
             disabled={uploading}
             title={uploading ? '...' : '+'}
@@ -124,9 +124,9 @@ export function InlineCarouselEditor({ carouselId, maxImages: maxImagesProp, ima
           </button>
         )}
       </div>
-      <div className="inline-carousel-footer">
-        {imageHint && <span className="inline-carousel-hint">{t('inlineCarousel.recommended')} {imageHint}</span>}
-        <span className="inline-carousel-info">
+      <div className="flex items-center justify-between mt-[0.3rem] gap-2">
+        {imageHint && <span className="text-[0.7rem] text-[var(--bo-text-dim)] opacity-70">{t('inlineCarousel.recommended')} {imageHint}</span>}
+        <span className="text-[0.75rem] text-[var(--bo-text-dim)] text-right shrink-0">
           {images.length} / {maxImages}
         </span>
       </div>

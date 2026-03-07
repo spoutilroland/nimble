@@ -31,7 +31,7 @@ export function MediaUploader({
   message,
   onUpload,
   onDelete,
-  previewClassName = 'logo-preview-img',
+  previewClassName = 'max-h-[70px] max-w-[240px] object-contain bg-[rgba(255,255,255,0.05)] p-2 border border-[var(--bo-border)]',
 }: MediaUploaderProps) {
   const { t } = useI18n();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -45,14 +45,14 @@ export function MediaUploader({
   return (
     <>
       {url ? (
-        <div className="logo-preview">
+        <div className="flex items-center gap-[1.2rem] mb-4">
           <img src={url} alt={t(imgAltKey)} className={previewClassName} />
-          <button className="btn btn-danger btn-sm" onClick={onDelete}>
+          <button className="bg-[rgba(239,68,68,0.1)] text-[#fca5a5] border border-[rgba(239,68,68,0.25)] rounded-xl font-['Inter',sans-serif] text-[0.78rem] font-semibold tracking-[0.2px] py-[0.4rem] px-4 cursor-pointer transition-all duration-150 hover:bg-[rgba(229,57,53,0.3)] hover:border-[rgba(229,57,53,0.6)] hover:text-white py-[0.35rem] px-[0.8rem] text-[0.8rem] rounded-xl" onClick={onDelete}>
             {t(deleteLabelKey)}
           </button>
         </div>
       ) : (
-        <p className="logo-placeholder">{t(noMediaKey)}</p>
+        <p className="text-[var(--bo-text-dim)] text-[0.85rem] mb-4">{t(noMediaKey)}</p>
       )}
 
       <div className="flex items-center gap-3 mt-2">
@@ -69,7 +69,7 @@ export function MediaUploader({
         >
           {url ? t(replaceLabelKey) : t(uploadLabelKey)}
         </label>
-        <span className="logo-hint">{t(hintKey)}</span>
+        <span className="text-[0.78rem] text-[var(--bo-text-dim)]">{t(hintKey)}</span>
       </div>
       {message && <div className={`form-message ${message.type}`}>{message.text}</div>}
     </>

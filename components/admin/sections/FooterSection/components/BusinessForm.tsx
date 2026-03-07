@@ -13,9 +13,9 @@ export function BusinessForm({ formData, onFieldChange }: BusinessFormProps) {
   const { t } = useI18n();
 
   return (
-    <div className="site-form">
-      <div className="site-form-group">
-        <h3 className="site-form-category">{t('footerSection.contactTitle')}</h3>
+    <div className="flex flex-col gap-[0.9rem] mt-[0.9rem]">
+      <div className="border border-[var(--bo-border)] p-[1.2rem_1.4rem]">
+        <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-[0.8rem] tracking-[0.12em] uppercase text-[var(--bo-green)] m-0 mb-4">{t('footerSection.contactTitle')}</h3>
         <div className="grid grid-cols-2 gap-4">
           <div className="form-group">
             <label>{t('footerSection.phoneLabel')}</label>
@@ -32,8 +32,8 @@ export function BusinessForm({ formData, onFieldChange }: BusinessFormProps) {
         </div>
       </div>
 
-      <div className="site-form-group">
-        <h3 className="site-form-category">{t('footerSection.hoursTitle')}</h3>
+      <div className="border border-[var(--bo-border)] p-[1.2rem_1.4rem]">
+        <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-[0.8rem] tracking-[0.12em] uppercase text-[var(--bo-green)] m-0 mb-4">{t('footerSection.hoursTitle')}</h3>
         <div className="grid grid-cols-2 gap-4">
           <div className="form-group">
             <label>{t('footerSection.weekdaysLabel')}</label>
@@ -50,8 +50,8 @@ export function BusinessForm({ formData, onFieldChange }: BusinessFormProps) {
         </div>
       </div>
 
-      <div className="site-form-group">
-        <h3 className="site-form-category">{t('footerSection.legalTitle')}</h3>
+      <div className="border border-[var(--bo-border)] p-[1.2rem_1.4rem]">
+        <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-[0.8rem] tracking-[0.12em] uppercase text-[var(--bo-green)] m-0 mb-4">{t('footerSection.legalTitle')}</h3>
         <div className="grid grid-cols-2 gap-4">
           <div className="form-group">
             <label>{t('footerSection.siretLabel')}</label>

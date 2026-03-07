@@ -37,7 +37,7 @@ export default async function SiteLayout({
   const borderStyle = site.design?.borderStyle || 'angular';
 
   return (
-    <html lang={lang} data-border={borderStyle} data-lang={lang} data-theme={theme} suppressHydrationWarning>
+    <html lang={lang} data-border={borderStyle} data-lang={lang} data-theme={theme} className="scroll-smooth" suppressHydrationWarning>
       <head>
         {site.fonts.googleFontsUrl && (
           <link href={site.fonts.googleFontsUrl} rel="stylesheet" />
@@ -51,7 +51,7 @@ export default async function SiteLayout({
           />
         )}
       </head>
-      <body className="site-page">
+      <body className="site-page font-['Raleway',sans-serif] leading-[1.7] text-[var(--text)] bg-[var(--bg)] overflow-x-hidden">
         <AdminBar />
         {children}
       </body>

@@ -467,6 +467,7 @@
     "availableLabel": "Available languages",
     "availableHint": "(ISO codes separated by comma: fr,en,de)",
     "defaultLabel": "Default language",
+    "defaultBadge": "default",
     "saved": "Languages saved ✓",
     "saveError": "Error saving"
   },

@@ -42,7 +42,7 @@ export function NavBurger() {
   return (
     <button
       ref={burgerRef}
-      className="nav-burger"
+      className="nav-burger hidden flex-col justify-center gap-[5px] w-9 h-9 p-1 bg-transparent border-none cursor-pointer z-[110]"
       id="nav-burger"
       aria-label="Menu"
       aria-expanded={open}

@@ -34,7 +34,7 @@ export function LogoSection() {
         </div>
       </div>
 
-      <div className="logo-upload-area">
+      <div className="py-2">
         <ModeSelector
           label={t('logo.modeLabel')}
           name="logo-mode"
@@ -67,11 +67,11 @@ export function LogoSection() {
           onDelete={handleDeleteLogo}
         />
 
-        <hr className="logo-separator" />
+        <hr className="border-none border-t border-[var(--bo-border)] my-6" />
 
         <div className="mt-4">
-          <div className="favicon-header">
-            <h3>{t('logo.faviconTitle')}</h3>
+          <div className="mb-3">
+            <h3 className="text-base font-semibold m-0 mb-[0.2rem]">{t('logo.faviconTitle')}</h3>
             <div className="carousel-info">{t('logo.faviconInfo')}</div>
           </div>
 
@@ -87,7 +87,7 @@ export function LogoSection() {
             message={faviconMsg}
             onUpload={handleFaviconUpload}
             onDelete={handleDeleteFavicon}
-            previewClassName="favicon-preview-img"
+            previewClassName="w-8 h-8 object-contain border border-[var(--bo-border)] rounded bg-white p-[2px]"
           />
         </div>
       </div>

@@ -35,11 +35,11 @@ export function GallerySection({ section }: Props) {
 
   return (
     <section className="section section-gallery" id="realisations">
-      <div className="container">
+      <div className="max-w-[1200px] mx-auto px-5">
         <h2 className="section-title" data-content-key="gallery-title">
           Nos Dernieres Realisations
         </h2>
-        <div className="gallery-grid">
+        <div className="gallery-grid grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-10 mb-16">
           {images.map((src, i) => (
             <div key={i} className="gallery-item">
               <img src={src} alt={`Realisation ${i + 1}`} />

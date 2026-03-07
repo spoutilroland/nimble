@@ -81,14 +81,14 @@ export function CaptchaSection() {
           <h2>{t('captcha.sectionTitle')}</h2>
           <div className="carousel-info">{t('captcha.sectionInfo')}</div>
         </div>
-        <button className="btn btn-success" onClick={save}>
+        <button className="bg-[var(--bo-green)] text-[#0b0d12] font-['Plus_Jakarta_Sans',sans-serif] text-[0.875rem] font-bold tracking-[0.2px] py-[0.65rem] px-6 border-none rounded-xl cursor-pointer transition-[background,box-shadow] duration-200 hover:bg-[var(--primary-light)] hover:shadow-[var(--bo-green-glow)]" onClick={save}>
           {t('captcha.btnSave')}
         </button>
       </div>
 
-      <div className="site-form max-w-[520px]">
-        <div className="site-form-group">
-          <h3 className="site-form-category">{t('captcha.providerGroupTitle')}</h3>
+      <div className="flex flex-col gap-[0.9rem] mt-[0.9rem] max-w-[520px]">
+        <div className="border border-[var(--bo-border)] py-[1.2rem] px-[1.4rem]">
+          <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-[0.8rem] tracking-[0.12em] uppercase text-[var(--bo-green)] m-0 mb-4">{t('captcha.providerGroupTitle')}</h3>
 
           <div className="form-group">
             <label>{t('captcha.serviceLabel')}</label>
@@ -116,17 +116,17 @@ export function CaptchaSection() {
 
           {info && info.steps.length > 0 && (
             <div className="captcha-instructions">
-              <div className="captcha-guide">
-                <div className="captcha-guide-title">
+              <div className="mt-4 p-4 bg-[rgba(74,124,89,0.08)] border-l-[3px] border-l-[var(--bo-green)] text-[0.85rem]">
+                <div className="font-semibold mb-2 text-[var(--bo-green)]">
                   {t('captcha.howToConfigure', { name: info.label })}
                 </div>
-                <ol className="captcha-guide-steps">
+                <ol className="pl-[1.2rem] m-0 mb-[0.8rem] leading-[1.8] text-[var(--bo-text)]">
                   {info.steps.map((step, i) => (
                     <li key={i}>{step}</li>
                   ))}
                 </ol>
                 {info.link && (
-                  <a href={info.link} target="_blank" rel="noopener noreferrer" className="captcha-guide-link">
+                  <a href={info.link} target="_blank" rel="noopener noreferrer" className="text-[var(--bo-green)] text-[0.82rem] no-underline hover:underline">
                     {t('captcha.openDashboard')}
                   </a>
                 )}

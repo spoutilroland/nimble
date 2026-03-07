@@ -53,7 +53,7 @@ export function SiteSection() {
       <div className="carousel-section-header">
         <div className="flex items-center gap-[0.8rem]">
           <button
-            className="btn-collapse"
+            className="bg-none border-none text-[var(--bo-text-dim)] text-[0.9rem] cursor-pointer py-[0.2rem] px-[0.4rem] transition-colors duration-200 leading-none hover:text-[var(--bo-green)]"
             title={t('common.collapseTitle')}
             onClick={() => setCollapsed(!collapsed)}
           >
@@ -66,7 +66,7 @@ export function SiteSection() {
         </div>
         <div className="flex items-center gap-[0.8rem]">
           {message && <div className={`form-message ${message.type}`}>{message.text}</div>}
-          <button className="btn btn-success" disabled={saving} onClick={save}>
+          <button className="bg-[var(--bo-green)] text-[#0b0d12] font-['Plus_Jakarta_Sans',sans-serif] text-[0.875rem] font-bold tracking-[0.2px] py-[0.65rem] px-6 border-none rounded-xl cursor-pointer transition-[background,box-shadow] duration-200 hover:bg-[var(--primary-light)] hover:shadow-[var(--bo-green-glow)]" disabled={saving} onClick={save}>
             {t('common.save')}
           </button>
         </div>
@@ -74,9 +74,9 @@ export function SiteSection() {
 
       {!collapsed && (
         <div>
-          <div className="site-form">
-            <div className="site-form-group">
-              <h3 className="site-form-category">{t('site.identityGroupTitle')}</h3>
+          <div className="flex flex-col gap-[0.9rem] mt-[0.9rem]">
+            <div className="border border-[var(--bo-border)] py-[1.2rem] px-[1.4rem]">
+              <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-[0.8rem] tracking-[0.12em] uppercase text-[var(--bo-green)] m-0 mb-4">{t('site.identityGroupTitle')}</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="form-group">
                   <label>{t('site.nameLabel')}</label>
@@ -96,7 +96,7 @@ export function SiteSection() {
 
           <div className="flex justify-end items-center gap-[0.8rem] mt-4">
             {message && <div className={`form-message ${message.type}`}>{message.text}</div>}
-            <button className="btn btn-success" disabled={saving} onClick={save}>
+            <button className="bg-[var(--bo-green)] text-[#0b0d12] font-['Plus_Jakarta_Sans',sans-serif] text-[0.875rem] font-bold tracking-[0.2px] py-[0.65rem] px-6 border-none rounded-xl cursor-pointer transition-[background,box-shadow] duration-200 hover:bg-[var(--primary-light)] hover:shadow-[var(--bo-green-glow)]" disabled={saving} onClick={save}>
               {t('common.save')}
             </button>
           </div>

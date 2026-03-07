@@ -30,29 +30,34 @@ export function MediaFilters({
     ? t('mediaLibrary.count_one')
     : t('mediaLibrary.count_other').replace('{n}', String(totalCount));
 
-  return (
-    <div className="media-filters">
-      <span className="media-filters-count">{count}</span>
+  const filterBtnClass = (active: boolean) =>
+    `bg-transparent border border-[var(--bo-border)] text-[var(--bo-text-dim)] px-[0.6rem] py-[0.25rem] rounded-[var(--bo-radius-sm,4px)] cursor-pointer text-[0.8rem] transition-all duration-150 hover:border-[var(--bo-border-hover)] hover:text-[var(--bo-text)]${active ? ' media-filter-btn-active bg-[var(--bo-green)] !border-[var(--bo-green)] !text-[#0e1018] font-semibold' : ''}`;
 
-      <div className="media-filters-group">
+  const sortSelectClass = 'bg-[var(--bo-surface)] border border-[var(--bo-border)] text-[var(--bo-text)] px-2 py-[0.25rem] rounded-[var(--bo-radius-sm,4px)] text-[0.8rem] cursor-pointer';
+
+  return (
+    <div className="flex items-center gap-[0.6rem] flex-wrap mb-4 text-[0.82rem]">
+      <span className="text-[var(--bo-text-dim)] whitespace-nowrap">{count}</span>
+
+      <div className="flex items-center gap-[0.3rem]">
         {/* Filtre usage */}
         {(['all', 'used', 'orphan'] as FilterUsage[]).map((f) => (
           <button
             key={f}
-            className={`media-filter-btn${filterUsage === f ? ' active' : ''}`}
+            className={filterBtnClass(filterUsage === f)}
             onClick={() => setFilterUsage(f)}
           >
             {t(`mediaLibrary.filter${f.charAt(0).toUpperCase() + f.slice(1)}` as `mediaLibrary.${string}`)}
           </button>
         ))}
 
-        <span className="media-filters-sep" />
+        <span className="w-px h-4 bg-[var(--bo-border)] mx-[0.3rem]" />
 
         {/* Filtre type */}
         {(['all', 'jpg', 'png', 'webp', 'svg'] as FilterType[]).map((f) => (
           <button
             key={f}
-            className={`media-filter-btn${filterType === f ? ' active' : ''}`}
+            className={filterBtnClass(filterType === f)}
             onClick={() => setFilterType(f)}
           >
             {t(`mediaLibrary.filter${f.charAt(0).toUpperCase() + f.slice(1)}` as `mediaLibrary.${string}`)}
@@ -62,10 +67,10 @@ export function MediaFilters({
         {/* Filtre dimensions */}
         {availableDimensions.length > 1 && (
           <>
-            <span className="media-filters-sep" />
+            <span className="w-px h-4 bg-[var(--bo-border)] mx-[0.3rem]" />
 
             <select
-              className="media-sort-select"
+              className={sortSelectClass}
               value={filterDimension}
               onChange={(e) => setFilterDimension(e.target.value)}
             >
@@ -81,7 +86,7 @@ export function MediaFilters({
       </div>
 
       <select
-        className="media-sort-select"
+        className={`${sortSelectClass} ml-auto`}
         value={sort}
         onChange={(e) => setSort(e.target.value as SortMode)}
       >

@@ -42,10 +42,10 @@ export function DividerRow({ divider, onChange }: DividerRowProps) {
   };
 
   return (
-    <div className="section-divider-row">
-      <div className="section-divider-controls">
+    <div className="flex flex-col pt-[0.35rem] border-t border-dashed border-[rgba(255,255,255,0.1)] mt-[0.3rem]">
+      <div className="flex items-center gap-2 flex-wrap">
         <select
-          className="section-divider-type"
+          className="flex-1 min-w-[120px] !w-auto !max-w-none !text-[0.78rem] !py-[0.2rem] !px-[0.4rem] !rounded-[3px] cursor-pointer"
           value={currentType}
           onChange={(e) => handleTypeChange(e.target.value as DividerConfig['type'])}
         >
@@ -57,7 +57,7 @@ export function DividerRow({ divider, onChange }: DividerRowProps) {
         {!isNone && (
           <>
             <select
-              className="section-divider-color"
+              className="min-w-[110px] !w-auto !max-w-none !text-[0.78rem] !py-[0.2rem] !px-[0.4rem] !rounded-[3px] cursor-pointer"
               value={currentColor}
               onChange={(e) => handleColorChange(e.target.value)}
             >
@@ -65,7 +65,7 @@ export function DividerRow({ divider, onChange }: DividerRowProps) {
                 <option key={c.value} value={c.value}>{t(c.key)}</option>
               ))}
             </select>
-            <label className="section-divider-flip-label">
+            <label className="inline-flex items-center gap-[0.3rem] text-[0.78rem] text-[var(--bo-text-dim)] whitespace-nowrap cursor-pointer">
               <input
                 type="checkbox"
                 className="section-divider-flip"
@@ -80,7 +80,7 @@ export function DividerRow({ divider, onChange }: DividerRowProps) {
 
       {!isNone && (
         <div
-          className="section-divider-preview"
+          className="w-full h-[22px] rounded-[3px] overflow-hidden bg-[rgba(0,0,0,0.3)] text-[var(--bo-accent,#4a7c59)] border border-[var(--bo-border)] mt-[0.3rem]"
           style={{ color: currentColor }}
           dangerouslySetInnerHTML={{ __html: getDividerPreviewSvg(currentType, currentFlip) }}
         />

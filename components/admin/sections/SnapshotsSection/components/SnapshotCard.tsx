@@ -21,7 +21,7 @@ function formatDate(iso: string): string {
 
 export function SnapshotCard({ snapshot, onRestore, onDelete, t }: Props) {
   return (
-    <div className="page-card">
+    <div className="border border-[var(--bo-border)] rounded-2xl overflow-hidden mb-[0.8rem]">
       <div className="flex items-center justify-between gap-4">
         <div className="flex flex-col gap-[0.3rem]">
           <strong className="text-[var(--bo-text)]">{snapshot.name}</strong>

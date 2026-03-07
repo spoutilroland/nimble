@@ -96,7 +96,7 @@ export function ContactSection({ captchaProvider, captchaSiteKey }: Props) {
   if (status === 'success') {
     return (
       <section className="section section-contact" id="contact">
-        <div className="container">
+        <div className="max-w-[1200px] mx-auto px-5">
           <p className="contact-msg contact-msg--success">
             Votre demande a bien ete envoyee ! Nous vous repondrons rapidement.
           </p>
@@ -107,28 +107,28 @@ export function ContactSection({ captchaProvider, captchaSiteKey }: Props) {
 
   return (
     <section className="section section-contact" id="contact">
-      <div className="container">
+      <div className="max-w-[1200px] mx-auto px-5">
         <h2 className="section-title" data-content-key="contact-title">
           Demandez votre devis gratuit
         </h2>
-        <form className="contact-form" ref={formRef} onSubmit={handleSubmit}>
-          <div className="form-row">
-            <div className="form-group">
+        <form className="contact-form max-w-[750px] mx-auto" ref={formRef} onSubmit={handleSubmit}>
+          <div className="form-row grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
+            <div className="form-group mb-8">
               <input type="text" name="name" placeholder="Votre nom" required />
             </div>
-            <div className="form-group">
+            <div className="form-group mb-8">
               <input type="email" name="email" placeholder="Votre email" required />
             </div>
           </div>
-          <div className="form-row">
-            <div className="form-group">
+          <div className="form-row grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
+            <div className="form-group mb-8">
               <input type="tel" name="phone" placeholder="Votre telephone" />
             </div>
-            <div className="form-group">
+            <div className="form-group mb-8">
               <input type="text" name="location" placeholder="Votre ville" />
             </div>
           </div>
-          <div className="form-group">
+          <div className="form-group mb-8">
             <textarea name="message" placeholder="Decrivez votre projet..." rows={5} required />
           </div>
 

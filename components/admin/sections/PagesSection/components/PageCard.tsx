@@ -99,14 +99,14 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
   };
 
   return (
-    <div className="page-card" data-page-id={page.id}>
-      <div className="page-card-header">
-        <div className="page-card-info">
-          <span className="page-card-title">{page.title}</span>
-          <span className="page-card-slug">{page.slug}</span>
-          {page.showInNav && <span className="page-nav-badge">Nav</span>}
+    <div className="border border-[var(--bo-border)] rounded-2xl overflow-hidden" data-page-id={page.id}>
+      <div className="flex items-center justify-between py-[0.9rem] px-[1.2rem] bg-[var(--bo-surface-2,rgba(255,255,255,0.03))]">
+        <div className="flex items-center gap-[0.8rem] flex-wrap">
+          <span className="font-['Plus_Jakarta_Sans',sans-serif] text-base text-[var(--bo-text)]">{page.title}</span>
+          <span className="text-[0.8rem] text-[var(--bo-text-dim)] font-mono">{page.slug}</span>
+          {page.showInNav && <span className="text-[0.7rem] py-[0.15rem] px-2 bg-[rgba(74,124,89,0.2)] text-[var(--bo-green)] border border-[var(--bo-green)] tracking-[0.06em]">Nav</span>}
         </div>
-        <div className="page-card-actions">
+        <div className="flex gap-2">
           <button className="btn btn-secondary btn-sm" onClick={() => setEditing(!editing)}>
             {editing ? t('pages.btnClose') : t('pages.btnEdit')}
           </button>
@@ -119,7 +119,7 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
       </div>
 
       {editing && (
-        <div className="page-card-edit">
+        <div className="py-4 px-[1.2rem] border-t border-[var(--bo-border)]">
           <div className="grid grid-cols-2 gap-4 my-4">
             <div className="form-group">
               <label>{t('pages.titleLabel')}</label>
@@ -131,14 +131,14 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
             </div>
           </div>
           <div className="form-group">
-            <label className="checkbox-label checkbox-inline">
+            <label className="flex items-center gap-2 cursor-pointer text-[0.9rem] text-[var(--bo-text)] checkbox-inline">
               {t('pages.showInNavLabel')}
               <input type="checkbox" checked={showInNav} onChange={(e) => setShowInNav(e.target.checked)} />
             </label>
           </div>
 
-          <details className="seo-details">
-            <summary className="page-sections-label cursor-pointer list-none">{t('pages.seoDetails')}</summary>
+          <details className="border border-[var(--bo-border)] p-[0.6rem_0.8rem] mb-4 [&>summary::-webkit-details-marker]:hidden">
+            <summary className="text-[0.75rem] uppercase tracking-[0.1em] text-[var(--bo-green)] mb-2 cursor-pointer list-none">{t('pages.seoDetails')}</summary>
             <div className="mt-3 space-y-3">
               <div className="form-group">
                 <label>{t('pages.seoTitleLabel')}</label>
@@ -155,8 +155,8 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
             </div>
           </details>
 
-          <div className="page-sections-label mt-4">{t('pages.sectionsLabel')}</div>
-          <div className="page-sections-list">
+          <div className="text-[0.75rem] uppercase tracking-[0.1em] text-[var(--bo-green)] mb-2 mt-4">{t('pages.sectionsLabel')}</div>
+          <div className="flex flex-col gap-[0.4rem] mb-[0.8rem]">
             {sections.map((section, idx) => (
               <SectionRow
                 key={idx}
@@ -173,7 +173,7 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
           </div>
 
           <div className="flex items-center gap-2 mt-3">
-            <select className="add-section-select" value={addSectionType} onChange={(e) => setAddSectionType(e.target.value)}>
+            <select className="flex-1 py-[0.4rem] px-[0.6rem] bg-[var(--bo-bg,#0b0d12)] border border-[var(--bo-border)] text-[var(--bo-text)] text-[0.85rem]" value={addSectionType} onChange={(e) => setAddSectionType(e.target.value)}>
               {SECTION_TYPES.map(st => (
                 <option key={st.type} value={st.type}>{t(`sectionType.${st.type}`)}</option>
               ))}

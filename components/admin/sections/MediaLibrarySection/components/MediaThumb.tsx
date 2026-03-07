@@ -21,35 +21,35 @@ export function MediaThumb({ item, selected, onToggleSelect, onOpen }: MediaThum
 
   return (
     <div
-      className={`media-thumb${selected ? ' selected' : ''}`}
+      className={`relative aspect-square rounded-[var(--bo-radius-sm,6px)] overflow-hidden cursor-pointer border-2 transition-[border-color,box-shadow] duration-150 bg-[var(--bo-surface)] hover:border-[var(--bo-border-hover)]${selected ? ' border-[var(--bo-green)] shadow-[var(--bo-green-glow)]' : ' border-transparent'}`}
       onClick={() => onOpen(item.id)}
     >
-      <div className="media-thumb-img-wrap">
+      <div className="w-full h-full flex items-center justify-center overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={src}
           alt={item.altText || item.originalName}
           loading="lazy"
-          className={isSvg ? 'media-thumb-svg' : ''}
+          className={`w-full h-full${isSvg ? ' object-contain p-4' : ' object-cover'}`}
         />
       </div>
 
-      <div className="media-thumb-overlay">
+      <div className={`absolute inset-0 flex items-start justify-start p-[0.4rem] transition-opacity duration-150 pointer-events-none${selected ? ' opacity-100' : ' opacity-0 hover:opacity-100'}`}>
         <input
           type="checkbox"
-          className="media-thumb-checkbox"
+          className="w-[18px] h-[18px] accent-[var(--bo-green)] cursor-pointer pointer-events-auto"
           checked={selected}
           onChange={() => onToggleSelect(item.id)}
           onClick={(e) => e.stopPropagation()}
         />
       </div>
 
-      <div className="media-thumb-info">
-        <span className="media-thumb-name" title={item.originalName}>
+      <div className="absolute bottom-0 left-0 right-0 px-[0.4rem] py-[0.3rem] bg-gradient-to-t from-black/70 flex flex-col gap-[0.1rem] pointer-events-none">
+        <span className="text-white text-[0.7rem] whitespace-nowrap overflow-hidden text-ellipsis" title={item.originalName}>
           {item.originalName}
         </span>
         {item.fileSize != null && (
-          <span className="media-thumb-size">{formatSize(item.fileSize)}</span>
+          <span className="text-white/70 text-[0.65rem]">{formatSize(item.fileSize)}</span>
         )}
       </div>
     </div>

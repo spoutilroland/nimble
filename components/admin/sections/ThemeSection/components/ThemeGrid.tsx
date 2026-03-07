@@ -18,20 +18,20 @@ export function ThemeGrid({ active, customThemes, onActivate, onDelete }: ThemeG
   return (
     <>
       {/* Grille thèmes natifs */}
-      <div className="theme-grid" id="theme-grid-native">
+      <div className="flex flex-wrap gap-[0.8rem]" id="theme-grid-native">
         {NATIVE_THEMES.map((th) => (
           <button
             key={th.id}
-            className={`theme-card${active === th.id ? ' active' : ''}`}
+            className={`group bg-[var(--bo-bg)] border rounded-2xl p-0 cursor-pointer transition-all duration-200 flex flex-col min-w-[120px] relative overflow-hidden hover:border-[var(--bo-border-hover)] hover:-translate-y-1 hover:shadow-[var(--bo-green-glow)] ${active === th.id ? 'border-[var(--bo-green)] shadow-[var(--bo-green-glow)]' : 'border-[var(--bo-border)]'}`}
             onClick={() => onActivate(th.id, th.label)}
           >
-            <div className="theme-swatches">
+            <div className="flex h-10">
               {th.colors.map((c, i) => (
-                <span key={i} className="swatch" style={{ background: c }} />
+                <span key={i} className="flex-1 block h-full" style={{ background: c }} />
               ))}
             </div>
-            <span className="theme-label">{th.label}</span>
-            {active === th.id && <span className="theme-badge">{t('theme.activeBadge')}</span>}
+            <span className={`font-['Plus_Jakarta_Sans',sans-serif] text-[0.75rem] font-bold uppercase tracking-[2px] py-[0.6rem] px-[0.8rem] pb-[0.5rem] block transition-colors duration-200 group-hover:text-[var(--bo-text)] ${active === th.id ? 'text-[var(--bo-green)]' : 'text-[var(--bo-text-dim)]'}`}>{th.label}</span>
+            {active === th.id && <span className="absolute top-[5px] right-[5px] bg-[var(--bo-green)] text-white text-[0.55rem] font-bold tracking-[1px] uppercase py-[0.2rem] px-2 shadow-[0_0_8px_rgba(74,124,89,0.5)]">{t('theme.activeBadge')}</span>}
           </button>
         ))}
       </div>
@@ -39,28 +39,28 @@ export function ThemeGrid({ active, customThemes, onActivate, onDelete }: ThemeG
       {/* Thèmes personnalisés */}
       {customEntries.length > 0 && (
         <>
-          <div className="theme-custom-label">{t('theme.customLabel')}</div>
-          <div className="theme-grid theme-grid-custom" id="theme-grid-custom">
+          <div className="font-['Plus_Jakarta_Sans',sans-serif] text-[0.65rem] font-bold tracking-[3px] uppercase text-[var(--bo-text-dim)] mt-[1.2rem] mb-[0.6rem] opacity-70">{t('theme.customLabel')}</div>
+          <div className="flex flex-wrap gap-[0.8rem]" id="theme-grid-custom">
             {customEntries.map(([id, th]) => {
               const swatches = th.vars
                 ? [th.vars['--primary'], th.vars['--secondary'], th.vars['--accent'], th.vars['--bg']].filter(Boolean)
                 : [];
               return (
-                <div key={id} className="theme-card-wrapper">
+                <div key={id} className="group relative inline-block">
                   <button
-                    className={`theme-card${active === id ? ' active' : ''}`}
+                    className={`group bg-[var(--bo-bg)] border rounded-2xl p-0 cursor-pointer transition-all duration-200 flex flex-col min-w-[120px] relative overflow-hidden hover:border-[var(--bo-border-hover)] hover:-translate-y-1 hover:shadow-[var(--bo-green-glow)] ${active === id ? 'border-[var(--bo-green)] shadow-[var(--bo-green-glow)]' : 'border-[var(--bo-border)]'}`}
                     onClick={() => onActivate(id, th.label)}
                   >
-                    <div className="theme-swatches">
+                    <div className="flex h-10">
                       {swatches.map((c, i) => (
-                        <span key={i} className="swatch" style={{ background: c }} />
+                        <span key={i} className="flex-1 block h-full" style={{ background: c }} />
                       ))}
                     </div>
-                    <span className="theme-label">{th.label}</span>
-                    {active === id && <span className="theme-badge">{t('theme.activeBadge')}</span>}
+                    <span className={`font-['Plus_Jakarta_Sans',sans-serif] text-[0.75rem] font-bold uppercase tracking-[2px] py-[0.6rem] px-[0.8rem] pb-[0.5rem] block transition-colors duration-200 group-hover:text-[var(--bo-text)] ${active === id ? 'text-[var(--bo-green)]' : 'text-[var(--bo-text-dim)]'}`}>{th.label}</span>
+                    {active === id && <span className="absolute top-[5px] right-[5px] bg-[var(--bo-green)] text-white text-[0.55rem] font-bold tracking-[1px] uppercase py-[0.2rem] px-2 shadow-[0_0_8px_rgba(74,124,89,0.5)]">{t('theme.activeBadge')}</span>}
                   </button>
                   <button
-                    className="btn-delete-theme"
+                    className="absolute -top-[6px] -right-[6px] bg-[rgba(229,57,53,0.8)] border-none rounded-full w-[22px] h-[22px] text-[0.7rem] cursor-pointer flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 leading-none"
                     title={t('theme.deleteTitle')}
                     onClick={(e) => { e.stopPropagation(); onDelete(id); }}
                   >

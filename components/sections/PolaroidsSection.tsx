@@ -42,9 +42,9 @@ export function PolaroidsSection({ section }: Props) {
 
   return (
     <section className="s3">
-      <div className="container">
-        <div className="section-header reveal">
-          <span className="section-tag">
+      <div className="max-w-[1200px] mx-auto px-5">
+        <div className="section-header text-center mb-16 reveal">
+          <span className="section-tag inline-block font-['Oswald',sans-serif] text-[0.75rem] tracking-[5px] uppercase text-[var(--accent)] mb-4">
             &mdash; {sectionTag} &mdash;
           </span>
           <h2 className="section-title">
@@ -52,16 +52,16 @@ export function PolaroidsSection({ section }: Props) {
           </h2>
         </div>
 
-        <div className="polaroid-grid reveal" ref={gridRef}>
+        <div className="polaroid-grid flex flex-wrap justify-center gap-x-10 gap-y-12 py-8 reveal" ref={gridRef}>
           {items.map((item, i) => (
             <div key={i} className="polaroid">
               <img
-                className="polaroid-img"
+                className="polaroid-img w-full h-[200px] object-cover block"
                 src=""
                 alt={item.title}
               />
-              <div className="polaroid-caption">
-                <span className="title">{item.title}</span>
+              <div className="polaroid-caption text-center pt-4">
+                <span className="title font-['Raleway',sans-serif] italic font-semibold text-base text-[var(--text)] block mb-2">{item.title}</span>
                 <span className={`polaroid-tag ${item.tagColor}`}>{item.tag}</span>
               </div>
             </div>

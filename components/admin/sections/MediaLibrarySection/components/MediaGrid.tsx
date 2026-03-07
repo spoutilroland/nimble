@@ -16,14 +16,14 @@ export function MediaGrid({ items, selectedIds, onToggleSelect, onOpen }: MediaG
 
   if (items.length === 0) {
     return (
-      <div className="media-grid-empty">
+      <div className="py-12 px-4 text-center text-[var(--bo-text-dim)] text-[0.9rem]">
         <p>{t('mediaLibrary.empty')}</p>
       </div>
     );
   }
 
   return (
-    <div className="media-grid">
+    <div className="grid gap-[0.6rem]" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))' }}>
       {items.map((item) => (
         <MediaThumb
           key={item.id}

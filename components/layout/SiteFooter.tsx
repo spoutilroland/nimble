@@ -28,7 +28,7 @@ export function SiteFooter({ site, logoUrl, lang }: Props) {
         {footerBlocks.map((block) => (
           <div
             key={block.blockId}
-            className="footer-block"
+            className="footer-block text-white/[0.82]"
             style={{
               gridRow: block.row,
               gridColumn: `${block.col} / span ${block.colSpan || 1}`,
@@ -37,38 +37,38 @@ export function SiteFooter({ site, logoUrl, lang }: Props) {
             {block.type === 'logo-desc' && (
               <>
                 {logoUrl ? (
-                  <img src={logoUrl} alt={b.name} className="footer-logo" />
+                  <img src={logoUrl} alt={b.name} className="footer-logo max-h-[55px] max-w-[170px] object-contain mb-4 block brightness-0 invert opacity-90" />
                 ) : (
-                  <h3>{b.name}</h3>
+                  <h3 className="text-[1.25rem] font-bold uppercase tracking-[1.5px] text-white mb-[1.1rem]">{b.name}</h3>
                 )}
-                {b.description && <p>{b.description}</p>}
+                {b.description && <p className="mb-[0.55rem] leading-[1.75] text-[0.9rem]">{b.description}</p>}
               </>
             )}
 
             {block.type === 'contact' && (
               <>
-                <h4>{t(lang, 'footer.contact')}</h4>
+                <h4 className="text-[0.7rem] font-bold uppercase tracking-[2.5px] text-[var(--primary-light)] mb-[1.1rem] pb-[0.65rem] border-b border-white/[0.12]">{t(lang, 'footer.contact')}</h4>
                 {b.phone && (
-                  <p>
-                    <a href={`tel:${b.phone}`}>{b.phone}</a>
+                  <p className="mb-[0.55rem] leading-[1.75] text-[0.9rem]">
+                    <a href={`tel:${b.phone}`} className="text-inherit no-underline opacity-80 hover:opacity-100 hover:text-[var(--primary-light)] hover:underline hover:underline-offset-[3px] transition-[opacity,color]">{b.phone}</a>
                   </p>
                 )}
                 {b.email && (
-                  <p>
-                    <a href={`mailto:${b.email}`}>{b.email}</a>
+                  <p className="mb-[0.55rem] leading-[1.75] text-[0.9rem]">
+                    <a href={`mailto:${b.email}`} className="text-inherit no-underline opacity-80 hover:opacity-100 hover:text-[var(--primary-light)] hover:underline hover:underline-offset-[3px] transition-[opacity,color]">{b.email}</a>
                   </p>
                 )}
-                {b.address && <p>{b.address}</p>}
+                {b.address && <p className="mb-[0.55rem] leading-[1.75] text-[0.9rem]">{b.address}</p>}
               </>
             )}
 
             {block.type === 'hours' && (
               <>
-                <h4>{t(lang, 'footer.hours')}</h4>
-                {h.weekdays && <p>{h.weekdays}</p>}
-                {h.saturday && <p>{h.saturday}</p>}
+                <h4 className="text-[0.7rem] font-bold uppercase tracking-[2.5px] text-[var(--primary-light)] mb-[1.1rem] pb-[0.65rem] border-b border-white/[0.12]">{t(lang, 'footer.hours')}</h4>
+                {h.weekdays && <p className="mb-[0.55rem] leading-[1.75] text-[0.9rem]">{h.weekdays}</p>}
+                {h.saturday && <p className="mb-[0.55rem] leading-[1.75] text-[0.9rem]">{h.saturday}</p>}
                 {h.note && (
-                  <p style={{ marginTop: '0.4rem', fontStyle: 'italic', fontSize: '0.9em' }}>
+                  <p className="mt-[0.4rem] italic text-[0.9em] mb-[0.55rem] leading-[1.75]">
                     {h.note}
                   </p>
                 )}
@@ -76,7 +76,7 @@ export function SiteFooter({ site, logoUrl, lang }: Props) {
             )}
 
             {block.type === 'legal' && (
-              <p style={{ fontSize: '0.85rem', opacity: 0.7, textAlign: 'center' }}>
+              <p className="text-[0.78rem] opacity-50 text-center m-0 pt-[1.8rem] border-t border-white/[0.08]">
                 &copy; {l.copyright} &mdash; {t(lang, 'footer.allRightsReserved')}
                 {l.siret && <> | SIRET {l.siret}</>}
                 {l.certifications && <> | {l.certifications}</>}

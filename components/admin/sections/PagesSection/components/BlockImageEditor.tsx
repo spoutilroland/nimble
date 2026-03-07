@@ -45,17 +45,17 @@ export function BlockImageEditor({ carouselId, label }: BlockImageEditorProps) {
   };
 
   return (
-    <div className="block-image-editor">
-      <span className="block-image-label">{label}</span>
+    <div className="flex items-center gap-3">
+      <span className="text-[0.72rem] text-[var(--bo-text-dim)] min-w-[50px] shrink-0">{label}</span>
       <div
-        className={`block-image-zone${imageUrl ? ' has-image' : ''}`}
+        className={`block-image-zone w-16 h-16 bg-[var(--bo-bg)] border border-dashed border-[var(--bo-border)] rounded cursor-pointer flex items-center justify-center overflow-hidden shrink-0 transition-[border-color] duration-150 hover:border-[var(--bo-green)]${imageUrl ? ' !border-solid' : ''}`}
         onClick={() => setPickerOpen(true)}
         title={t('blockImage.clickToChange')}
       >
         {imageUrl ? (
-          <img src={imageUrl} alt="" className="block-image-thumb" />
+          <img src={imageUrl} alt="" className="w-full h-full object-cover" />
         ) : (
-          <span className="block-image-placeholder">
+          <span className="text-[0.72rem] text-[var(--bo-text-dim)]">
             {uploading ? t('blockImage.uploading') : t('blockImage.upload')}
           </span>
         )}

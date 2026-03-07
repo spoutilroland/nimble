@@ -88,13 +88,13 @@ function LayoutCard({ layout, isEditing, onEdit, onDelete, onSaved, onCancel }: 
   const { t, tp } = useI18n();
 
   return (
-    <div className="page-card">
-      <div className="page-card-header">
-        <div className="page-card-info">
-          <span className="page-card-title">{layout.label}</span>
-          <span className="page-card-slug">{layout.id} — {tp('layouts.blockCount', layout.blocks.length)}</span>
+    <div className="border border-[var(--bo-border)] rounded-2xl overflow-hidden mb-[0.8rem]">
+      <div className="flex items-center justify-between p-[0.9rem_1.2rem] bg-[var(--bo-surface-2,rgba(255,255,255,0.03))]">
+        <div className="flex items-center gap-[0.8rem] flex-wrap">
+          <span className="font-['Plus_Jakarta_Sans',sans-serif] text-[1rem] text-[var(--bo-text)]">{layout.label}</span>
+          <span className="text-[0.8rem] text-[var(--bo-text-dim)] font-mono">{layout.id} — {tp('layouts.blockCount', layout.blocks.length)}</span>
         </div>
-        <div className="page-card-actions">
+        <div className="flex gap-[0.5rem]">
           <button className="btn btn-secondary btn-sm" onClick={onEdit}>
             {isEditing ? t('layouts.btnCancel') : t('layouts.btnEdit')}
           </button>
@@ -105,7 +105,7 @@ function LayoutCard({ layout, isEditing, onEdit, onDelete, onSaved, onCancel }: 
       </div>
 
       {isEditing && (
-        <div className="page-card-edit">
+        <div className="p-[1rem_1.2rem] border-t border-[var(--bo-border)]">
           <LayoutEditor
             existingLayout={layout}
             onCancel={onCancel}

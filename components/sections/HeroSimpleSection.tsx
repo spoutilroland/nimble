@@ -34,10 +34,10 @@ export function HeroSimpleSection({ section }: Props) {
 
   return (
     <>
-      <section className="hero">
+      <section className="hero relative h-[80vh] min-h-[600px] flex items-center justify-center overflow-hidden">
         <div className="hero-bg" ref={bgRef} />
         <div className="hero-overlay" />
-        <div className="hero-content">
+        <div className="hero-content text-center text-white relative z-[2] px-4">
           <p className="hero-eyebrow" data-content-key="hero-eyebrow">
             Portfolio de realisations
           </p>

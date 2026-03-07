@@ -101,7 +101,7 @@ export function SocialSection() {
       <div className="carousel-section-header">
         <div className="flex items-center gap-[0.8rem]">
           <button
-            className="btn-collapse"
+            className="bg-none border-none text-[var(--bo-text-dim)] text-[0.9rem] cursor-pointer py-[0.2rem] px-[0.4rem] transition-colors duration-200 leading-none hover:text-[var(--bo-green)]"
             title={t('common.collapseTitle')}
             onClick={() => setCollapsed(!collapsed)}
           >
@@ -114,7 +114,7 @@ export function SocialSection() {
         </div>
         <div className="flex items-center gap-[0.8rem]">
           {message && <div className={`form-message ${message.type}`}>{message.text}</div>}
-          <button className="btn btn-success" disabled={saving} onClick={save}>
+          <button className="bg-[var(--bo-green)] text-[#0b0d12] font-['Plus_Jakarta_Sans',sans-serif] text-[0.875rem] font-bold tracking-[0.2px] py-[0.65rem] px-6 border-none rounded-xl cursor-pointer transition-[background,box-shadow] duration-200 hover:bg-[var(--primary-light)] hover:shadow-[var(--bo-green-glow)]" disabled={saving} onClick={save}>
             {t('common.save')}
           </button>
         </div>
@@ -122,9 +122,9 @@ export function SocialSection() {
 
       {!collapsed && (
         <div>
-          <div className="site-form">
-            <div className="site-form-group">
-              <div className="social-inputs-grid">
+          <div className="flex flex-col gap-[0.9rem] mt-[0.9rem]">
+            <div className="border border-[var(--bo-border)] py-[1.2rem] px-[1.4rem]">
+              <div className="social-inputs-grid grid grid-cols-2 gap-x-[1.2rem] gap-y-[0.8rem]">
                 {SOCIAL_NETWORKS.map(n => (
                   <div key={n.key} className="form-group">
                     <label>{n.label}</label>

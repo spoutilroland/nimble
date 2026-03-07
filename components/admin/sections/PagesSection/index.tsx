@@ -40,13 +40,13 @@ export function PagesSection() {
       </div>
 
       {/* Redirection de la page d'accueil */}
-      <div className="page-card">
-        <div className="page-card-header">
-          <div className="page-card-info">
-            <span className="page-card-title">{t('pages.redirectTitle')}</span>
+      <div className="border border-[var(--bo-border)] rounded-2xl overflow-hidden">
+        <div className="flex items-center justify-between py-[0.9rem] px-[1.2rem] bg-[var(--bo-surface-2,rgba(255,255,255,0.03))]">
+          <div className="flex items-center gap-[0.8rem] flex-wrap">
+            <span className="font-['Plus_Jakarta_Sans',sans-serif] text-base text-[var(--bo-text)]">{t('pages.redirectTitle')}</span>
           </div>
         </div>
-        <div className="page-card-edit">
+        <div className="py-4 px-[1.2rem] border-t border-[var(--bo-border)]">
           <div className="form-group mb-0">
             <label>{t('pages.redirectLabel')}</label>
             <select
@@ -63,7 +63,7 @@ export function PagesSection() {
         </div>
       </div>
 
-      <div>
+      <div className="flex flex-col gap-[0.8rem] mt-4">
         {pages.map(page => (
           <PageCard
             key={page.id}
@@ -78,7 +78,7 @@ export function PagesSection() {
 
       {showNewForm && (
         <div className="mt-4 p-4 border border-[var(--bo-border)] rounded">
-          <h3 className="site-form-category mt-[1.2rem]">{t('pages.newPageTitle')}</h3>
+          <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-[0.8rem] tracking-[0.12em] uppercase text-[var(--bo-green)] m-0 mb-4 mt-[1.2rem]">{t('pages.newPageTitle')}</h3>
           <div className="grid grid-cols-2 gap-4">
             <div className="form-group">
               <label>{t('pages.titleLabel')}</label>
@@ -100,7 +100,7 @@ export function PagesSection() {
             </div>
           </div>
           <div className="form-group">
-            <label className="checkbox-label checkbox-inline">
+            <label className="flex items-center gap-2 cursor-pointer text-[0.9rem] text-[var(--bo-text)] checkbox-inline">
               {t('pages.showInNavLabel')}
               <input type="checkbox" checked={newNav} onChange={(e) => setNewNav(e.target.checked)} />
             </label>

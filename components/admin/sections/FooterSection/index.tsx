@@ -53,8 +53,8 @@ export function FooterSection() {
       {!collapsed && (
         <div>
           {/* Layout grille */}
-          <div className="site-form-group mt-4">
-            <h3 className="site-form-category mt-0">{t('footerSection.layoutTitle')}</h3>
+          <div className="border border-[var(--bo-border)] p-[1.2rem_1.4rem] mt-4">
+            <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-[0.8rem] tracking-[0.12em] uppercase text-[var(--bo-green)] m-0 mb-4 mt-0">{t('footerSection.layoutTitle')}</h3>
             <div className="flex items-center gap-4 mb-4">
               <label className="flex items-center gap-2 font-semibold">
                 {t('footerSection.colsLabel')}

@@ -78,12 +78,12 @@ export function CustomLayoutSection({ section, layout }: Props) {
 
   return (
     <section
-      className="section custom-layout-section"
+      className="section custom-layout-section py-16"
       id={`layout-${section.layoutId}`}
       ref={sectionRef}
     >
-      <div className="container">
-        <div className="custom-layout-grid">
+      <div className="max-w-[1200px] mx-auto px-5">
+        <div className="custom-layout-grid grid grid-cols-3 gap-8 items-start">
           {/* Tri par col puis row : l'ordre DOM est ainsi cohérent en mobile (une personne = nom → image → texte) */}
           {[...layout.blocks].sort((a, b) => {
             const colA = a.col || 1;
@@ -101,7 +101,7 @@ export function CustomLayoutSection({ section, layout }: Props) {
               return (
                 <Tag
                   key={block.blockId}
-                  className="layout-block layout-title"
+                  className="layout-block layout-title min-h-px m-0 text-[var(--text)]"
                   style={cssStringToObject(blockStyle(extBlock, gridStyle))}
                   data-content-key={contentKey}
                 >
@@ -114,7 +114,7 @@ export function CustomLayoutSection({ section, layout }: Props) {
               return (
                 <div
                   key={block.blockId}
-                  className="layout-block layout-richtext"
+                  className="layout-block layout-richtext min-h-px text-[var(--text-muted)] leading-[1.7]"
                   style={cssStringToObject(blockStyle(extBlock, gridStyle))}
                   data-content-key={contentKey}
                 >
@@ -131,7 +131,7 @@ export function CustomLayoutSection({ section, layout }: Props) {
                   style={cssStringToObject(blockStyle(extBlock, gridStyle))}
                   data-carousel-id={bcId || undefined}
                 >
-                  <div className="layout-image-placeholder">Image</div>
+                  <div className="layout-image-placeholder flex items-center justify-center min-h-[200px] bg-[var(--bg-light)] border-2 border-dashed border-[var(--text-muted)] rounded-[var(--radius,0)] text-[var(--text-muted)] italic">Image</div>
                 </div>
               );
             }

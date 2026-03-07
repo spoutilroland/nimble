@@ -15,13 +15,14 @@ const MAX_NAV = 5;
 const SPLIT_AT = 5;
 // Nombre de liens visibles directement en mode centré (le reste va dans le burger)
 const SPLIT_VISIBLE = 2;
+const navLinkCls = 'nav-link text-[var(--text-muted)] no-underline font-bold text-[0.9rem] transition-colors duration-300 relative uppercase tracking-[1px]';
 
 function NavLink({ page, currentPath }: { page: PageData; currentPath: string }) {
   const isActive =
     (page.slug === '/' && currentPath === '/') ||
     (page.slug !== '/' && currentPath === page.slug);
   return (
-    <a href={page.slug} className={`nav-link${isActive ? ' active' : ''}`}>
+    <a href={page.slug} className={`${navLinkCls}${isActive ? ' active' : ''}`}>
       {page.title}
     </a>
   );
@@ -36,7 +37,7 @@ export function SiteHeader({ site, pages, currentPath, logoUrl }: Props) {
   const homePage = pages.find((p) => p.slug === '/');
   const hasContact = homePage?.sections.some((s) => s.type === 'contact') ?? false;
   const contactLink = hasContact ? (
-    <a href={currentPath === '/' ? '#contact' : '/#contact'} className="nav-link">
+    <a href={currentPath === '/' ? '#contact' : '/#contact'} className={navLinkCls}>
       Contact
     </a>
   ) : null;
@@ -49,15 +50,15 @@ export function SiteHeader({ site, pages, currentPath, logoUrl }: Props) {
 
   // Logo JSX — partagé entre les deux modes
   const logoJsx = (
-    <div className="logo">
+    <div className="logo shrink-0">
       <a href="/" className="flex items-center gap-5 no-underline">
         {logoUrl && (logoMode === 'logo-only' || logoMode === 'logo-name') && (
-          <img src={logoUrl} alt={site.business.name} className="logo-img" />
+          <img src={logoUrl} alt={site.business.name} className="logo-img h-[60px] w-auto max-w-[220px] object-contain" />
         )}
         {(logoMode === 'name-only' || logoMode === 'logo-name' || !logoUrl) && (
           <div className="flex flex-col">
-            <span className="logo-name">{site.business.name}</span>
-            <span className="logo-tagline">{site.business.tagline}</span>
+            <span className="logo-name font-['Oswald',sans-serif] text-[var(--primary-dark)] text-[1.6rem] font-bold tracking-[2px] uppercase leading-none whitespace-nowrap">{site.business.name}</span>
+            <span className="logo-tagline text-[var(--accent)] text-[0.8rem] font-semibold mt-[0.3rem] tracking-[3px] uppercase whitespace-nowrap">{site.business.tagline}</span>
           </div>
         )}
       </a>
@@ -65,11 +66,11 @@ export function SiteHeader({ site, pages, currentPath, logoUrl }: Props) {
   );
 
   return (
-    <header className="header">
-      <div className="container">
+    <header className="header sticky top-0 z-[1000] py-6 backdrop-blur-[10px] border-b-[3px] border-b-[var(--primary)]">
+      <div className="max-w-[1200px] mx-auto px-5">
         {logoPos === 'center' ? (
           /* ── Mode centré : un seul bloc logo+nav, centré dans le header ── */
-          <div className="nav-center-layout">
+          <div className="nav-center-layout flex items-center justify-center gap-12">
             {logoJsx}
             <nav className="nav" id="main-nav">
               {visibleLinks.map((p) => (

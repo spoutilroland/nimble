@@ -71,9 +71,9 @@ export function SecuritySection() {
         </div>
       </div>
 
-      <div className="site-form max-w-[420px]">
-        <div className="site-form-group">
-          <h3 className="site-form-category">{t('security.passwordGroupTitle')}</h3>
+      <div className="flex flex-col gap-[0.9rem] mt-[0.9rem] max-w-[420px]">
+        <div className="border border-[var(--bo-border)] py-[1.2rem] px-[1.4rem]">
+          <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-[0.8rem] tracking-[0.12em] uppercase text-[var(--bo-green)] m-0 mb-4">{t('security.passwordGroupTitle')}</h3>
 
           <div className="form-group">
             <label>{t('security.currentPwdLabel')}</label>
@@ -93,7 +93,7 @@ export function SecuritySection() {
               value={newPwd}
               onChange={(e) => setNewPwd(e.target.value)}
             />
-            <div className="pwd-strength-bar">
+            <div className="h-1 bg-[rgba(255,255,255,0.08)] mt-2 overflow-hidden">
               <div
                 className="pwd-strength-fill"
                 style={{
@@ -103,7 +103,7 @@ export function SecuritySection() {
                 data-label={newPwd.length ? strengthLabels[score] : ''}
               />
             </div>
-            <ul className="pwd-criteria">
+            <ul className="list-none mt-[0.7rem] flex flex-wrap gap-x-4 gap-y-[0.4rem]">
               <li className={`pwd-criterion${crit.length ? ' ok' : ''}`}>{t('security.critLength')}</li>
               <li className={`pwd-criterion${crit.upper ? ' ok' : ''}`}>{t('security.critUpper')}</li>
               <li className={`pwd-criterion${crit.digit ? ' ok' : ''}`}>{t('security.critDigit')}</li>
@@ -122,7 +122,7 @@ export function SecuritySection() {
           </div>
 
           <div className="text-right">
-            <button className="btn btn-success" onClick={save}>
+            <button className="bg-[var(--bo-green)] text-[#0b0d12] font-['Plus_Jakarta_Sans',sans-serif] text-[0.875rem] font-bold tracking-[0.2px] py-[0.65rem] px-6 border-none rounded-xl cursor-pointer transition-[background,box-shadow] duration-200 hover:bg-[var(--primary-light)] hover:shadow-[var(--bo-green-glow)]" onClick={save}>
               {t('security.btnSave')}
             </button>
           </div>

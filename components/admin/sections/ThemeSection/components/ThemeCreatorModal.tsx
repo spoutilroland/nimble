@@ -100,7 +100,7 @@ export function ThemeCreatorModal({ onClose, onSaved }: ThemeCreatorModalProps) 
 
   const modal = (
     <div className="modal show" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="modal-content theme-creator-content">
+      <div className="modal-content max-w-[580px]">
         <span className="close" onClick={onClose}>&times;</span>
         <h2>{t('theme.creator.title')}</h2>
 
@@ -116,32 +116,32 @@ export function ThemeCreatorModal({ onClose, onSaved }: ThemeCreatorModalProps) 
           />
         </div>
 
-        <div className="tc-pickers-label">{t('theme.creator.baseColorsLabel')}</div>
+        <div className="font-['Plus_Jakarta_Sans',sans-serif] text-[0.7rem] font-bold tracking-[2px] uppercase text-[var(--bo-text-dim)] mt-[1.4rem] mb-[0.7rem]">{t('theme.creator.baseColorsLabel')}</div>
         <div className="grid grid-cols-4 gap-[0.6rem] mb-[0.8rem]">
           {colorPickers.map(({ role, labelKey }) => {
             const hex = colors[role];
             const short = hexToShort(hex);
             return (
-              <div key={role} className={`color-picker-item${anchored.has(role) ? ' anchored' : ''}`} data-role={role}>
+              <div key={role} className={`flex flex-col items-center gap-[0.4rem] p-[0.5rem_0.3rem] border border-[var(--bo-border)] transition-[border-color] duration-200${anchored.has(role) ? ' border-[var(--bo-green)] shadow-[0_0_8px_rgba(74,124,89,0.3)]' : ''}`} data-role={role}>
                 <input
                   type="color"
-                  className="tc-color-input"
+                  className="w-11 h-11 border-none rounded-sm p-0 cursor-pointer bg-none"
                   value={hex}
                   onChange={(e) => updateColor(role, e.target.value)}
                 />
                 <label>{t(labelKey)}</label>
-                <div className="color-codes">
-                  <span className="color-code">{hex}</span>
-                  {short && <span className="color-code">{short}</span>}
-                  <span className="color-code">{hexToRgbStr(hex)}</span>
-                  <span className="color-code">{hexToHslStr(hex)}</span>
+                <div className="flex flex-col items-center gap-[0.15rem] w-full mt-[0.3rem]">
+                  <span className="font-mono text-[0.55rem] text-[var(--bo-text)] bg-[rgba(255,255,255,0.04)] border border-[var(--bo-border)] py-[0.1rem] px-[0.3rem] w-full text-center whitespace-nowrap overflow-hidden text-ellipsis cursor-default select-all">{hex}</span>
+                  {short && <span className="font-mono text-[0.55rem] text-[var(--bo-text)] bg-[rgba(255,255,255,0.04)] border border-[var(--bo-border)] py-[0.1rem] px-[0.3rem] w-full text-center whitespace-nowrap overflow-hidden text-ellipsis cursor-default select-all">{short}</span>}
+                  <span className="font-mono text-[0.55rem] text-[var(--bo-text)] bg-[rgba(255,255,255,0.04)] border border-[var(--bo-border)] py-[0.1rem] px-[0.3rem] w-full text-center whitespace-nowrap overflow-hidden text-ellipsis cursor-default select-all">{hexToRgbStr(hex)}</span>
+                  <span className="font-mono text-[0.55rem] text-[var(--bo-text)] bg-[rgba(255,255,255,0.04)] border border-[var(--bo-border)] py-[0.1rem] px-[0.3rem] w-full text-center whitespace-nowrap overflow-hidden text-ellipsis cursor-default select-all">{hexToHslStr(hex)}</span>
                 </div>
               </div>
             );
           })}
         </div>
 
-        <div className="tc-pickers-label">{t('theme.creator.harmonyLabel')}</div>
+        <div className="font-['Plus_Jakarta_Sans',sans-serif] text-[0.7rem] font-bold tracking-[2px] uppercase text-[var(--bo-text-dim)] mt-[1.4rem] mb-[0.7rem]">{t('theme.creator.harmonyLabel')}</div>
         <div className="harmony-radio-group">
           {harmonyOptions.map(({ value, labelKey }) => (
             <label key={value}>
@@ -156,7 +156,7 @@ export function ThemeCreatorModal({ onClose, onSaved }: ThemeCreatorModalProps) 
             </label>
           ))}
         </div>
-        <button className="btn btn-harmony" onClick={applyHarmony}>
+        <button className="bg-[rgba(52,211,153,0.08)] text-[var(--bo-green)] border border-[rgba(52,211,153,0.25)] rounded-xl font-['Plus_Jakarta_Sans',sans-serif] text-[0.8rem] font-bold tracking-[1.5px] uppercase py-[0.6rem] px-[1.2rem] cursor-pointer w-full transition-all duration-150 mb-[1.4rem] hover:bg-[rgba(74,124,89,0.3)] hover:border-[var(--bo-green)]" onClick={applyHarmony}>
           {t('theme.creator.applyHarmony')}
         </button>
 

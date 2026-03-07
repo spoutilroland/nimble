@@ -36,8 +36,8 @@ export function SectionRow({ section, index, total, layouts, onRemove, onMoveUp,
   };
 
   return (
-    <div className="section-row" data-type={section.type}>
-      <div className="section-row-top">
+    <div className="flex flex-col py-2 px-[0.8rem] bg-[rgba(255,255,255,0.03)] border border-[var(--bo-border)]" data-type={section.type}>
+      <div className="flex items-center gap-2">
         <button
           className="btn-collapse"
           onClick={() => {
@@ -49,12 +49,12 @@ export function SectionRow({ section, index, total, layouts, onRemove, onMoveUp,
           {collapsed ? '▶' : '▼'}
         </button>
 
-        <span className="section-row-label">{t(`sectionType.${section.type}`)}</span>
+        <span className="flex-1 text-[0.85rem] text-[var(--bo-text)] mt-[0.2rem]">{t(`sectionType.${section.type}`)}</span>
 
-        <div className="section-row-btns">
-          <button className="btn-section-up" disabled={index === 0} title={t('common.moveUp')} onClick={onMoveUp}>↑</button>
-          <button className="btn-section-down" disabled={index === total - 1} title={t('common.moveDown')} onClick={onMoveDown}>↓</button>
-          <button className="btn-section-remove" title={t('common.delete')} onClick={onRemove}>×</button>
+        <div className="section-row-btns flex gap-[0.25rem] mt-[0.1rem] shrink-0">
+          <button className="btn-section-up w-[26px] h-[26px] p-0 bg-[rgba(255,255,255,0.05)] border border-[var(--bo-border)] text-[var(--bo-text)] cursor-pointer text-[0.8rem] leading-none transition-colors duration-200" disabled={index === 0} title={t('common.moveUp')} onClick={onMoveUp}>↑</button>
+          <button className="btn-section-down w-[26px] h-[26px] p-0 bg-[rgba(255,255,255,0.05)] border border-[var(--bo-border)] text-[var(--bo-text)] cursor-pointer text-[0.8rem] leading-none transition-colors duration-200" disabled={index === total - 1} title={t('common.moveDown')} onClick={onMoveDown}>↓</button>
+          <button className="btn-section-remove w-[26px] h-[26px] p-0 bg-[rgba(255,255,255,0.05)] border border-[var(--bo-border)] !text-[#e55a2a] cursor-pointer text-[0.8rem] leading-none transition-colors duration-200" title={t('common.delete')} onClick={onRemove}>×</button>
         </div>
       </div>
 
@@ -62,7 +62,7 @@ export function SectionRow({ section, index, total, layouts, onRemove, onMoveUp,
         <>
           {isCustomLayout ? (
             <div className="flex flex-col gap-[0.3rem] mt-2">
-              <span className="section-subsection-label">{t('section.layoutLabel')}</span>
+              <span className="text-[0.72rem] uppercase tracking-[0.04em] text-[var(--back-text-muted,var(--bo-text-dim))] mt-2">{t('section.layoutLabel')}</span>
               <select
                 className="section-layout-id"
                 value={section.layoutId || ''}
@@ -84,8 +84,8 @@ export function SectionRow({ section, index, total, layouts, onRemove, onMoveUp,
                 const imageBlocks = selectedLayout?.blocks.filter(b => b.type === 'image') ?? [];
                 return imageBlocks.length > 0 ? (
                   <>
-                    <span className="section-subsection-label">{t('section.imagesLabel')}</span>
-                    <div className="block-images-list">
+                    <span className="text-[0.72rem] uppercase tracking-[0.04em] text-[var(--back-text-muted,var(--bo-text-dim))] mt-2">{t('section.imagesLabel')}</span>
+                    <div className="flex flex-col gap-[0.3rem] mt-[0.1rem]">
                       {imageBlocks.map((b, i) => (
                         <BlockImageEditor
                           key={b.blockId}
@@ -100,19 +100,19 @@ export function SectionRow({ section, index, total, layouts, onRemove, onMoveUp,
             </div>
           ) : info?.needsCarousel && section.carouselId ? (
             <>
-              <span className="section-subsection-label">{t('section.imagesLabel')}</span>
+              <span className="text-[0.72rem] uppercase tracking-[0.04em] text-[var(--back-text-muted,var(--bo-text-dim))] mt-2">{t('section.imagesLabel')}</span>
               <InlineCarouselEditor carouselId={section.carouselId} maxImages={info?.maxImages} imageHint={info?.imageHint} />
             </>
           ) : null}
 
           {(section.type === 'stats' || section.type === 'polaroids') && (
             <>
-              <span className="section-subsection-label">{t('section.configLabel')}</span>
+              <span className="text-[0.72rem] uppercase tracking-[0.04em] text-[var(--back-text-muted,var(--bo-text-dim))] mt-2">{t('section.configLabel')}</span>
               <SectionPropsEditor section={section} onUpdate={onUpdate} />
             </>
           )}
 
-          <span className="section-subsection-label">{t('section.dividerLabel')}</span>
+          <span className="text-[0.72rem] uppercase tracking-[0.04em] text-[var(--back-text-muted,var(--bo-text-dim))] mt-2">{t('section.dividerLabel')}</span>
           <DividerRow
             divider={section.dividerAfter as DividerConfig | undefined}
             onChange={(d) => onUpdate({ dividerAfter: d as Section['dividerAfter'] })}
