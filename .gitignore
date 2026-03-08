@@ -43,3 +43,7 @@ repopack-output.txt
 
 # Notes de session (privées)
 done.md
+
+# Rapports d'audit (données sensibles, garder en local uniquement)
+SECURITY_AUDIT.md
+SECURITY_CORRECTIONS.md
