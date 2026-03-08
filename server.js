@@ -1,5 +1,6 @@
-const { readdirSync, existsSync } = require('fs');
-const { join } = require('path');
+const { createServer } = require('http');
+const { parse } = require('url');
+const next = require('next');
 
 // Empêcher le process de mourir silencieusement
 process.on('uncaughtException', (err) => {
@@ -9,27 +10,19 @@ process.on('unhandledRejection', (err) => {
   console.error('[Nimble] Unhandled rejection:', err);
 });
 
-// Chercher server.js récursivement dans standalone
-function findServerJs(dir, depth) {
-  if (depth > 10) return null;
-  const candidate = join(dir, 'server.js');
-  if (existsSync(candidate)) return candidate;
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    if (entry.isDirectory() && entry.name !== 'node_modules' && entry.name !== '.next') {
-      const found = findServerJs(join(dir, entry.name), depth + 1);
-      if (found) return found;
+const app = next({ dev: false });
+const handle = app.getRequestHandler();
+
+app.prepare().then(() => {
+  createServer((req, res) => {
+    try {
+      handle(req, res, parse(req.url, true));
+    } catch (err) {
+      console.error('[Nimble] Request error:', err);
+      res.statusCode = 500;
+      res.end('Internal Server Error');
     }
-  }
-  return null;
-}
-
-const standaloneDir = join(__dirname, '.next', 'standalone');
-const serverPath = findServerJs(standaloneDir, 0);
-
-if (!serverPath) {
-  console.error('[Nimble] server.js introuvable dans .next/standalone/');
-  process.exit(1);
-}
-
-console.log('[Nimble] Loading', serverPath);
-require(serverPath);
+  }).listen(process.env.PORT || 3000, () => {
+    console.log('[Nimble] Ready on port', process.env.PORT || 3000);
+  });
+});
