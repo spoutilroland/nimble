@@ -1,4 +1,4 @@
-const { readdirSync } = require('fs');
+const { readdirSync, existsSync } = require('fs');
 const { join } = require('path');
 
 // Empêcher le process de mourir silencieusement
@@ -9,12 +9,27 @@ process.on('unhandledRejection', (err) => {
   console.error('[Nimble] Unhandled rejection:', err);
 });
 
-// Trouver le sous-dossier du projet (varie selon le chemin d'installation)
-const standaloneDir = join(__dirname, '.next', 'standalone');
-const entries = readdirSync(standaloneDir, { withFileTypes: true });
-const projectDir = entries.find(e => e.isDirectory() && e.name !== 'node_modules');
-const serverPath = projectDir
-  ? join(standaloneDir, projectDir.name, 'server.js')
-  : join(standaloneDir, 'server.js');
+// Chercher server.js récursivement dans standalone
+function findServerJs(dir, depth) {
+  if (depth > 10) return null;
+  const candidate = join(dir, 'server.js');
+  if (existsSync(candidate)) return candidate;
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (entry.isDirectory() && entry.name !== 'node_modules' && entry.name !== '.next') {
+      const found = findServerJs(join(dir, entry.name), depth + 1);
+      if (found) return found;
+    }
+  }
+  return null;
+}
 
+const standaloneDir = join(__dirname, '.next', 'standalone');
+const serverPath = findServerJs(standaloneDir, 0);
+
+if (!serverPath) {
+  console.error('[Nimble] server.js introuvable dans .next/standalone/');
+  process.exit(1);
+}
+
+console.log('[Nimble] Loading', serverPath);
 require(serverPath);
