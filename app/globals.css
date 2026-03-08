@@ -737,6 +737,11 @@
     width: 1px;
     background: rgba(255,255,255,0.2);
 }
+@media (max-width: 639px) {
+    .stat-item:nth-child(even)::after {
+        display: none;
+    }
+}
 
 /* ── Section 2 : Rénovation — Cinematic Split ───────────────── */
 .s2 {

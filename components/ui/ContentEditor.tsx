@@ -198,6 +198,7 @@ export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
 
       richToolbar = document.createElement('div');
       richToolbar.className = 'rich-toolbar';
+      richToolbar.style.display = 'none';
       richToolbar.innerHTML = `
         <button data-cmd="bold" title="Gras"><b>B</b></button>
         <button data-cmd="italic" title="Italique"><i>I</i></button>

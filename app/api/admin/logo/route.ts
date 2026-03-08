@@ -35,6 +35,7 @@ export const POST = withAuth(async (req: NextRequest) => {
       }
     } catch {}
 
+    await fsp.mkdir(logoDir, { recursive: true });
     const filePath = path.join(logoDir, filename);
     await fsp.writeFile(filePath, buffer);
     await deleteFromBlobByPrefix('uploads/logo/').catch(() => {});

@@ -39,6 +39,7 @@ export const POST = withAuth(async (req: NextRequest) => {
       }
     } catch {}
 
+    await fsp.mkdir(faviconDir, { recursive: true });
     await fsp.writeFile(path.join(faviconDir, filename), buffer);
     await deleteFromBlobByPrefix('uploads/favicon/').catch(() => {});
     await uploadToBlob(`uploads/favicon/${filename}`, buffer, file.type).catch(() => {});
