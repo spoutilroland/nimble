@@ -3,7 +3,7 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import { withAuth } from '@/lib/auth';
-import { readContent, writeContent, readSiteConfig } from '@/lib/data';
+import { readContent, writeContent, readSiteConfig, sanitizeRichText } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
 
 export const POST = withAuth(async (req: NextRequest) => {
@@ -20,7 +20,7 @@ export const POST = withAuth(async (req: NextRequest) => {
 
     if (!content[targetLang]) content[targetLang] = {};
     if (!content[targetLang][page]) content[targetLang][page] = {};
-    content[targetLang][page][key] = value;
+    content[targetLang][page][key] = typeof value === 'string' ? sanitizeRichText(value) : value;
 
     await writeContent(content);
     return NextResponse.json({ success: true });

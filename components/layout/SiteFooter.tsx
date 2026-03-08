@@ -1,6 +1,7 @@
 // Port de _old/views/partials/footer.ejs
 import type { SiteConfig } from '@/lib/types';
 import { t } from '@/lib/i18n';
+import { sanitizeRichText } from '@/lib/data';
 import { FooterSocial } from './FooterSocial';
 import { FooterMap } from './FooterMap';
 
@@ -87,7 +88,7 @@ export function SiteFooter({ site, logoUrl, lang }: Props) {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const b = block as any;
               if (b.type === 'richtext') {
-                return <div dangerouslySetInnerHTML={{ __html: b.content || '' }} />;
+                return <div dangerouslySetInnerHTML={{ __html: sanitizeRichText(b.content || '') }} />;
               }
               if (b.type === 'social-links') {
                 return (

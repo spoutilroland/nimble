@@ -28,6 +28,7 @@ export {
   getSocialIconUrl,
   processImageWithSharp,
   escapeHtml,
+  sanitizeRichText,
   ensureUploadDirs,
   MIME_TO_EXT,
   ALLOWED_TYPES,

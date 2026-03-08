@@ -22,7 +22,7 @@ function checkRateLimit(ip: string): boolean {
 }
 
 export async function POST(req: NextRequest) {
-  const ip = req.headers.get('x-forwarded-for') || 'unknown';
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.headers.get('x-real-ip') || 'unknown';
   if (!checkRateLimit(ip)) {
     return NextResponse.json(
       { error: 'Too many login attempts, please try again later.' },

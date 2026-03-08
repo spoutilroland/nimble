@@ -61,6 +61,23 @@ export function escapeHtml(str: string): string {
     .replace(/'/g, '&#x27;');
 }
 
+/**
+ * Sanitise du HTML rich text : conserve les balises de formatage
+ * mais supprime les scripts, event handlers et balises dangereuses.
+ */
+export function sanitizeRichText(html: string): string {
+  if (typeof html !== 'string') return '';
+  return html
+    // Supprimer les balises script/iframe/object/embed/form/input
+    .replace(/<\s*\/?\s*(script|iframe|object|embed|form|input|textarea|select|button|link|meta|base)\b[^>]*>/gi, '')
+    // Supprimer les event handlers (onclick, onerror, onload, etc.)
+    .replace(/\s+on[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]*)/gi, '')
+    // Supprimer javascript: dans les href/src
+    .replace(/(href|src|action)\s*=\s*["']?\s*javascript:/gi, '$1="')
+    // Supprimer data: dans les src (sauf images)
+    .replace(/src\s*=\s*["']?\s*data:(?!image\/)/gi, 'src="');
+}
+
 export function ensureUploadDirs(): void {
   for (const folder of ['media', 'logo', 'favicon', 'social']) {
     const dir = path.join(uploadsDir, folder);

@@ -43,13 +43,19 @@ export default async function SiteLayout({
           <link href={site.fonts.googleFontsUrl} rel="stylesheet" />
         )}
         <ThemeScript />
-        {site.design?.borderStyle === 'custom' && site.design.customRadius && (
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `document.documentElement.style.setProperty('--radius','${site.design.customRadius.tl}px ${site.design.customRadius.tr}px ${site.design.customRadius.br}px ${site.design.customRadius.bl}px');`,
-            }}
-          />
-        )}
+        {site.design?.borderStyle === 'custom' && site.design.customRadius && (() => {
+          const tl = Number(site.design.customRadius.tl) || 0;
+          const tr = Number(site.design.customRadius.tr) || 0;
+          const br = Number(site.design.customRadius.br) || 0;
+          const bl = Number(site.design.customRadius.bl) || 0;
+          return (
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `document.documentElement.style.setProperty('--radius','${tl}px ${tr}px ${br}px ${bl}px');`,
+              }}
+            />
+          );
+        })()}
       </head>
       <body className="site-page font-['Raleway',sans-serif] leading-[1.7] text-[var(--text)] bg-[var(--bg)] overflow-x-hidden">
         <AdminBar />
