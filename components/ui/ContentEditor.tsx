@@ -130,6 +130,8 @@ export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
     }
 
     async function checkAdmin(): Promise<boolean> {
+      // Pas de cookie de session → pas admin, on skip le fetch
+      if (!document.cookie.includes('sid=')) return false;
       try {
         const res = await fetch('/api/auth/check');
         const data = await res.json();
