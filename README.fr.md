@@ -32,14 +32,14 @@ Un CMS léger, sans base de données, pour les sites vitrines. Gérez les pages,
 
 ## Développement local
 
-**Prérequis** : Node.js 20+
+**Prérequis** : Node.js 20+, pnpm
 
 ```bash
-git clone <repo-url> nimble
+git clone https://github.com/spoutilroland/nimble.git nimble
 cd nimble
-npm install
+pnpm install
 cp .env.example .env   # à éditer avec vos paramètres
-npm run dev            # http://localhost:3000
+pnpm dev               # http://localhost:3000
 ```
 
 Back-office : `http://localhost:3000/back`
@@ -69,7 +69,7 @@ newgrp docker
 ### 2. Cloner et déployer
 
 ```bash
-git clone <repo-url> nimble
+git clone https://github.com/spoutilroland/nimble.git nimble
 cd nimble
 bash deploy.sh
 ```

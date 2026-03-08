@@ -33,14 +33,14 @@ A lightweight, database-free CMS for showcase websites. Manage pages, sections, 
 
 ## Local Development
 
-**Requirements**: Node.js 20+
+**Requirements**: Node.js 20+, pnpm
 
 ```bash
-git clone <repo-url> nimble
+git clone https://github.com/spoutilroland/nimble.git nimble
 cd nimble
-npm install
+pnpm install
 cp .env.example .env   # edit with your settings
-npm run dev            # http://localhost:3000
+pnpm dev               # http://localhost:3000
 ```
 
 Back-office: `http://localhost:3000/back`
@@ -70,7 +70,7 @@ newgrp docker
 ### 2. Clone and deploy
 
 ```bash
-git clone <repo-url> nimble
+git clone https://github.com/spoutilroland/nimble.git nimble
 cd nimble
 bash deploy.sh
 ```
