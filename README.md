@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-# Nimble
+# Nimble — Lightweight CMS
 <!-- last updated: 2026-02-27 -->
 <!-- persistence user data test -->
 A lightweight, database-free CMS for showcase websites. Manage pages, sections, carousels, theme, content and contact form entirely from a back-office — all stored in JSON files.
