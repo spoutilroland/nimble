@@ -427,7 +427,8 @@
     "uploadIcon": "Icône",
     "deleteIcon": "Supprimer",
     "uploading": "...",
-    "iconError": "Erreur lors de l'upload de l'icône"
+    "iconError": "Erreur lors de l'upload de l'icône",
+    "labelPlaceholder": "Texte affiché (vide = pas de texte)"
   },
   "footerSection": {
     "sectionTitle": "Footer",

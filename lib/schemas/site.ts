@@ -75,6 +75,17 @@ export const SocialLinksSchema = z.object({
   github: z.string(),
 });
 
+export const SocialLabelsSchema = z.object({
+  linkedin: z.string().optional(),
+  facebook: z.string().optional(),
+  instagram: z.string().optional(),
+  x: z.string().optional(),
+  tiktok: z.string().optional(),
+  youtube: z.string().optional(),
+  pinterest: z.string().optional(),
+  github: z.string().optional(),
+});
+
 export const FooterBlockTypeEnum = z.enum([
   'logo-desc', 'contact', 'hours', 'legal', 'richtext', 'social-links', 'map',
 ]);
@@ -116,6 +127,7 @@ export const SiteConfigSchema = z.object({
   logoPosition: z.enum(['left', 'center', 'right']),
   languages: LanguagesConfigSchema,
   social: SocialLinksSchema,
+  socialLabels: SocialLabelsSchema.optional(),
   footer: FooterConfigSchema,
   mail: MailConfigSchema.optional(),
   homepageRedirect: z.string().optional(),
@@ -132,6 +144,7 @@ export type MailConfig = z.infer<typeof MailConfigSchema>;
 export type CustomRadius = z.infer<typeof CustomRadiusSchema>;
 export type DesignConfig = z.infer<typeof DesignConfigSchema>;
 export type SocialLinks = z.infer<typeof SocialLinksSchema>;
+export type SocialLabels = z.infer<typeof SocialLabelsSchema>;
 export type FooterBlockType = z.infer<typeof FooterBlockTypeEnum>;
 export type FooterBlock = z.infer<typeof FooterBlockSchema>;
 export type FooterConfig = z.infer<typeof FooterConfigSchema>;

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useI18n } from '@/lib/i18n/context';
 import { useAdminStore } from '@/lib/admin/store';
-import type { SocialLinks } from '@/lib/types';
+import type { SocialLinks, SocialLabels } from '@/lib/types';
 
 const SOCIAL_NETWORKS = [
   { key: 'linkedin', label: 'LinkedIn', placeholder: 'https://linkedin.com/company/...' },
@@ -22,6 +22,7 @@ export function SocialSection() {
   const loadSite = useAdminStore((s) => s.loadSite);
   const saveSite = useAdminStore((s) => s.saveSite);
   const [social, setSocial] = useState<Record<string, string>>({});
+  const [labels, setLabels] = useState<Record<string, string>>({});
   const [icons, setIcons] = useState<Record<string, string>>({});
   const [uploadingFor, setUploadingFor] = useState<string | null>(null);
   const [collapsed, setCollapsed] = useState(true);
@@ -34,7 +35,10 @@ export function SocialSection() {
   }, [site, loadSite]);
 
   useEffect(() => {
-    if (site) setSocial(site.social || {});
+    if (site) {
+      setSocial(site.social || {});
+      setLabels(site.socialLabels || {});
+    }
   }, [site]);
 
   useEffect(() => {
@@ -80,13 +84,22 @@ export function SocialSection() {
     });
   };
 
+  const updateLabel = (key: string, value: string) => {
+    setLabels(prev => ({ ...prev, [key]: value }));
+  };
+
   const save = async () => {
     setSaving(true);
     const socialData: Record<string, string> = {};
+    const labelsData: Record<string, string> = {};
     SOCIAL_NETWORKS.forEach(n => {
       socialData[n.key] = social[n.key]?.trim() || '';
+      labelsData[n.key] = labels[n.key]?.trim() || '';
     });
-    const ok = await saveSite({ social: socialData as SocialLinks });
+    const ok = await saveSite({
+      social: socialData as SocialLinks,
+      socialLabels: labelsData as SocialLabels,
+    });
     if (ok) {
       setMessage({ text: t('social.saved'), type: 'success' });
     } else {
@@ -173,6 +186,13 @@ export function SocialSection() {
                       value={social[n.key] || ''}
                       placeholder={n.placeholder}
                       onChange={(e) => updateField(n.key, e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      value={labels[n.key] || ''}
+                      placeholder={t('social.labelPlaceholder', { network: n.label })}
+                      onChange={(e) => updateLabel(n.key, e.target.value)}
+                      className="mt-[0.3rem]"
                     />
                   </div>
                 ))}

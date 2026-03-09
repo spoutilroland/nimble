@@ -427,7 +427,8 @@
     "uploadIcon": "Icon",
     "deleteIcon": "Remove",
     "uploading": "...",
-    "iconError": "Error uploading icon"
+    "iconError": "Error uploading icon",
+    "labelPlaceholder": "Display text (empty = no text)"
   },
   "footerSection": {
     "sectionTitle": "Footer",

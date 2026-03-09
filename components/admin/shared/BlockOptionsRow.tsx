@@ -52,7 +52,7 @@ export function BlockOptionsRow({ block, type, maxCols = 3, context, onUpdate }:
       </label>
 
       {/* Social links options */}
-      {type === 'social-links' && context !== 'footer' && (
+      {type === 'social-links' && (
         <>
           <label className="canvas-block-opt">
             {t('block.directionLabel')}

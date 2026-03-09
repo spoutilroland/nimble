@@ -10,6 +10,7 @@ export type {
   CustomRadius,
   DesignConfig,
   SocialLinks,
+  SocialLabels,
   FooterBlockType,
   FooterBlock,
   FooterConfig,

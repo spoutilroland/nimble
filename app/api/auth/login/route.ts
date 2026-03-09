@@ -47,5 +47,14 @@ export async function POST(req: NextRequest) {
   session.isLoggedIn = true;
   await session.save();
 
-  return NextResponse.json({ success: true });
+  const res = NextResponse.json({ success: true });
+  // Cookie non-httpOnly pour que le JS (ContentEditor) détecte la session admin
+  res.cookies.set('is_admin', '1', {
+    httpOnly: false,
+    sameSite: 'strict',
+    secure: process.env.NODE_ENV === 'production' || process.env.COOKIE_SECURE === 'true',
+    maxAge: 60 * 60 * 8,
+    path: '/',
+  });
+  return res;
 }

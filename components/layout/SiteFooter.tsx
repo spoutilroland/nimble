@@ -29,7 +29,7 @@ export function SiteFooter({ site, logoUrl, lang }: Props) {
         {footerBlocks.map((block) => (
           <div
             key={block.blockId}
-            className="footer-block text-white/[0.82]"
+            className={`footer-block text-white/[0.82]${block.type === 'legal' ? ' footer-block-legal' : ''}`}
             style={{
               gridRow: block.row,
               gridColumn: `${block.col} / span ${block.colSpan || 1}`,
