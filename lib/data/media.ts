@@ -32,8 +32,6 @@ export function getMediaUrls(mediaEntry: MediaEntry): MediaUrls {
   return {
     filename: mediaEntry.filename,
     url: '/uploads/media/' + mediaEntry.filename,
-    webpUrl: mediaEntry.hasWebp
-      ? '/uploads/media/' + mediaEntry.filename.replace(/\.(jpg|jpeg|png)$/i, '') + '.webp'
-      : null,
+    webpUrl: null,
   };
 }

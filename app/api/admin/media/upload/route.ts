@@ -6,7 +6,7 @@ import fsp from 'fs/promises';
 import { withAuth } from '@/lib/auth';
 import {
   readMediaRegistry, writeMediaRegistry, generateMediaId, getMediaUrls,
-  processImageWithSharp, MIME_TO_EXT, ALLOWED_TYPES, MAX_FILE_SIZE,
+  MIME_TO_EXT, ALLOWED_TYPES, MAX_FILE_SIZE,
 } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
 import { uploadToBlob } from '@/lib/storage';
@@ -57,27 +57,13 @@ export const POST = withAuth(async (req: NextRequest) => {
       await fsp.writeFile(filePath, buffer);
       await uploadToBlob(`uploads/media/${filename}`, buffer, file.type).catch(() => {});
 
-      let hasWebp = /\.(jpg|jpeg|png)$/i.test(filename);
-      if (hasWebp) {
-        try {
-          await processImageWithSharp(filePath);
-          // Sync le WebP vers Blob aussi
-          const webpName = filename.replace(/\.(jpg|jpeg|png)$/i, '.webp');
-          const webpPath = path.join(mediaDir, webpName);
-          const webpBuffer = await fsp.readFile(webpPath);
-          await uploadToBlob(`uploads/media/${webpName}`, webpBuffer, 'image/webp').catch(() => {});
-        } catch {
-          hasWebp = false;
-        }
-      }
-
       const mediaId = generateMediaId();
       mediaData.media[mediaId] = {
         id: mediaId,
         filename,
         originalName: file.name,
         mimeType: file.type,
-        hasWebp,
+        hasWebp: false,
         uploadedAt: new Date().toISOString(),
         fileSize: file.size,
       };
