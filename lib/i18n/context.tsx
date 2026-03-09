@@ -38,7 +38,7 @@ export function I18nProvider({
   const tp = (key: string, count: number, vars?: Record<string, string>): string => {
     const suffix = count === 1 ? '_one' : '_other';
     const value = resolveKey(locale, key + suffix) ?? resolveKey(locale, key);
-    return interpolate(value ?? key, { ...vars, count: String(count) });
+    return interpolate(value ?? key, { ...vars, n: String(count), count: String(count) });
   };
 
   return (

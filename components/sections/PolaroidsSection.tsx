@@ -55,9 +55,10 @@ export function PolaroidsSection({ section }: Props) {
         <div className="polaroid-grid flex flex-wrap justify-center gap-x-10 gap-y-12 py-8 reveal" ref={gridRef}>
           {items.map((item, i) => (
             <div key={i} className="polaroid">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 className="polaroid-img w-full h-[200px] object-cover block"
-                src=""
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                 alt={item.title}
               />
               <div className="polaroid-caption text-center pt-4">

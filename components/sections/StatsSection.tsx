@@ -51,9 +51,9 @@ export function StatsSection({ section }: Props) {
   }, []);
 
   return (
-    <div className="stats-bar bg-[var(--primary-dark)] py-8 px-4 sm:py-10 sm:px-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-y-6 reveal" ref={barRef}>
+    <div className="stats-bar bg-[var(--primary-dark)] py-8 px-4 sm:py-10 sm:px-12 flex flex-wrap justify-center gap-y-6 reveal" ref={barRef}>
       {items.map((item, i) => (
-        <div key={i} className="stat-item text-center relative px-4 sm:px-8">
+        <div key={i} className="stat-item text-center relative px-4 sm:px-8 min-w-[140px]">
           <span className="stat-number font-['Oswald',sans-serif] text-[2.5rem] sm:text-[3.5rem] font-bold text-white leading-none block" data-count={item.count}>
             <span>0</span>
           </span>

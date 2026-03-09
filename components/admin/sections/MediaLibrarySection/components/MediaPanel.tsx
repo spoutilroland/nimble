@@ -73,7 +73,7 @@ export function MediaPanel({ media, onClose, onSave, onDelete }: MediaPanelProps
   }, [media.url]);
 
   const isSvg = media.mimeType === 'image/svg+xml';
-  const src = media.url;
+  const src = media.webpUrl ?? media.url;
 
   const inputClass = 'bg-[var(--bo-bg)] border border-[var(--bo-border)] rounded-[8px] text-[var(--bo-text)] px-[0.6rem] py-[0.45rem] text-[0.85rem] transition-[border-color] duration-150 focus:outline-none focus:border-[var(--bo-green)]';
 
@@ -100,6 +100,12 @@ export function MediaPanel({ media, onClose, onSave, onDelete }: MediaPanelProps
               src={src}
               alt={altText || media.originalName}
               className={`max-w-full max-h-[260px] object-contain rounded-[6px]${isSvg ? ' p-4' : ''}`}
+              onError={(e) => {
+                const img = e.currentTarget;
+                if (media.webpUrl && img.src.includes('.webp')) {
+                  img.src = media.url;
+                }
+              }}
             />
           </div>
 

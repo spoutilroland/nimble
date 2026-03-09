@@ -17,11 +17,11 @@ function formatSize(bytes: number): string {
 
 export function MediaThumb({ item, selected, onToggleSelect, onOpen }: MediaThumbProps) {
   const isSvg = item.mimeType === 'image/svg+xml';
-  const src = item.url;
+  const src = item.webpUrl ?? item.url;
 
   return (
     <div
-      className={`relative aspect-square rounded-[var(--bo-radius-sm,6px)] overflow-hidden cursor-pointer border-2 transition-[border-color,box-shadow] duration-150 bg-[var(--bo-surface)] hover:border-[var(--bo-border-hover)]${selected ? ' border-[var(--bo-green)] shadow-[var(--bo-green-glow)]' : ' border-transparent'}`}
+      className={`group relative aspect-square rounded-[var(--bo-radius-sm,6px)] overflow-hidden cursor-pointer border-2 transition-[border-color,box-shadow] duration-150 bg-[var(--bo-surface)] hover:border-[var(--bo-border-hover)]${selected ? ' border-[var(--bo-green)] shadow-[var(--bo-green-glow)]' : ' border-transparent'}`}
       onClick={() => onOpen(item.id)}
     >
       <div className="w-full h-full flex items-center justify-center overflow-hidden">
@@ -31,10 +31,17 @@ export function MediaThumb({ item, selected, onToggleSelect, onOpen }: MediaThum
           alt={item.altText || item.originalName}
           loading="lazy"
           className={`w-full h-full${isSvg ? ' object-contain p-4' : ' object-cover'}`}
+          onError={(e) => {
+            // Fallback : si le WebP échoue, essayer l'URL originale
+            const img = e.currentTarget;
+            if (item.webpUrl && img.src.includes('.webp')) {
+              img.src = item.url;
+            }
+          }}
         />
       </div>
 
-      <div className={`absolute inset-0 flex items-start justify-start p-[0.4rem] transition-opacity duration-150 pointer-events-none${selected ? ' opacity-100' : ' opacity-0 hover:opacity-100'}`}>
+      <div className={`absolute inset-0 flex items-start justify-start p-[0.4rem] transition-opacity duration-150 pointer-events-none${selected ? ' opacity-100' : ' opacity-0 group-hover:opacity-100'}`}>
         <input
           type="checkbox"
           className="w-[18px] h-[18px] accent-[var(--bo-green)] cursor-pointer pointer-events-auto"

@@ -81,7 +81,7 @@ export function BentoGridSection({ section }: Props) {
               alt="Maconnerie gros oeuvre"
             />
             <div className="bento-hero-text">
-              <span className="tag-pill">Projet phare</span>
+              <span className="tag-pill" data-content-key="bento-hero-tag">Projet phare</span>
               <h3 className="font-['Oswald',sans-serif] text-[2.2rem] font-bold uppercase tracking-[2px] leading-[1.1] mb-2" data-content-key="bento-hero-title">
                 Fondation &amp; Soubassement
                 <br />
@@ -98,12 +98,12 @@ export function BentoGridSection({ section }: Props) {
               alt="Mur porteur"
             />
             <div className="bento-card-info">
-              <span className="tag-pill slate">Murs porteurs</span>
-              <h4 className="font-['Oswald',sans-serif] text-white text-[1.1rem] uppercase tracking-[1px]">Parpaing &amp; Beton arme</h4>
+              <span className="tag-pill slate" data-content-key="bento-card1-tag">Murs porteurs</span>
+              <h4 className="font-['Oswald',sans-serif] text-white text-[1.1rem] uppercase tracking-[1px]" data-content-key="bento-card1-title">Parpaing &amp; Beton arme</h4>
             </div>
             <div className="bento-card-overlay">
-              <span className="tag-pill slate">Murs porteurs</span>
-              <p className="text-[0.9rem] leading-[1.7] text-white/90 mt-2">
+              <span className="tag-pill slate" data-content-key="bento-card1-tag">Murs porteurs</span>
+              <p className="text-[0.9rem] leading-[1.7] text-white/90 mt-2" data-content-key="bento-card1-desc">
                 Creation de murs porteurs en parpaing enduit, renforcement de structure existante,
                 coulage poteaux beton arme.
               </p>
@@ -115,12 +115,12 @@ export function BentoGridSection({ section }: Props) {
               alt="Dalle beton"
             />
             <div className="bento-card-info">
-              <span className="tag-pill green">Dalles</span>
-              <h4 className="font-['Oswald',sans-serif] text-white text-[1.1rem] uppercase tracking-[1px]">Dalle beton avec chauffage</h4>
+              <span className="tag-pill green" data-content-key="bento-card2-tag">Dalles</span>
+              <h4 className="font-['Oswald',sans-serif] text-white text-[1.1rem] uppercase tracking-[1px]" data-content-key="bento-card2-title">Dalle beton avec chauffage</h4>
             </div>
             <div className="bento-card-overlay">
-              <span className="tag-pill green">Dalles beton</span>
-              <p className="text-[0.9rem] leading-[1.7] text-white/90 mt-2">
+              <span className="tag-pill green" data-content-key="bento-card2-tag">Dalles beton</span>
+              <p className="text-[0.9rem] leading-[1.7] text-white/90 mt-2" data-content-key="bento-card2-desc">
                 Pose de dalle chauffante, isolation sous-dalle, chape ciment lissee, compatible
                 plancher bois massif.
               </p>
@@ -128,24 +128,24 @@ export function BentoGridSection({ section }: Props) {
           </div>
         </div>
 
-        <div className="stats-bar bg-[var(--primary-dark)] py-10 px-12 grid grid-cols-3 reveal">
+        <div className="stats-bar bg-[var(--primary-dark)] py-10 px-12 flex flex-wrap justify-center reveal">
           <div className="stat-item text-center relative px-8">
             <span className="stat-number font-['Oswald',sans-serif] text-[3.5rem] font-bold text-white leading-none block" data-count="23">
               <span>0</span>
             </span>
-            <span className="stat-label text-[0.8rem] tracking-[3px] uppercase text-white/60 mt-[0.4rem] block font-semibold">Fondations realisees</span>
+            <span className="stat-label text-[0.8rem] tracking-[3px] uppercase text-white/60 mt-[0.4rem] block font-semibold" data-content-key="bento-stat1-label">Fondations realisees</span>
           </div>
           <div className="stat-item text-center relative px-8">
             <span className="stat-number font-['Oswald',sans-serif] text-[3.5rem] font-bold text-white leading-none block" data-count="47">
               <span>0</span>
             </span>
-            <span className="stat-label text-[0.8rem] tracking-[3px] uppercase text-white/60 mt-[0.4rem] block font-semibold">Murs porteurs</span>
+            <span className="stat-label text-[0.8rem] tracking-[3px] uppercase text-white/60 mt-[0.4rem] block font-semibold" data-content-key="bento-stat2-label">Murs porteurs</span>
           </div>
           <div className="stat-item text-center relative px-8">
             <span className="stat-number font-['Oswald',sans-serif] text-[3.5rem] font-bold text-white leading-none block" data-count="12">
               <span>0</span>
             </span>
-            <span className="stat-label text-[0.8rem] tracking-[3px] uppercase text-white/60 mt-[0.4rem] block font-semibold">Dalles beton</span>
+            <span className="stat-label text-[0.8rem] tracking-[3px] uppercase text-white/60 mt-[0.4rem] block font-semibold" data-content-key="bento-stat3-label">Dalles beton</span>
           </div>
         </div>
       </div>

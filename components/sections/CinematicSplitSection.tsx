@@ -51,8 +51,8 @@ export function CinematicSplitSection({ section }: Props) {
             <div className="project-num absolute top-1/2 right-8 -translate-y-1/2 font-['Oswald',sans-serif] text-[10rem] font-bold leading-none text-[color-mix(in_srgb,var(--primary)_6%,transparent)] pointer-events-none select-none z-0">01</div>
             <div className="project-text-inner relative z-[1]">
               <div className="tag-row flex flex-wrap gap-2" style={{ marginBottom: '1rem' }}>
-                <span className="tag-chip">Cuisine</span>
-                <span className="tag-chip">Bois massif</span>
+                <span className="tag-chip" data-content-key="project-1-tag1">Cuisine</span>
+                <span className="tag-chip" data-content-key="project-1-tag2">Bois massif</span>
               </div>
               <h3 className="font-['Oswald',sans-serif] text-[2.2rem] font-bold uppercase tracking-[2px] leading-[1.1] mb-4 text-[var(--primary-dark)]" data-content-key="project-1-title">
                 Cuisine ouverte
@@ -65,8 +65,8 @@ export function CinematicSplitSection({ section }: Props) {
                 amenagements sur mesure adaptes aux volumes du chalet.
               </p>
               <div className="tag-row flex flex-wrap gap-2">
-                <span className="tag-chip">Savoie 73</span>
-                <span className="tag-chip">6 semaines</span>
+                <span className="tag-chip" data-content-key="project-1-location">Savoie 73</span>
+                <span className="tag-chip" data-content-key="project-1-duration">6 semaines</span>
               </div>
             </div>
           </div>
@@ -83,8 +83,8 @@ export function CinematicSplitSection({ section }: Props) {
             <div className="project-num absolute top-1/2 left-8 -translate-y-1/2 font-['Oswald',sans-serif] text-[10rem] font-bold leading-none text-white/[0.06] pointer-events-none select-none z-0">02</div>
             <div className="project-text-inner relative z-[1]">
               <div className="tag-row flex flex-wrap gap-2" style={{ marginBottom: '1rem' }}>
-                <span className="tag-chip">Salle de bain</span>
-                <span className="tag-chip">Carrelage</span>
+                <span className="tag-chip" data-content-key="project-2-tag1">Salle de bain</span>
+                <span className="tag-chip" data-content-key="project-2-tag2">Carrelage</span>
               </div>
               <h3 className="font-['Oswald',sans-serif] text-[2.2rem] font-bold uppercase tracking-[2px] leading-[1.1] mb-4 text-[var(--bg-light)]" data-content-key="project-2-title">
                 Salle de bain
@@ -97,8 +97,8 @@ export function CinematicSplitSection({ section }: Props) {
                 d&apos;un seche-serviette pierre refractaire.
               </p>
               <div className="tag-row flex flex-wrap gap-2">
-                <span className="tag-chip">Haute-Savoie 74</span>
-                <span className="tag-chip">4 semaines</span>
+                <span className="tag-chip" data-content-key="project-2-location">Haute-Savoie 74</span>
+                <span className="tag-chip" data-content-key="project-2-duration">4 semaines</span>
               </div>
             </div>
           </div>
@@ -115,8 +115,8 @@ export function CinematicSplitSection({ section }: Props) {
             <div className="project-num absolute top-1/2 right-8 -translate-y-1/2 font-['Oswald',sans-serif] text-[10rem] font-bold leading-none text-[color-mix(in_srgb,var(--primary)_6%,transparent)] pointer-events-none select-none z-0">03</div>
             <div className="project-text-inner relative z-[1]">
               <div className="tag-row flex flex-wrap gap-2" style={{ marginBottom: '1rem' }}>
-                <span className="tag-chip">Parquet</span>
-                <span className="tag-chip">Salon</span>
+                <span className="tag-chip" data-content-key="project-3-tag1">Parquet</span>
+                <span className="tag-chip" data-content-key="project-3-tag2">Salon</span>
               </div>
               <h3 className="font-['Oswald',sans-serif] text-[2.2rem] font-bold uppercase tracking-[2px] leading-[1.1] mb-4 text-[var(--primary-dark)]" data-content-key="project-3-title">
                 Parquet massif
@@ -129,8 +129,8 @@ export function CinematicSplitSection({ section }: Props) {
                 d&apos;une cheminee en pierre de taille.
               </p>
               <div className="tag-row flex flex-wrap gap-2">
-                <span className="tag-chip">Isere 38</span>
-                <span className="tag-chip">8 semaines</span>
+                <span className="tag-chip" data-content-key="project-3-location">Isere 38</span>
+                <span className="tag-chip" data-content-key="project-3-duration">8 semaines</span>
               </div>
             </div>
           </div>

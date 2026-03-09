@@ -37,7 +37,7 @@ export function LayoutsSection() {
       <div className="carousel-section-header">
         <div>
           <h2>{t('layouts.sectionTitle')}</h2>
-          <div className="carousel-info">{tp('layouts.blockCount', layouts.length)}</div>
+          <div className="carousel-info">{tp('layouts.count', layouts.length)}</div>
         </div>
         <button className="btn btn-success" onClick={() => setEditingLayout('new')}>
           {t('layouts.btnNew')}

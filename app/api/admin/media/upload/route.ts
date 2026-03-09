@@ -6,7 +6,7 @@ import fsp from 'fs/promises';
 import { withAuth } from '@/lib/auth';
 import {
   readMediaRegistry, writeMediaRegistry, generateMediaId, getMediaUrls,
-  MIME_TO_EXT, ALLOWED_TYPES, MAX_FILE_SIZE,
+  processImageWithSharp, MIME_TO_EXT, ALLOWED_TYPES, MAX_FILE_SIZE,
 } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
 import { uploadToBlob } from '@/lib/storage';
@@ -55,7 +55,38 @@ export const POST = withAuth(async (req: NextRequest) => {
       const buffer = Buffer.from(await file.arrayBuffer());
       const filePath = path.join(mediaDir, filename);
       await fsp.writeFile(filePath, buffer);
-      await uploadToBlob(`uploads/media/${filename}`, buffer, file.type);
+
+      const isRaster = /\.(jpg|jpeg|png)$/i.test(filename);
+      let hasWebp = false;
+      let finalBuffer: Buffer = buffer;
+
+      if (isRaster) {
+        try {
+          // Redimensionner l'original si trop grand (max 1920px)
+          const sharp = (await import('sharp')).default;
+          const input = new Uint8Array(buffer);
+          const meta = await sharp(input).metadata();
+          if (meta.width && meta.height && (meta.width > 1920 || meta.height > 1920)) {
+            finalBuffer = await sharp(input)
+              .resize({ width: 1920, height: 1920, fit: 'inside', withoutEnlargement: true })
+              .toBuffer();
+            await fsp.writeFile(filePath, finalBuffer);
+          }
+
+          // Conversion WebP
+          await processImageWithSharp(filePath);
+          hasWebp = true;
+          const webpName = filename.replace(/\.(jpg|jpeg|png)$/i, '.webp');
+          const webpPath = path.join(mediaDir, webpName);
+          const webpBuffer = await fsp.readFile(webpPath);
+          await uploadToBlob(`uploads/media/${webpName}`, webpBuffer, 'image/webp').catch(() => {});
+        } catch {
+          hasWebp = false;
+        }
+      }
+
+      // Sync l'original (potentiellement redimensionné) vers Blob
+      await uploadToBlob(`uploads/media/${filename}`, finalBuffer, file.type).catch(() => {});
 
       const mediaId = generateMediaId();
       mediaData.media[mediaId] = {
@@ -63,7 +94,7 @@ export const POST = withAuth(async (req: NextRequest) => {
         filename,
         originalName: file.name,
         mimeType: file.type,
-        hasWebp: false,
+        hasWebp,
         uploadedAt: new Date().toISOString(),
         fileSize: file.size,
       };

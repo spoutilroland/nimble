@@ -29,8 +29,14 @@ async function fetchPrivateBlob(url: string): Promise<Response> {
  */
 export async function syncJsonToBlob(filename: string, data: unknown): Promise<void> {
   if (!isBlobEnabled()) return;
+  const json = JSON.stringify(data, null, 2);
+  // Protection : ne jamais envoyer un JSON vide/trivial au Blob
+  if (!json || json === '{}' || json.length < 10) {
+    console.warn(`[storage] syncJsonToBlob: contenu trop petit pour ${filename} — skip`);
+    return;
+  }
   const pathname = `data/${filename}`;
-  const blob = await put(pathname, JSON.stringify(data, null, 2), {
+  const blob = await put(pathname, json, {
     access: 'private',
     addRandomSuffix: false,
     contentType: 'application/json',
@@ -157,6 +163,25 @@ export async function bootstrapDataFromBlob(): Promise<void> {
           }
           const res = await fetchPrivateBlob(blob.url);
           const buffer = Buffer.from(await res.arrayBuffer());
+
+          // Protection : ne jamais écraser un JSON local non-vide par un contenu vide/invalide
+          if (blob.pathname.endsWith('.json')) {
+            const content = buffer.toString('utf8').trim();
+            if (!content || content === '{}' || content === '{"media":{}}') {
+              console.warn(`[storage] Blob ${blob.pathname} vide/invalide — skip`);
+              continue;
+            }
+            // Ne pas écraser un fichier local qui a du contenu par un blob
+            try {
+              const localContent = await fsp.readFile(localPath, 'utf8');
+              if (localContent.trim().length > content.length) {
+                console.warn(`[storage] Local ${blob.pathname} plus complet que le Blob — skip`);
+                downloaded++;
+                continue;
+              }
+            } catch { /* fichier absent → on télécharge */ }
+          }
+
           await fsp.mkdir(path.dirname(localPath), { recursive: true });
           await fsp.writeFile(localPath, buffer);
           downloaded++;
