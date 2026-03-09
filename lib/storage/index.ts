@@ -6,6 +6,7 @@ import path from 'path';
 const blobUrlMap = new Map<string, string>();
 
 let bootstrapped = false;
+let bootstrapDone = false;
 
 export function isBlobEnabled(): boolean {
   return !!process.env.BLOB_READ_WRITE_TOKEN;
@@ -29,6 +30,12 @@ async function fetchPrivateBlob(url: string): Promise<Response> {
  */
 export async function syncJsonToBlob(filename: string, data: unknown): Promise<void> {
   if (!isBlobEnabled()) return;
+  // Bloquer toute écriture Blob tant que le bootstrap n'a pas restauré les données
+  // Sinon les données par défaut du prebuild écrasent les vraies données
+  if (!bootstrapDone) {
+    console.warn(`[storage] syncJsonToBlob: bootstrap pas terminé, skip ${filename}`);
+    return;
+  }
   const json = JSON.stringify(data, null, 2);
   // Protection : ne jamais envoyer un JSON vide/trivial au Blob
   if (!json || json === '{}' || json.length < 10) {
@@ -52,7 +59,7 @@ export async function uploadToBlob(
   buffer: Buffer,
   contentType: string
 ): Promise<string> {
-  if (!isBlobEnabled()) return '';
+  if (!isBlobEnabled() || !bootstrapDone) return '';
   const blob = await put(pathname, buffer, {
     access: 'private',
     addRandomSuffix: false,
@@ -66,7 +73,7 @@ export async function uploadToBlob(
  * Supprime un fichier du Blob par pathname exact.
  */
 export async function deleteFromBlob(pathname: string): Promise<void> {
-  if (!isBlobEnabled()) return;
+  if (!isBlobEnabled() || !bootstrapDone) return;
   const url = blobUrlMap.get(pathname);
   if (url) {
     await del(url);
@@ -85,7 +92,7 @@ export async function deleteFromBlob(pathname: string): Promise<void> {
  * Supprime tous les blobs qui matchent un préfixe.
  */
 export async function deleteFromBlobByPrefix(prefix: string): Promise<void> {
-  if (!isBlobEnabled()) return;
+  if (!isBlobEnabled() || !bootstrapDone) return;
   const { blobs } = await list({ prefix, limit: 100 });
   if (blobs.length > 0) {
     await del(blobs.map((b) => b.url));
@@ -178,5 +185,6 @@ export async function bootstrapDataFromBlob(): Promise<void> {
     cursor = result.hasMore ? result.cursor : undefined;
   } while (cursor);
 
+  bootstrapDone = true;
   console.log(`[storage] Bootstrap terminé : ${totalBlobs} blobs indexés, ${downloaded} fichiers restaurés`);
 }

@@ -4,8 +4,8 @@ import path from 'path';
 import type { CarouselsConfig, CarouselEntry } from '@/lib/types';
 import type { PagesConfig } from '@/lib/types';
 import type { MediaUrls } from '@/lib/types';
-import { readMediaRegistry, writeMediaRegistry, getMediaUrls } from './media';
-import { syncJsonToBlob, deleteFromBlob } from '@/lib/storage';
+import { readMediaRegistry, getMediaUrls } from './media';
+import { syncJsonToBlob } from '@/lib/storage';
 
 const carouselsFile = path.join(process.cwd(), 'data', 'carousels.json');
 
@@ -78,44 +78,18 @@ export function extractCarouselIds(pagesData: PagesConfig): string[] {
 export async function cleanOrphanedCarousels(newPagesData: PagesConfig): Promise<void> {
   const activeIds = new Set(extractCarouselIds(newPagesData));
   const carouselsData = readCarouselsConfig();
-  const mediaData = readMediaRegistry();
 
-  const orphanCarouselIds: string[] = [];
+  // Supprimer uniquement les entrées carousel non référencées par aucune page
+  // Les media ne sont JAMAIS supprimés ici — c'est la médiathèque qui gère ça
+  let dirty = false;
   for (const id of Object.keys(carouselsData.carousels)) {
     if (!activeIds.has(id)) {
-      orphanCarouselIds.push(id);
+      delete carouselsData.carousels[id];
+      dirty = true;
     }
   }
 
-  for (const id of orphanCarouselIds) {
-    delete carouselsData.carousels[id];
+  if (dirty) {
+    await writeCarouselsConfig(carouselsData);
   }
-
-  // Identifier les mediaIds encore référencés
-  const usedMediaIds = new Set<string>();
-  for (const carousel of Object.values(carouselsData.carousels)) {
-    for (const mediaId of carousel.images || []) {
-      usedMediaIds.add(mediaId);
-    }
-  }
-
-  // Supprimer les media orphelins
-  const mediaDir = path.join(process.cwd(), 'uploads', 'media');
-  for (const [mediaId, entry] of Object.entries(mediaData.media)) {
-    if (!usedMediaIds.has(mediaId)) {
-      const filePath = path.join(mediaDir, entry.filename);
-      await fsp.unlink(filePath).catch(() => {});
-      await deleteFromBlob(`uploads/media/${entry.filename}`).catch(() => {});
-      if (entry.hasWebp) {
-        const webpName = entry.filename.replace(/\.(jpg|jpeg|png)$/i, '') + '.webp';
-        const webpPath = path.join(mediaDir, webpName);
-        await fsp.unlink(webpPath).catch(() => {});
-        await deleteFromBlob(`uploads/media/${webpName}`).catch(() => {});
-      }
-      delete mediaData.media[mediaId];
-    }
-  }
-
-  await writeCarouselsConfig(carouselsData);
-  await writeMediaRegistry(mediaData);
 }
