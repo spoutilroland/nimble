@@ -57,8 +57,14 @@ export const POST = withAuth(async (req: NextRequest) => {
       await fsp.writeFile(filePath, buffer);
       await uploadToBlob(`uploads/media/${filename}`, buffer, file.type).catch(() => {});
 
-      const hasWebp = /\.(jpg|jpeg|png)$/i.test(filename);
-      if (hasWebp) processImageWithSharp(filePath).catch(() => {});
+      let hasWebp = /\.(jpg|jpeg|png)$/i.test(filename);
+      if (hasWebp) {
+        try {
+          await processImageWithSharp(filePath);
+        } catch {
+          hasWebp = false;
+        }
+      }
 
       const mediaId = generateMediaId();
       mediaData.media[mediaId] = {
