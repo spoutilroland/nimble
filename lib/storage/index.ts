@@ -151,37 +151,22 @@ export async function bootstrapDataFromBlob(): Promise<void> {
       if (shouldDownload) {
         try {
           const localPath = path.join(process.cwd(), blob.pathname);
-          // Ne pas écraser un fichier local plus récent que le blob
-          try {
-            const stat = await fsp.stat(localPath);
-            if (stat.mtimeMs > new Date(blob.uploadedAt).getTime()) {
-              downloaded++;
-              continue;
-            }
-          } catch {
-            // Fichier local absent → on télécharge
-          }
+
           const res = await fetchPrivateBlob(blob.url);
           const buffer = Buffer.from(await res.arrayBuffer());
 
-          // Protection : ne jamais écraser un JSON local non-vide par un contenu vide/invalide
+          // Protection : ne jamais écrire un JSON vide/invalide
           if (blob.pathname.endsWith('.json')) {
             const content = buffer.toString('utf8').trim();
             if (!content || content === '{}' || content === '{"media":{}}') {
               console.warn(`[storage] Blob ${blob.pathname} vide/invalide — skip`);
               continue;
             }
-            // Ne pas écraser un fichier local qui a du contenu par un blob
-            try {
-              const localContent = await fsp.readFile(localPath, 'utf8');
-              if (localContent.trim().length > content.length) {
-                console.warn(`[storage] Local ${blob.pathname} plus complet que le Blob — skip`);
-                downloaded++;
-                continue;
-              }
-            } catch { /* fichier absent → on télécharge */ }
           }
 
+          // Toujours écrire le Blob s'il a du contenu valide.
+          // Sur Vercel (filesystem éphémère), le local est toujours un fichier par défaut.
+          // Sur Hostinger, le Blob contient la même donnée que le local (ou plus récente).
           await fsp.mkdir(path.dirname(localPath), { recursive: true });
           await fsp.writeFile(localPath, buffer);
           downloaded++;
