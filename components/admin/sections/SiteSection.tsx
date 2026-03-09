@@ -12,6 +12,8 @@ export function SiteSection() {
   const [name, setName] = useState('');
   const [tagline, setTagline] = useState('');
   const [description, setDescription] = useState('');
+  const [seoTitle, setSeoTitle] = useState('');
+  const [seoDescription, setSeoDescription] = useState('');
   const [collapsed, setCollapsed] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
@@ -26,6 +28,9 @@ export function SiteSection() {
       setName(b.name || '');
       setTagline(b.tagline || '');
       setDescription(b.description || '');
+      const s = site.seo || {} as Record<string, string>;
+      setSeoTitle(s.defaultTitle || '');
+      setSeoDescription(s.defaultDescription || '');
     }
   }, [site]);
 
@@ -37,6 +42,11 @@ export function SiteSection() {
         name: name.trim(),
         tagline: tagline.trim(),
         description: description.trim(),
+      },
+      seo: {
+        ...site!.seo,
+        defaultTitle: seoTitle.trim(),
+        defaultDescription: seoDescription.trim(),
       },
     });
     if (ok) {
@@ -90,6 +100,18 @@ export function SiteSection() {
               <div className="form-group">
                 <label>{t('site.descriptionLabel')}</label>
                 <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
+              </div>
+            </div>
+
+            <div className="border border-[var(--bo-border)] py-[1.2rem] px-[1.4rem]">
+              <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-[0.8rem] tracking-[0.12em] uppercase text-[var(--bo-green)] m-0 mb-4">{t('site.seoGroupTitle')}</h3>
+              <div className="form-group">
+                <label>{t('site.seoTitleLabel')}</label>
+                <input type="text" value={seoTitle} onChange={(e) => setSeoTitle(e.target.value)} />
+              </div>
+              <div className="form-group">
+                <label>{t('site.seoDescriptionLabel')}</label>
+                <input type="text" value={seoDescription} onChange={(e) => setSeoDescription(e.target.value)} />
               </div>
             </div>
           </div>

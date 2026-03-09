@@ -416,6 +416,9 @@
     "nameLabel": "Nom de l'entreprise",
     "taglineLabel": "Slogan",
     "descriptionLabel": "Description courte",
+    "seoGroupTitle": "SEO",
+    "seoTitleLabel": "Titre de la page (balise <title>)",
+    "seoDescriptionLabel": "Meta description",
     "saved": "Informations enregistrées ✓",
     "saveError": "Erreur lors de la sauvegarde"
   },

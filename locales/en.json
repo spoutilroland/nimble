@@ -416,6 +416,9 @@
     "nameLabel": "Company name",
     "taglineLabel": "Tagline",
     "descriptionLabel": "Short description",
+    "seoGroupTitle": "SEO",
+    "seoTitleLabel": "Page title (<title> tag)",
+    "seoDescriptionLabel": "Meta description",
     "saved": "Information saved ✓",
     "saveError": "Error saving"
   },
