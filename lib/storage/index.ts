@@ -93,7 +93,21 @@ export async function deleteFromBlobByPrefix(prefix: string): Promise<void> {
  */
 export async function proxyBlobFile(pathname: string): Promise<{ buffer: Buffer; contentType: string } | null> {
   if (!isBlobEnabled()) return null;
-  const url = blobUrlMap.get(pathname);
+
+  let url = blobUrlMap.get(pathname);
+
+  // Fallback : chercher dans le blob store si pas dans la map en mémoire
+  if (!url) {
+    try {
+      const { blobs } = await list({ prefix: pathname, limit: 1 });
+      const match = blobs.find((b) => b.pathname === pathname);
+      if (match) {
+        url = match.url;
+        blobUrlMap.set(pathname, url);
+      }
+    } catch { /* ignore */ }
+  }
+
   if (!url) return null;
 
   const res = await fetchPrivateBlob(url);
@@ -123,12 +137,10 @@ export async function bootstrapDataFromBlob(): Promise<void> {
       blobUrlMap.set(blob.pathname, blob.url);
       totalBlobs++;
 
-      // Télécharger les fichiers JSON data + petits uploads (logo, favicon, social)
+      // Télécharger les fichiers JSON data + tous les uploads
       const shouldDownload =
         blob.pathname.startsWith('data/') ||
-        blob.pathname.startsWith('uploads/logo/') ||
-        blob.pathname.startsWith('uploads/favicon/') ||
-        blob.pathname.startsWith('uploads/social/');
+        blob.pathname.startsWith('uploads/');
 
       if (shouldDownload) {
         try {

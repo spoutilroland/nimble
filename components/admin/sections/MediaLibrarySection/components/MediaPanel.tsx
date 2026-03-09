@@ -100,6 +100,12 @@ export function MediaPanel({ media, onClose, onSave, onDelete }: MediaPanelProps
               src={src}
               alt={altText || media.originalName}
               className={`max-w-full max-h-[260px] object-contain rounded-[6px]${isSvg ? ' p-4' : ''}`}
+              onError={(e) => {
+                const img = e.currentTarget;
+                if (media.webpUrl && img.src.includes('.webp')) {
+                  img.src = media.url;
+                }
+              }}
             />
           </div>
 

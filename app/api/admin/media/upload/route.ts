@@ -61,6 +61,11 @@ export const POST = withAuth(async (req: NextRequest) => {
       if (hasWebp) {
         try {
           await processImageWithSharp(filePath);
+          // Sync le WebP vers Blob aussi
+          const webpName = filename.replace(/\.(jpg|jpeg|png)$/i, '.webp');
+          const webpPath = path.join(mediaDir, webpName);
+          const webpBuffer = await fsp.readFile(webpPath);
+          await uploadToBlob(`uploads/media/${webpName}`, webpBuffer, 'image/webp').catch(() => {});
         } catch {
           hasWebp = false;
         }

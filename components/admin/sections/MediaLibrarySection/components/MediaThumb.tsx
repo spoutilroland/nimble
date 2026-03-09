@@ -31,6 +31,13 @@ export function MediaThumb({ item, selected, onToggleSelect, onOpen }: MediaThum
           alt={item.altText || item.originalName}
           loading="lazy"
           className={`w-full h-full${isSvg ? ' object-contain p-4' : ' object-cover'}`}
+          onError={(e) => {
+            // Fallback : si le WebP échoue, essayer l'URL originale
+            const img = e.currentTarget;
+            if (item.webpUrl && img.src.includes('.webp')) {
+              img.src = item.url;
+            }
+          }}
         />
       </div>
 
