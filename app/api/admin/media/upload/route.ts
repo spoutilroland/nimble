@@ -55,7 +55,7 @@ export const POST = withAuth(async (req: NextRequest) => {
       const buffer = Buffer.from(await file.arrayBuffer());
       const filePath = path.join(mediaDir, filename);
       await fsp.writeFile(filePath, buffer);
-      await uploadToBlob(`uploads/media/${filename}`, buffer, file.type).catch(() => {});
+      await uploadToBlob(`uploads/media/${filename}`, buffer, file.type);
 
       const mediaId = generateMediaId();
       mediaData.media[mediaId] = {

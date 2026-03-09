@@ -50,5 +50,5 @@ export function readSiteConfig(): SiteConfig {
 
 export async function writeSiteConfig(data: SiteConfig): Promise<void> {
   await fsp.writeFile(siteFile, JSON.stringify(data, null, 2));
-  syncJsonToBlob('site.json', data).catch(() => {});
+  await syncJsonToBlob('site.json', data).catch(() => {});
 }

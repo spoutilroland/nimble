@@ -16,5 +16,5 @@ export function readThemeFile(): ThemeConfig {
 
 export async function writeThemeFile(data: ThemeConfig): Promise<void> {
   await fsp.writeFile(themeFile, JSON.stringify(data, null, 2));
-  syncJsonToBlob('theme.json', data).catch(() => {});
+  await syncJsonToBlob('theme.json', data).catch(() => {});
 }

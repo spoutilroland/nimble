@@ -14,23 +14,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: latest
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
+          cache: npm
 
       - name: Installer les dépendances
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: Lint
-        run: pnpm run lint
+        run: npm run lint
 
       - name: Build
-        run: pnpm run build
+        run: npm run build
         env:
           # Valeurs minimales pour que le build passe
           SESSION_SECRET: ci_secret_placeholder_32_characters_ok

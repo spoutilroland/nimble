@@ -19,7 +19,7 @@ export function readCarouselsConfig(): CarouselsConfig {
 
 export async function writeCarouselsConfig(data: CarouselsConfig): Promise<void> {
   await fsp.writeFile(carouselsFile, JSON.stringify(data, null, 2));
-  syncJsonToBlob('carousels.json', data).catch(() => {});
+  await syncJsonToBlob('carousels.json', data).catch(() => {});
 }
 
 export function writeCarouselsConfigSync(data: CarouselsConfig): void {

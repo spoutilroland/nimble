@@ -145,6 +145,16 @@ export async function bootstrapDataFromBlob(): Promise<void> {
       if (shouldDownload) {
         try {
           const localPath = path.join(process.cwd(), blob.pathname);
+          // Ne pas écraser un fichier local plus récent que le blob
+          try {
+            const stat = await fsp.stat(localPath);
+            if (stat.mtimeMs > new Date(blob.uploadedAt).getTime()) {
+              downloaded++;
+              continue;
+            }
+          } catch {
+            // Fichier local absent → on télécharge
+          }
           const res = await fetchPrivateBlob(blob.url);
           const buffer = Buffer.from(await res.arrayBuffer());
           await fsp.mkdir(path.dirname(localPath), { recursive: true });

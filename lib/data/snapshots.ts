@@ -23,7 +23,7 @@ function readSnapshotsIndex(): SnapshotsIndex {
 
 async function writeSnapshotsIndex(data: SnapshotsIndex): Promise<void> {
   await fsp.writeFile(INDEX_FILE, JSON.stringify(data, null, 2));
-  syncJsonToBlob('snapshots/snapshots.json', data).catch(() => {});
+  await syncJsonToBlob('snapshots/snapshots.json', data).catch(() => {});
 }
 
 async function ensureSnapshotsDir(): Promise<void> {
@@ -68,7 +68,7 @@ export async function createSnapshot(name: string): Promise<SnapshotMeta> {
     try {
       await fsp.copyFile(src, dest);
       const content = fs.readFileSync(dest, 'utf8');
-      syncJsonToBlob(`snapshots/${id}/${name_}.json`, JSON.parse(content)).catch(() => {});
+      await syncJsonToBlob(`snapshots/${id}/${name_}.json`, JSON.parse(content)).catch(() => {});
       fileCount++;
     } catch {
       // Fichier absent → on ignore
@@ -100,7 +100,7 @@ export async function restoreSnapshot(id: string): Promise<boolean> {
     try {
       await fsp.copyFile(src, dest);
       const content = fs.readFileSync(dest, 'utf8');
-      syncJsonToBlob(`${name_}.json`, JSON.parse(content)).catch(() => {});
+      await syncJsonToBlob(`${name_}.json`, JSON.parse(content)).catch(() => {});
     } catch {
       // Fichier manquant dans le snapshot → on ignore
     }

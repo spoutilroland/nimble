@@ -16,5 +16,5 @@ export function readContent(): ContentData {
 
 export async function writeContent(data: ContentData): Promise<void> {
   await fsp.writeFile(contentFile, JSON.stringify(data, null, 2));
-  syncJsonToBlob('content.json', data).catch(() => {});
+  await syncJsonToBlob('content.json', data).catch(() => {});
 }

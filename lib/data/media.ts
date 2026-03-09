@@ -16,11 +16,12 @@ export function readMediaRegistry(): MediaRegistry {
 
 export async function writeMediaRegistry(data: MediaRegistry): Promise<void> {
   await fsp.writeFile(mediaFile, JSON.stringify(data, null, 2));
-  syncJsonToBlob('media.json', data).catch(() => {});
+  await syncJsonToBlob('media.json', data).catch(() => {});
 }
 
 export function writeMediaRegistrySync(data: MediaRegistry): void {
   fs.writeFileSync(mediaFile, JSON.stringify(data, null, 2));
+  // Sync en best-effort pour les fonctions synchrones
   syncJsonToBlob('media.json', data).catch(() => {});
 }
 

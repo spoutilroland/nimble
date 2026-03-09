@@ -16,5 +16,5 @@ export function readLayoutsConfig(): LayoutsConfig {
 
 export async function writeLayoutsConfig(data: LayoutsConfig): Promise<void> {
   await fsp.writeFile(layoutsFile, JSON.stringify(data, null, 2));
-  syncJsonToBlob('layouts.json', data).catch(() => {});
+  await syncJsonToBlob('layouts.json', data).catch(() => {});
 }

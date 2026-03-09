@@ -16,5 +16,5 @@ export function readPagesConfig(): PagesConfig {
 
 export async function writePagesConfig(data: PagesConfig): Promise<void> {
   await fsp.writeFile(pagesFile, JSON.stringify(data, null, 2));
-  syncJsonToBlob('pages.json', data).catch(() => {});
+  await syncJsonToBlob('pages.json', data).catch(() => {});
 }
