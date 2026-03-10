@@ -10,7 +10,7 @@ export const DELETE = withAuth(async (
 ) => {
   const { id } = await ctx!.params;
   try {
-    const data = await readThemeFile();
+    const data = readThemeFile();
     if (!data.customThemes?.[id]) {
       return NextResponse.json({ error: 'Custom theme not found' }, { status: 404 });
     }

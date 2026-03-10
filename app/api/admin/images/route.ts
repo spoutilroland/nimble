@@ -9,10 +9,10 @@ import {
 
 export const GET = withAuth(async () => {
   try {
-    const carouselsData = await readCarouselsConfig();
-    const mediaData = await readMediaRegistry();
-    const pagesData = await readPagesConfig();
-    const layoutsData = await readLayoutsConfig();
+    const carouselsData = readCarouselsConfig();
+    const mediaData = readMediaRegistry();
+    const pagesData = readPagesConfig();
+    const layoutsData = readLayoutsConfig();
 
     // Construire la map des carousels appartenant à un layout custom (groupés)
     const groupMap: Record<string, { key: string; label: string; blockLabel: string }> = {};

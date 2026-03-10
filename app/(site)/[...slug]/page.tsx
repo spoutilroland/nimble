@@ -20,8 +20,8 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const site = await readSiteConfig();
-  const pagesConfig = await readPagesConfig();
+  const site = readSiteConfig();
+  const pagesConfig = readPagesConfig();
   const faviconUrl = getFaviconUrl();
   const slugPath = '/' + slug.join('/');
   const page = pagesConfig.pages.find((p) => p.slug === slugPath);
@@ -38,9 +38,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function DynamicPage({ params }: PageProps) {
   const { slug } = await params;
-  const site = await readSiteConfig();
-  const pagesConfig = await readPagesConfig();
-  const layoutsConfig = await readLayoutsConfig();
+  const site = readSiteConfig();
+  const pagesConfig = readPagesConfig();
+  const layoutsConfig = readLayoutsConfig();
   const logoUrl = getLogoUrl();
   const lang = await detectLang();
 
@@ -76,7 +76,7 @@ export default async function DynamicPage({ params }: PageProps) {
       <SiteFooter site={site} logoUrl={logoUrl} lang={lang} />
       <ScrollReveal />
       <SmoothScroll />
-      <ContentEditor pageId={pageId} lang={lang} backPath={`/${await getAdminSlug()}`} />
+      <ContentEditor pageId={pageId} lang={lang} backPath={`/${getAdminSlug()}`} />
     </>
   );
 }

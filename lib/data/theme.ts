@@ -2,14 +2,11 @@ import fs from 'fs';
 import fsp from 'fs/promises';
 import path from 'path';
 import type { ThemeConfig } from '@/lib/types';
-import { isBlobEnabled, readJsonFromBlob, syncJsonToBlob } from '@/lib/storage';
+import { syncJsonToBlob } from '@/lib/storage';
 
 const themeFile = path.join(process.cwd(), 'data', 'theme.json');
 
-export async function readThemeFile(): Promise<ThemeConfig> {
-  if (isBlobEnabled()) {
-    return readJsonFromBlob<ThemeConfig>('theme.json', { theme: 'default', customThemes: {} });
-  }
+export function readThemeFile(): ThemeConfig {
   try {
     return JSON.parse(fs.readFileSync(themeFile, 'utf8'));
   } catch {

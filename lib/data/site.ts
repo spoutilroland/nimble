@@ -2,7 +2,7 @@ import fs from 'fs';
 import fsp from 'fs/promises';
 import path from 'path';
 import type { SiteConfig } from '@/lib/types';
-import { isBlobEnabled, readJsonFromBlob, syncJsonToBlob } from '@/lib/storage';
+import { syncJsonToBlob } from '@/lib/storage';
 
 const siteFile = path.join(process.cwd(), 'data', 'site.json');
 
@@ -40,10 +40,7 @@ const defaultSiteConfig: SiteConfig = {
   mail: undefined,
 };
 
-export async function readSiteConfig(): Promise<SiteConfig> {
-  if (isBlobEnabled()) {
-    return readJsonFromBlob<SiteConfig>('site.json', defaultSiteConfig);
-  }
+export function readSiteConfig(): SiteConfig {
   try {
     return JSON.parse(fs.readFileSync(siteFile, 'utf8'));
   } catch {

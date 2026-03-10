@@ -30,9 +30,10 @@ async function fetchPrivateBlob(url: string): Promise<Response> {
  */
 export async function syncJsonToBlob(filename: string, data: unknown): Promise<void> {
   if (!isBlobEnabled()) return;
-  // Bloquer les écritures Blob pendant le build Next.js (prebuild)
-  // En runtime, les écritures sont toujours autorisées car on lit depuis Blob
-  if (process.env.NEXT_PHASE === 'phase-production-build') {
+  // Bloquer toute écriture Blob tant que le bootstrap n'a pas restauré les données
+  // Sinon les données par défaut du prebuild écrasent les vraies données
+  if (!bootstrapDone) {
+    console.warn(`[storage] syncJsonToBlob: bootstrap pas terminé, skip ${filename}`);
     return;
   }
   const json = JSON.stringify(data, null, 2);
@@ -58,7 +59,7 @@ export async function uploadToBlob(
   buffer: Buffer,
   contentType: string
 ): Promise<string> {
-  if (!isBlobEnabled() || process.env.NEXT_PHASE === 'phase-production-build') return '';
+  if (!isBlobEnabled() || !bootstrapDone) return '';
   const blob = await put(pathname, buffer, {
     access: 'private',
     addRandomSuffix: false,
@@ -72,7 +73,7 @@ export async function uploadToBlob(
  * Supprime un fichier du Blob par pathname exact.
  */
 export async function deleteFromBlob(pathname: string): Promise<void> {
-  if (!isBlobEnabled()) return;
+  if (!isBlobEnabled() || !bootstrapDone) return;
   const url = blobUrlMap.get(pathname);
   if (url) {
     await del(url);
@@ -91,7 +92,7 @@ export async function deleteFromBlob(pathname: string): Promise<void> {
  * Supprime tous les blobs qui matchent un préfixe.
  */
 export async function deleteFromBlobByPrefix(prefix: string): Promise<void> {
-  if (!isBlobEnabled()) return;
+  if (!isBlobEnabled() || !bootstrapDone) return;
   const { blobs } = await list({ prefix, limit: 100 });
   if (blobs.length > 0) {
     await del(blobs.map((b) => b.url));
@@ -131,50 +132,8 @@ export async function proxyBlobFile(pathname: string): Promise<{ buffer: Buffer;
 }
 
 /**
- * Lit un fichier JSON directement depuis Vercel Blob (source de vérité).
- * Jamais de cache — chaque appel va chercher la dernière version.
- */
-export async function readJsonFromBlob<T>(filename: string, fallback: T): Promise<T> {
-  if (!isBlobEnabled()) return fallback;
-
-  const pathname = `data/${filename}`;
-  let url = blobUrlMap.get(pathname);
-
-  // Fallback : chercher dans le blob store si pas dans la map en mémoire
-  if (!url) {
-    try {
-      const { blobs } = await list({ prefix: pathname, limit: 1 });
-      const match = blobs.find((b) => b.pathname === pathname);
-      if (match) {
-        url = match.url;
-        blobUrlMap.set(pathname, url);
-      }
-    } catch { /* ignore */ }
-  }
-
-  if (!url) return fallback;
-
-  try {
-    // cache: 'no-store' CRUCIAL — sans ça Next.js cache le fetch et retourne des données périmées
-    const res = await fetch(url, {
-      headers: { Authorization: `Bearer ${blobToken()}` },
-      cache: 'no-store',
-    });
-    if (!res.ok) return fallback;
-
-    const text = await res.text();
-    if (!text || text.trim().length < 10) return fallback;
-
-    return JSON.parse(text) as T;
-  } catch {
-    return fallback;
-  }
-}
-
-/**
  * Bootstrap : télécharge toutes les données depuis Vercel Blob vers le filesystem local.
  * Appelé une seule fois au démarrage via instrumentation.ts.
- * NOTE : media.json est exclu — il est lu directement depuis Blob à chaque requête.
  */
 export async function bootstrapDataFromBlob(): Promise<void> {
   if (!isBlobEnabled() || bootstrapped) return;
@@ -191,9 +150,10 @@ export async function bootstrapDataFromBlob(): Promise<void> {
       blobUrlMap.set(blob.pathname, blob.url);
       totalBlobs++;
 
-      // Télécharger uniquement les uploads (binaires).
-      // Les JSON data/ sont lus directement depuis Blob à chaque requête (source de vérité unique).
-      const shouldDownload = blob.pathname.startsWith('uploads/');
+      // Télécharger les fichiers JSON data + tous les uploads
+      const shouldDownload =
+        blob.pathname.startsWith('data/') ||
+        blob.pathname.startsWith('uploads/');
 
       if (shouldDownload) {
         try {
@@ -201,6 +161,29 @@ export async function bootstrapDataFromBlob(): Promise<void> {
 
           const res = await fetchPrivateBlob(blob.url);
           const buffer = Buffer.from(await res.arrayBuffer());
+
+          // Protection : ne jamais écrire un JSON vide/invalide depuis le Blob
+          if (blob.pathname.endsWith('.json')) {
+            const blobContent = buffer.toString('utf8').trim();
+            if (!blobContent || blobContent === '{}' || blobContent === '{"media":{}}') {
+              console.warn(`[storage] Blob ${blob.pathname} vide/invalide — skip`);
+              continue;
+            }
+
+            // Sur Hostinger (filesystem persistent) : ne PAS écraser un JSON local
+            // valide avec le Blob. Le local peut être plus récent si le sync Blob
+            // a échoué silencieusement après une modification.
+            try {
+              const localContent = (await fsp.readFile(localPath, 'utf8')).trim();
+              if (localContent && localContent.length >= 10
+                  && localContent !== '{}' && localContent !== '{"media":{}}') {
+                // Le fichier local est valide → on le garde, pas d'écrasement
+                continue;
+              }
+            } catch {
+              // Fichier local absent → on restaure depuis Blob (premier déploiement)
+            }
+          }
 
           await fsp.mkdir(path.dirname(localPath), { recursive: true });
           await fsp.writeFile(localPath, buffer);

@@ -10,7 +10,7 @@ const VALID_THEMES = ['alpine', 'pro', 'craft', 'industrial', 'provence'];
 
 export const POST = withAuth(async (req: NextRequest) => {
   const { theme } = await req.json();
-  const data = await readThemeFile();
+  const data = readThemeFile();
   const isNative = VALID_THEMES.includes(theme);
   const isCustom = data.customThemes?.[theme];
 

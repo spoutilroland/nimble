@@ -5,7 +5,7 @@ import { readSiteConfig } from '@/lib/data/site';
 import { getFaviconUrl } from '@/lib/data/helpers';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const site = await readSiteConfig();
+  const site = readSiteConfig();
   return {
     title: `Back Office — ${site.business.name}`,
     ...(getFaviconUrl() ? { icons: { icon: getFaviconUrl()! } } : {}),
@@ -17,7 +17,7 @@ export default async function BackLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const site = await readSiteConfig();
+  const site = readSiteConfig();
   const borderStyle = site.design?.borderStyle || 'angular';
 
   return (

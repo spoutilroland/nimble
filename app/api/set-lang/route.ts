@@ -5,7 +5,7 @@ import { readSiteConfig } from '@/lib/data';
 
 export async function POST(req: NextRequest) {
   const { lang } = await req.json();
-  const site = await readSiteConfig();
+  const site = readSiteConfig();
   const available = site.languages?.available || ['fr'];
 
   if (!available.includes(lang)) {

@@ -16,7 +16,7 @@ export const POST = withAuth(async (
   const { carouselId } = await ctx!.params;
   const { sourceCarouselId, filename } = await req.json();
 
-  const carouselsData = await readCarouselsConfig();
+  const carouselsData = readCarouselsConfig();
   const destCarousel = carouselsData.carousels[carouselId];
   const srcCarousel = carouselsData.carousels[sourceCarouselId];
 
@@ -28,7 +28,7 @@ export const POST = withAuth(async (
   }
 
   const safeFilename = path.basename(filename);
-  const mediaData = await readMediaRegistry();
+  const mediaData = readMediaRegistry();
   const mediaId = Object.keys(mediaData.media).find(
     (id) => mediaData.media[id].filename === safeFilename
   );

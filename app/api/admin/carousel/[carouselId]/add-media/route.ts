@@ -20,14 +20,14 @@ export const POST = withAuth(async (
     return NextResponse.json({ error: 'mediaId requis' }, { status: 400 });
   }
 
-  const carouselsData = await readCarouselsConfig();
+  const carouselsData = readCarouselsConfig();
   const carousel = carouselsData.carousels[carouselId];
 
   if (!carousel) {
     return NextResponse.json({ error: 'Carousel introuvable' }, { status: 404 });
   }
 
-  const mediaData = await readMediaRegistry();
+  const mediaData = readMediaRegistry();
   const mediaEntry = mediaData.media[mediaId];
 
   if (!mediaEntry) {

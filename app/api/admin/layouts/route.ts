@@ -18,7 +18,7 @@ export const POST = withAuth(async (req: NextRequest) => {
   }
 
   try {
-    const data = await readLayoutsConfig();
+    const data = readLayoutsConfig();
     if (data.layouts[id]) {
       return NextResponse.json({ error: 'Un layout avec cet ID existe déjà' }, { status: 409 });
     }

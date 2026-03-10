@@ -15,7 +15,7 @@ import { getAdminSlug } from '@/lib/data/setup';
 import type { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const site = await readSiteConfig();
+  const site = readSiteConfig();
   const faviconUrl = getFaviconUrl();
   return {
     title: site.seo.defaultTitle || site.business.name,
@@ -25,15 +25,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const site = await readSiteConfig();
+  const site = readSiteConfig();
 
   // Redirection de la page d'accueil vers une autre page si configuré
   if (site.homepageRedirect && site.homepageRedirect !== '/') {
     redirect(site.homepageRedirect);
   }
 
-  const pagesConfig = await readPagesConfig();
-  const layoutsConfig = await readLayoutsConfig();
+  const pagesConfig = readPagesConfig();
+  const layoutsConfig = readLayoutsConfig();
   const logoUrl = getLogoUrl();
   const lang = await detectLang();
 
@@ -67,7 +67,7 @@ export default async function HomePage() {
       <SiteFooter site={site} logoUrl={logoUrl} lang={lang} />
       <ScrollReveal />
       <SmoothScroll />
-      <ContentEditor pageId={pageId} lang={lang} backPath={`/${await getAdminSlug()}`} />
+      <ContentEditor pageId={pageId} lang={lang} backPath={`/${getAdminSlug()}`} />
     </>
   );
 }

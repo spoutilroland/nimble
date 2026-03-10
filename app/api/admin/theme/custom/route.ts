@@ -23,7 +23,7 @@ export const POST = withAuth(async (req: NextRequest) => {
   }
 
   try {
-    const data = await readThemeFile();
+    const data = readThemeFile();
     if (!data.customThemes) data.customThemes = {};
     data.customThemes[id] = { label: label.trim(), vars };
     await writeThemeFile(data);

@@ -6,9 +6,9 @@ import { detectLang } from '@/lib/i18n/server';
 
 export async function GET() {
   try {
-    const content = await readContent();
+    const content = readContent();
     const lang = await detectLang();
-    const site = await readSiteConfig();
+    const site = readSiteConfig();
     const available = site.languages?.available || ['fr'];
     const isMultilang = Object.keys(content).some(
       (k) => available.includes(k) || k.length === 2

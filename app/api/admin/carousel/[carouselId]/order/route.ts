@@ -18,7 +18,7 @@ export const POST = withAuth(async (
   }
 
   try {
-    const carouselsData = await readCarouselsConfig();
+    const carouselsData = readCarouselsConfig();
     const carousel = carouselsData.carousels[carouselId];
     if (!carousel) {
       return NextResponse.json({ error: 'Carousel not found' }, { status: 404 });
@@ -28,7 +28,7 @@ export const POST = withAuth(async (
       'carousels.json': path.join(process.cwd(), 'data', 'carousels.json'),
     });
 
-    const mediaData = await readMediaRegistry();
+    const mediaData = readMediaRegistry();
     const filenameToId: Record<string, string> = {};
     for (const [id, entry] of Object.entries(mediaData.media)) {
       filenameToId[entry.filename] = id;

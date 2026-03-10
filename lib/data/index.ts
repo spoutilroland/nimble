@@ -3,12 +3,14 @@ export { readPagesConfig, writePagesConfig } from './pages';
 export {
   readMediaRegistry,
   writeMediaRegistry,
+  writeMediaRegistrySync,
   generateMediaId,
   getMediaUrls,
 } from './media';
 export {
   readCarouselsConfig,
   writeCarouselsConfig,
+  writeCarouselsConfigSync,
   getCarouselImages,
   ensureCarouselExists,
   extractCarouselIds,

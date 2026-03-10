@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import { readAdminHash } from '@/lib/data/admin';
 
 export async function verifyPassword(plain: string): Promise<boolean> {
-  const hash = await getActiveHash();
+  const hash = getActiveHash();
   if (!hash) return false;
   try {
     return await bcrypt.compare(plain, hash);
@@ -15,9 +15,9 @@ export async function hashPassword(plain: string): Promise<string> {
   return bcrypt.hash(plain, 10);
 }
 
-async function getActiveHash(): Promise<string | null> {
+function getActiveHash(): string | null {
   // Priorité : data/admin.json > ADMIN_PASSWORD_HASH env > ADMIN_PASSWORD env (hashé)
-  const fileHash = await readAdminHash();
+  const fileHash = readAdminHash();
   if (fileHash) return fileHash;
 
   if (process.env.ADMIN_PASSWORD_HASH) {

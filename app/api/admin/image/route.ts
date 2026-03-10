@@ -16,7 +16,7 @@ const dataDir = path.join(process.cwd(), 'data');
 export const DELETE = withAuth(async (req: NextRequest) => {
   try {
     const { carouselId, filename } = await req.json();
-    const carouselsData = await readCarouselsConfig();
+    const carouselsData = readCarouselsConfig();
     const carousel = carouselsData.carousels[carouselId];
 
     if (!carousel) {
@@ -30,7 +30,7 @@ export const DELETE = withAuth(async (req: NextRequest) => {
       'media.json': path.join(dataDir, 'media.json'),
     });
 
-    const mediaData = await readMediaRegistry();
+    const mediaData = readMediaRegistry();
     const mediaId = Object.keys(mediaData.media).find(
       (id) => mediaData.media[id].filename === safeFilename
     );

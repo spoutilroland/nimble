@@ -13,7 +13,7 @@ export const PUT = withAuth(async (req: NextRequest) => {
   }
   try {
     pushUndo('Position logo', { 'site.json': path.join(process.cwd(), 'data', 'site.json') });
-    const site = await readSiteConfig();
+    const site = readSiteConfig();
     site.logoPosition = position;
     await writeSiteConfig(site);
     return NextResponse.json({ success: true });
