@@ -26,6 +26,25 @@ async function fetchPrivateBlob(url: string): Promise<Response> {
 }
 
 /**
+ * Vérifie si un objet JSON parsé est "vide" (structure par défaut sans données utilisateur).
+ */
+function isEmptyJsonData(parsed: unknown): boolean {
+  if (!parsed || typeof parsed !== 'object') return true;
+  const obj = parsed as Record<string, unknown>;
+  // {} seul
+  if (Object.keys(obj).length === 0) return true;
+  // {"media": {}} {"carousels": {}} {"layouts": {}} {"customThemes": {}} etc.
+  // {"pages": []} {"snapshots": []}
+  for (const val of Object.values(obj)) {
+    if (Array.isArray(val) && val.length > 0) return false;
+    if (typeof val === 'object' && val !== null && Object.keys(val).length > 0) return false;
+    if (typeof val === 'string' && val.length > 0) return false;
+    if (typeof val === 'number' || typeof val === 'boolean') return false;
+  }
+  return true;
+}
+
+/**
  * Synchronise un fichier JSON local vers Vercel Blob (fire-and-forget).
  */
 export async function syncJsonToBlob(filename: string, data: unknown): Promise<void> {
@@ -36,12 +55,12 @@ export async function syncJsonToBlob(filename: string, data: unknown): Promise<v
     console.warn(`[storage] syncJsonToBlob: bootstrap pas terminé, skip ${filename}`);
     return;
   }
-  const json = JSON.stringify(data, null, 2);
-  // Protection : ne jamais envoyer un JSON vide/trivial au Blob
-  if (!json || json === '{}' || json.length < 10) {
-    console.warn(`[storage] syncJsonToBlob: contenu trop petit pour ${filename} — skip`);
+  // Protection : ne jamais envoyer un JSON vide/par défaut au Blob
+  if (isEmptyJsonData(data)) {
+    console.warn(`[storage] syncJsonToBlob: données vides pour ${filename} — skip`);
     return;
   }
+  const json = JSON.stringify(data, null, 2);
   const pathname = `data/${filename}`;
   const blob = await put(pathname, json, {
     access: 'private',
@@ -162,26 +181,33 @@ export async function bootstrapDataFromBlob(): Promise<void> {
           const res = await fetchPrivateBlob(blob.url);
           const buffer = Buffer.from(await res.arrayBuffer());
 
-          // Protection : ne jamais écrire un JSON vide/invalide depuis le Blob
+          // Protection JSON : détection sémantique (pas de comparaison de strings)
           if (blob.pathname.endsWith('.json')) {
-            const blobContent = buffer.toString('utf8').trim();
-            if (!blobContent || blobContent === '{}' || blobContent === '{"media":{}}') {
-              console.warn(`[storage] Blob ${blob.pathname} vide/invalide — skip`);
+            let blobParsed: unknown;
+            try {
+              blobParsed = JSON.parse(buffer.toString('utf8'));
+            } catch {
+              console.warn(`[storage] Blob ${blob.pathname} JSON invalide — skip`);
               continue;
             }
 
-            // Sur Hostinger (filesystem persistent) : ne PAS écraser un JSON local
-            // valide avec le Blob. Le local peut être plus récent si le sync Blob
-            // a échoué silencieusement après une modification.
+            // Blob vide/par défaut → ne jamais écraser le local avec ça
+            if (isEmptyJsonData(blobParsed)) {
+              console.warn(`[storage] Blob ${blob.pathname} vide/par défaut — skip`);
+              continue;
+            }
+
+            // Si le fichier local existe et contient des données valides → le garder.
+            // Le local peut être plus récent si le sync Blob a échoué silencieusement.
             try {
-              const localContent = (await fsp.readFile(localPath, 'utf8')).trim();
-              if (localContent && localContent.length >= 10
-                  && localContent !== '{}' && localContent !== '{"media":{}}') {
-                // Le fichier local est valide → on le garde, pas d'écrasement
+              const localContent = await fsp.readFile(localPath, 'utf8');
+              const localParsed = JSON.parse(localContent);
+              if (!isEmptyJsonData(localParsed)) {
+                // Local valide → pas d'écrasement
                 continue;
               }
             } catch {
-              // Fichier local absent → on restaure depuis Blob (premier déploiement)
+              // Fichier local absent ou illisible → restaurer depuis Blob
             }
           }
 
