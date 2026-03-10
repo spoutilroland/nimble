@@ -3,6 +3,7 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { readSiteConfig, escapeHtml } from '@/lib/data';
+import { getLogoUrl } from '@/lib/data/helpers';
 
 // Rate limiting in-memory
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -122,6 +123,65 @@ export async function POST(req: NextRequest) {
         <p>${safeMessage}</p>
       `,
     });
+
+    // Réponse automatique au visiteur
+    const contactReply = siteConfig.contactReply;
+    if (contactReply?.enabled) {
+      try {
+        const defaultSubject = 'Merci pour votre message';
+        const defaultMessage = `Bonjour {name},\n\nMerci pour votre message. Nous avons bien reçu votre demande et reviendrons vers vous dans les plus brefs délais.\n\nCordialement`;
+        const replySubject = (contactReply.subject || defaultSubject).replace(/\{name\}/g, safeName);
+        const replyBody = escapeHtml(contactReply.message || defaultMessage).replace(/\{name\}/g, safeName).replace(/\n/g, '<br>');
+
+        const logoUrl = getLogoUrl();
+        const biz = siteConfig.business;
+        const businessName = escapeHtml(biz?.name || '');
+        const businessPhone = escapeHtml(biz?.phone || '');
+        const businessEmail = escapeHtml(biz?.email || '');
+        const businessAddress = escapeHtml(biz?.address || '');
+        const host = req.headers.get('host') || 'localhost:3000';
+        const protocol = req.headers.get('x-forwarded-proto') || 'https';
+        const absoluteLogoUrl = `${protocol}://${host}${logoUrl}`;
+        const siteUrl = `${protocol}://${host}`;
+
+        const contactLines = [
+          businessPhone && `<span style="color:#555;">${businessPhone}</span>`,
+          businessEmail && `<a href="mailto:${businessEmail}" style="color:#2563eb;text-decoration:none;">${businessEmail}</a>`,
+          businessAddress && `<span style="color:#555;">${businessAddress}</span>`,
+        ].filter(Boolean).join('&nbsp;&nbsp;|&nbsp;&nbsp;');
+
+        const signatureHtml = `
+          <table cellpadding="0" cellspacing="0" style="border-top: 1px solid #e0e0e0; padding-top: 16px; margin-top: 32px; font-family: Arial, sans-serif;">
+            <tr>
+              <td style="padding-right: 16px; vertical-align: top;">
+                <a href="${siteUrl}" style="text-decoration:none;">
+                  <img src="${absoluteLogoUrl}" alt="${businessName}" style="max-height: 55px; max-width: 130px;" />
+                </a>
+              </td>
+              <td style="vertical-align: top; font-size: 13px; color: #555; line-height: 1.6;">
+                <strong style="font-size: 14px; color: #333;">${businessName}</strong><br>
+                ${contactLines ? `<span style="font-size: 12px;">${contactLines}</span><br>` : ''}
+                <a href="${siteUrl}" style="font-size: 12px; color: #2563eb; text-decoration: none;">${host}</a>
+              </td>
+            </tr>
+          </table>
+        `;
+
+        await transporter.sendMail({
+          from: emailFrom,
+          to: email,
+          subject: replySubject,
+          html: `
+            <div style="font-family: Arial, sans-serif; font-size: 15px; color: #333; line-height: 1.6;">
+              ${replyBody}
+              ${signatureHtml}
+            </div>
+          `,
+        });
+      } catch (replyError) {
+        console.error('Error sending auto-reply:', replyError);
+      }
+    }
 
     return NextResponse.json({ success: true, message: 'Message sent successfully' });
   } catch (error) {

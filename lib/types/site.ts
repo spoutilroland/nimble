@@ -7,6 +7,7 @@ export type {
   CaptchaConfig,
   CaptchaProvider,
   MailConfig,
+  ContactReplyConfig,
   CustomRadius,
   DesignConfig,
   SocialLinks,

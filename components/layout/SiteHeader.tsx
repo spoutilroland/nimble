@@ -35,7 +35,8 @@ export function SiteHeader({ site, pages, currentPath, logoUrl }: Props) {
   const navPages = pages.filter((p) => p.showInNav).sort((a, b) => a.navOrder - b.navOrder);
 
   const homePage = pages.find((p) => p.slug === '/');
-  const hasContact = homePage?.sections.some((s) => s.type === 'contact') ?? false;
+  const contactSection = homePage?.sections.find((s) => s.type === 'contact');
+  const hasContact = contactSection ? (contactSection.showInNav ?? true) : false;
   const contactLink = hasContact ? (
     <a href={currentPath === '/' ? '#contact' : '/#contact'} className={navLinkCls}>
       Contact

@@ -52,6 +52,12 @@ export const MailConfigSchema = z.object({
   to: z.string(),
 });
 
+export const ContactReplyConfigSchema = z.object({
+  enabled: z.boolean(),
+  subject: z.string(),
+  message: z.string(),
+});
+
 export const CustomRadiusSchema = z.object({
   tl: z.number(),
   tr: z.number(),
@@ -130,6 +136,7 @@ export const SiteConfigSchema = z.object({
   socialLabels: SocialLabelsSchema.optional(),
   footer: FooterConfigSchema,
   mail: MailConfigSchema.optional(),
+  contactReply: ContactReplyConfigSchema.optional(),
   homepageRedirect: z.string().optional(),
 });
 
@@ -141,6 +148,7 @@ export type FontConfig = z.infer<typeof FontConfigSchema>;
 export type CaptchaConfig = z.infer<typeof CaptchaConfigSchema>;
 export type CaptchaProvider = CaptchaConfig['provider'];
 export type MailConfig = z.infer<typeof MailConfigSchema>;
+export type ContactReplyConfig = z.infer<typeof ContactReplyConfigSchema>;
 export type CustomRadius = z.infer<typeof CustomRadiusSchema>;
 export type DesignConfig = z.infer<typeof DesignConfigSchema>;
 export type SocialLinks = z.infer<typeof SocialLinksSchema>;

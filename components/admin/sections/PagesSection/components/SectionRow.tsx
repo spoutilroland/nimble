@@ -112,6 +112,18 @@ export function SectionRow({ section, index, total, layouts, onRemove, onMoveUp,
             </>
           )}
 
+          {section.type === 'contact' && (
+            <label className="flex items-center gap-2 cursor-pointer text-[0.85rem] text-[var(--bo-text)] mt-2">
+              <input
+                type="checkbox"
+                checked={section.showInNav ?? true}
+                onChange={(e) => onUpdate({ showInNav: e.target.checked })}
+                className="w-4 h-4"
+              />
+              {t('section.showContactInNav')}
+            </label>
+          )}
+
           <span className="text-[0.72rem] uppercase tracking-[0.04em] text-[var(--back-text-muted,var(--bo-text-dim))] mt-2">{t('section.dividerLabel')}</span>
           <DividerRow
             divider={section.dividerAfter as DividerConfig | undefined}

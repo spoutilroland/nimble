@@ -26,6 +26,7 @@ export const SectionSchema = z.object({
   layoutId: z.string().optional(),
   blockCarousels: z.record(z.string(), z.string()).optional(),
   dividerAfter: DividerConfigSchema.optional(),
+  showInNav: z.boolean().optional(),
   // Propriétés spécifiques au type de section (stats, polaroids, etc.)
   props: z.record(z.string(), z.unknown()).optional(),
 });

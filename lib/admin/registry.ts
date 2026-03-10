@@ -27,6 +27,7 @@ import { PagesSection } from '@/components/admin/sections/PagesSection/index';
 import { LayoutsSection } from '@/components/admin/sections/LayoutsSection/index';
 import { ExportSection } from '@/components/admin/sections/ExportSection/index';
 import { MediaLibrarySection } from '@/components/admin/sections/MediaLibrarySection/index';
+import { ContactReplySection } from '@/components/admin/sections/ContactReplySection';
 
 const SECTION_REGISTRY: SectionDescriptor[] = [
   // tab-design
@@ -37,6 +38,7 @@ const SECTION_REGISTRY: SectionDescriptor[] = [
   // tab-content
   { id: 'pages', tab: 'tab-content', order: 0, anchor: 'pages-section', labelKey: 'nav.pages', component: PagesSection },
   { id: 'layouts', tab: 'tab-content', order: 1, anchor: 'layouts-section', labelKey: 'nav.layouts', component: LayoutsSection },
+  { id: 'contact-reply', tab: 'tab-content', order: 2, anchor: 'contact-reply-section', labelKey: 'nav.contactReply', component: ContactReplySection },
 
   // tab-media
   { id: 'media-library', tab: 'tab-media', order: 0, anchor: 'media-library-section', labelKey: 'nav.media', component: MediaLibrarySection },

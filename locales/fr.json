@@ -34,7 +34,8 @@
     "captcha": "Captcha",
     "snapshots": "Snapshots",
     "export": "Export",
-    "media": "Médiathèque"
+    "media": "Médiathèque",
+    "contactReply": "Contact"
   },
   "footer": {
     "contact": "Contact",
@@ -179,7 +180,8 @@
     "imagesLabel": "Images",
     "configLabel": "Configuration",
     "dividerLabel": "Séparateur",
-    "layoutLabel": "Disposition"
+    "layoutLabel": "Disposition",
+    "showContactInNav": "Afficher le lien Contact dans le menu"
   },
   "sectionType": {
     "hero": "Hero plein écran",
@@ -641,6 +643,22 @@
     "loading": "Configuration en cours...",
     "bannerRestart": "Redémarrage requis",
     "bannerRestartMsg": "Relancez le serveur pour activer votre URL sécurisée :"
+  },
+  "contactReply": {
+    "sectionTitle": "Réponse automatique contact",
+    "sectionInfo": "Configurez le mail envoyé automatiquement aux visiteurs après une prise de contact.",
+    "btnSave": "Enregistrer",
+    "groupTitle": "Configuration",
+    "enableLabel": "Activer la réponse automatique",
+    "subjectLabel": "Objet du mail",
+    "subjectPlaceholder": "Merci pour votre message",
+    "messageLabel": "Corps du message",
+    "messagePlaceholder": "Bonjour {name},\n\nMerci pour votre message. Nous avons bien reçu votre demande et reviendrons vers vous dans les plus brefs délais.\n\nCordialement",
+    "variablesTitle": "Variables disponibles :",
+    "varName": "Nom de la personne qui a pris contact",
+    "signatureNote": "Une signature avec le logo du site sera ajoutée automatiquement en bas du mail.",
+    "saved": "Réponse automatique mise à jour.",
+    "saveError": "Erreur lors de la sauvegarde"
   },
   "syncBlob": {
     "sectionTitle": "Synchroniser vers le cloud",

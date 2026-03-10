@@ -34,7 +34,8 @@
     "captcha": "Captcha",
     "snapshots": "Snapshots",
     "export": "Export",
-    "media": "Media Library"
+    "media": "Media Library",
+    "contactReply": "Contact"
   },
   "footer": {
     "contact": "Contact",
@@ -179,7 +180,8 @@
     "imagesLabel": "Images",
     "configLabel": "Configuration",
     "dividerLabel": "Separator",
-    "layoutLabel": "Layout"
+    "layoutLabel": "Layout",
+    "showContactInNav": "Show Contact link in header menu"
   },
   "sectionType": {
     "hero": "Full-screen hero",
@@ -639,6 +641,22 @@
     "loading": "Configuring...",
     "bannerRestart": "Restart required",
     "bannerRestartMsg": "Restart the server to activate your secure URL:"
+  },
+  "contactReply": {
+    "sectionTitle": "Contact auto-reply",
+    "sectionInfo": "Configure the automatic email sent to visitors after a contact form submission.",
+    "btnSave": "Save",
+    "groupTitle": "Configuration",
+    "enableLabel": "Enable auto-reply",
+    "subjectLabel": "Email subject",
+    "subjectPlaceholder": "Thank you for your message",
+    "messageLabel": "Message body",
+    "messagePlaceholder": "Hello {name},\n\nThank you for your message. We have received your request and will get back to you as soon as possible.\n\nBest regards",
+    "variablesTitle": "Available variables:",
+    "varName": "Name of the person who contacted you",
+    "signatureNote": "A signature with the site logo will be automatically added at the bottom of the email.",
+    "saved": "Auto-reply updated.",
+    "saveError": "Error saving"
   },
   "syncBlob": {
     "sectionTitle": "Sync to cloud",
