@@ -10,7 +10,7 @@ import {
   processImageWithSharp, MIME_TO_EXT, ALLOWED_TYPES, MAX_FILE_SIZE,
 } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
-import { uploadToBlob } from '@/lib/storage';
+import { uploadToBlob, appendMediaToBlob } from '@/lib/storage';
 
 const mediaDir = path.join(process.cwd(), 'uploads', 'media');
 const dataDir = path.join(process.cwd(), 'data');
@@ -73,6 +73,7 @@ export const POST = withAuth(async (
       uploadedAt: new Date().toISOString(),
     };
     await writeMediaRegistry(mediaData);
+    await appendMediaToBlob(mediaId, mediaData.media[mediaId]).catch(() => {});
 
     if (!carousel.images) carousel.images = [];
     carousel.images.push(mediaId);

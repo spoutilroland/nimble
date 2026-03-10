@@ -9,7 +9,7 @@ import {
   processImageWithSharp, MIME_TO_EXT, ALLOWED_TYPES, MAX_FILE_SIZE,
 } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
-import { uploadToBlob } from '@/lib/storage';
+import { uploadToBlob, appendMediaToBlob } from '@/lib/storage';
 
 const mediaDir = path.join(process.cwd(), 'uploads', 'media');
 const dataDir = path.join(process.cwd(), 'data');
@@ -98,6 +98,9 @@ export const POST = withAuth(async (req: NextRequest) => {
         uploadedAt: new Date().toISOString(),
         fileSize: file.size,
       };
+
+      // Append atomique vers Blob (ne remplace jamais le fichier entier)
+      await appendMediaToBlob(mediaId, mediaData.media[mediaId]).catch(() => {});
 
       const urls = getMediaUrls(mediaData.media[mediaId]);
       uploaded.push({ id: mediaId, filename: urls.filename, url: urls.url });

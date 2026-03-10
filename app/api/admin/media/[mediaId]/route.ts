@@ -9,7 +9,7 @@ import {
   readCarouselsConfig, writeCarouselsConfig,
 } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
-import { deleteFromBlob } from '@/lib/storage';
+import { deleteFromBlob, appendMediaToBlob, removeMediaFromBlob } from '@/lib/storage';
 
 const mediaDir = path.join(process.cwd(), 'uploads', 'media');
 const dataDir = path.join(process.cwd(), 'data');
@@ -49,6 +49,8 @@ export const PATCH = withAuth(async (
     }
 
     await writeMediaRegistry(mediaData);
+    // Mise à jour atomique de l'entrée sur Blob
+    await appendMediaToBlob(mediaId, entry).catch(() => {});
     return NextResponse.json({ success: true, entry });
   } catch {
     return NextResponse.json({ error: 'Mise à jour échouée' }, { status: 500 });
@@ -89,6 +91,8 @@ export const DELETE = withAuth(async (
 
     delete mediaData.media[mediaId];
     await writeMediaRegistry(mediaData);
+    // Suppression atomique de l'entrée sur Blob
+    await removeMediaFromBlob(mediaId).catch(() => {});
 
     return NextResponse.json({ success: true });
   } catch {

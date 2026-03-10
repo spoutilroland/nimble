@@ -19,9 +19,10 @@ const DATA_DIR = path.join(process.cwd(), 'data');
 const UPLOADS_DIR = path.join(process.cwd(), 'uploads');
 
 // Fichiers JSON à synchroniser
+// media.json EXCLU : géré uniquement via opérations atomiques (append/remove)
 const JSON_FILES = [
   'site.json', 'pages.json', 'theme.json', 'content.json',
-  'media.json', 'carousels.json', 'layouts.json', 'admin.json',
+  'carousels.json', 'layouts.json', 'admin.json',
   'setup.json', 'snapshots/snapshots.json',
 ];
 

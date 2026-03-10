@@ -2,7 +2,7 @@ import fs from 'fs';
 import fsp from 'fs/promises';
 import path from 'path';
 import type { MediaRegistry, MediaEntry, MediaUrls } from '@/lib/types';
-import { syncJsonToBlob } from '@/lib/storage';
+import { appendMediaToBlob, removeMediaFromBlob } from '@/lib/storage';
 
 const mediaFile = path.join(process.cwd(), 'data', 'media.json');
 const mediaTmpFile = mediaFile + '.tmp';
@@ -21,26 +21,19 @@ export function readMediaRegistry(): MediaRegistry {
 }
 
 /**
- * Écriture atomique : écrit dans un .tmp puis rename.
- * Le rename est atomique sur les systèmes POSIX → pas de fichier vide si crash.
+ * Écriture atomique locale UNIQUEMENT (pas de sync Blob).
+ * Le Blob est mis à jour via appendMediaToBlob / removeMediaFromBlob.
  */
 export async function writeMediaRegistry(data: MediaRegistry): Promise<void> {
   const json = JSON.stringify(data, null, 2);
   await fsp.writeFile(mediaTmpFile, json);
   await fsp.rename(mediaTmpFile, mediaFile);
-  // Ne sync vers Blob que si le registre n'est pas vide
-  if (Object.keys(data.media).length > 0) {
-    await syncJsonToBlob('media.json', data).catch(() => {});
-  }
 }
 
 export function writeMediaRegistrySync(data: MediaRegistry): void {
   const json = JSON.stringify(data, null, 2);
   fs.writeFileSync(mediaTmpFile, json);
   fs.renameSync(mediaTmpFile, mediaFile);
-  if (Object.keys(data.media).length > 0) {
-    syncJsonToBlob('media.json', data).catch(() => {});
-  }
 }
 
 export function generateMediaId(): string {

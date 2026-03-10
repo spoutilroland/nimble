@@ -150,6 +150,87 @@ export async function proxyBlobFile(pathname: string): Promise<{ buffer: Buffer;
   return { buffer, contentType };
 }
 
+// ─── Opérations atomiques media.json sur Blob ───────────────────────────
+// Le media.json sur Blob ne doit JAMAIS être remplacé en entier depuis Hostinger.
+// Seules les opérations atomiques (append / remove) sont autorisées.
+
+/**
+ * Lit le media.json actuel depuis Vercel Blob (source de vérité).
+ */
+export async function readMediaFromBlob(): Promise<Record<string, unknown>> {
+  if (!isBlobEnabled()) return {};
+
+  const pathname = 'data/media.json';
+  let url = blobUrlMap.get(pathname);
+
+  if (!url) {
+    try {
+      const { blobs } = await list({ prefix: pathname, limit: 1 });
+      const match = blobs.find((b) => b.pathname === pathname);
+      if (match) {
+        url = match.url;
+        blobUrlMap.set(pathname, url);
+      }
+    } catch { /* ignore */ }
+  }
+  if (!url) return {};
+
+  try {
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${blobToken()}` },
+      cache: 'no-store',
+    });
+    if (!res.ok) return {};
+    const data = await res.json();
+    return (data?.media && typeof data.media === 'object') ? data.media : {};
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Ajoute UNE entrée media au Blob (read-modify-write atomique).
+ * Ne remplace jamais le fichier en entier — fusionne avec l'existant.
+ */
+export async function appendMediaToBlob(mediaId: string, entry: unknown): Promise<void> {
+  if (!isBlobEnabled() || !bootstrapDone) return;
+  try {
+    const currentMedia = await readMediaFromBlob();
+    currentMedia[mediaId] = entry;
+    const json = JSON.stringify({ media: currentMedia }, null, 2);
+    const pathname = 'data/media.json';
+    const blob = await put(pathname, json, {
+      access: 'private',
+      addRandomSuffix: false,
+      contentType: 'application/json',
+    });
+    blobUrlMap.set(pathname, blob.url);
+  } catch (err) {
+    console.warn('[storage] appendMediaToBlob failed:', (err as Error).message);
+  }
+}
+
+/**
+ * Supprime UNE entrée media du Blob (read-modify-write atomique).
+ */
+export async function removeMediaFromBlob(mediaId: string): Promise<void> {
+  if (!isBlobEnabled() || !bootstrapDone) return;
+  try {
+    const currentMedia = await readMediaFromBlob();
+    delete currentMedia[mediaId];
+    const json = JSON.stringify({ media: currentMedia }, null, 2);
+    const pathname = 'data/media.json';
+    const blob = await put(pathname, json, {
+      access: 'private',
+      addRandomSuffix: false,
+      contentType: 'application/json',
+    });
+    blobUrlMap.set(pathname, blob.url);
+  } catch (err) {
+    console.warn('[storage] removeMediaFromBlob failed:', (err as Error).message);
+  }
+}
+
 /**
  * Bootstrap : télécharge toutes les données depuis Vercel Blob vers le filesystem local.
  * Appelé une seule fois au démarrage via instrumentation.ts.

@@ -9,7 +9,7 @@ import {
   readCarouselsConfig, writeCarouselsConfig,
 } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
-import { deleteFromBlob } from '@/lib/storage';
+import { deleteFromBlob, removeMediaFromBlob } from '@/lib/storage';
 
 const mediaDir = path.join(process.cwd(), 'uploads', 'media');
 const dataDir = path.join(process.cwd(), 'data');
@@ -50,6 +50,8 @@ export const POST = withAuth(async (req: NextRequest) => {
       }
 
       delete mediaData.media[mediaId];
+      // Suppression atomique de l'entrée sur Blob
+      await removeMediaFromBlob(mediaId).catch(() => {});
       deleted++;
     }
 
