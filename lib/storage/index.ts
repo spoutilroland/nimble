@@ -30,10 +30,9 @@ async function fetchPrivateBlob(url: string): Promise<Response> {
  */
 export async function syncJsonToBlob(filename: string, data: unknown): Promise<void> {
   if (!isBlobEnabled()) return;
-  // Bloquer toute écriture Blob tant que le bootstrap n'a pas restauré les données
-  // Sinon les données par défaut du prebuild écrasent les vraies données
-  if (!bootstrapDone) {
-    console.warn(`[storage] syncJsonToBlob: bootstrap pas terminé, skip ${filename}`);
+  // Bloquer les écritures Blob pendant le build Next.js (prebuild)
+  // En runtime, les écritures sont toujours autorisées car on lit depuis Blob
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
     return;
   }
   const json = JSON.stringify(data, null, 2);
@@ -59,7 +58,7 @@ export async function uploadToBlob(
   buffer: Buffer,
   contentType: string
 ): Promise<string> {
-  if (!isBlobEnabled() || !bootstrapDone) return '';
+  if (!isBlobEnabled() || process.env.NEXT_PHASE === 'phase-production-build') return '';
   const blob = await put(pathname, buffer, {
     access: 'private',
     addRandomSuffix: false,
@@ -73,7 +72,7 @@ export async function uploadToBlob(
  * Supprime un fichier du Blob par pathname exact.
  */
 export async function deleteFromBlob(pathname: string): Promise<void> {
-  if (!isBlobEnabled() || !bootstrapDone) return;
+  if (!isBlobEnabled()) return;
   const url = blobUrlMap.get(pathname);
   if (url) {
     await del(url);
@@ -92,7 +91,7 @@ export async function deleteFromBlob(pathname: string): Promise<void> {
  * Supprime tous les blobs qui matchent un préfixe.
  */
 export async function deleteFromBlobByPrefix(prefix: string): Promise<void> {
-  if (!isBlobEnabled() || !bootstrapDone) return;
+  if (!isBlobEnabled()) return;
   const { blobs } = await list({ prefix, limit: 100 });
   if (blobs.length > 0) {
     await del(blobs.map((b) => b.url));
@@ -156,7 +155,11 @@ export async function readJsonFromBlob<T>(filename: string, fallback: T): Promis
   if (!url) return fallback;
 
   try {
-    const res = await fetchPrivateBlob(url);
+    // cache: 'no-store' CRUCIAL — sans ça Next.js cache le fetch et retourne des données périmées
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${blobToken()}` },
+      cache: 'no-store',
+    });
     if (!res.ok) return fallback;
 
     const text = await res.text();
