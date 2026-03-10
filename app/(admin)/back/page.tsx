@@ -4,7 +4,7 @@ import { readSetupConfig } from '@/lib/data/setup';
 import { AdminShell } from '@/components/admin/AdminShell';
 
 export default async function BackPage() {
-  const setup = readSetupConfig();
+  const setup = await readSetupConfig();
   const lang = await detectLang();
   const locale = loadLocale(lang);
 

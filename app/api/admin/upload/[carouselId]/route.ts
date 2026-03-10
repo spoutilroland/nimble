@@ -32,8 +32,8 @@ export const POST = withAuth(async (
       return NextResponse.json({ error: 'File too large' }, { status: 400 });
     }
 
-    ensureCarouselExists(carouselId);
-    const carouselsData = readCarouselsConfig();
+    await ensureCarouselExists(carouselId);
+    const carouselsData = await readCarouselsConfig();
     const carousel = carouselsData.carousels[carouselId];
 
     if ((carousel.images || []).length >= carousel.maxImages) {
@@ -63,7 +63,7 @@ export const POST = withAuth(async (
     if (hasWebp) processImageWithSharp(filePath).catch(() => {});
 
     const mediaId = generateMediaId();
-    const mediaData = readMediaRegistry();
+    const mediaData = await readMediaRegistry();
     mediaData.media[mediaId] = {
       id: mediaId,
       filename,

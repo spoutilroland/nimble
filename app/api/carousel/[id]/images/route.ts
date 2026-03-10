@@ -8,13 +8,13 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: carouselId } = await params;
-  const data = readCarouselsConfig();
+  const data = await readCarouselsConfig();
   const carousel = data.carousels[carouselId];
 
   if (!carousel && !/^[a-zA-Z0-9_-]{1,100}$/.test(carouselId)) {
     return NextResponse.json({ error: 'Carousel not found' }, { status: 404 });
   }
 
-  const images = getCarouselImages(carouselId);
+  const images = await getCarouselImages(carouselId);
   return NextResponse.json({ carousel: carouselId, images });
 }

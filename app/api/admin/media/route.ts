@@ -10,8 +10,8 @@ import { readMediaRegistry, writeMediaRegistry, readCarouselsConfig, getMediaUrl
 const mediaDir = path.join(process.cwd(), 'uploads', 'media');
 
 export const GET = withAuth(async () => {
-  const mediaData = readMediaRegistry();
-  const carouselsData = readCarouselsConfig();
+  const mediaData = await readMediaRegistry();
+  const carouselsData = await readCarouselsConfig();
   let dirty = false;
 
   const items = await Promise.all(

@@ -19,11 +19,11 @@ export const POST = withAuth(async (req: NextRequest) => {
     await writePagesConfig(body);
 
     // Créer les carousels manquants avec le bon maxImages selon le type de bloc
-    const layoutsData = readLayoutsConfig();
+    const layoutsData = await readLayoutsConfig();
     for (const page of body.pages || []) {
       for (const section of page.sections || []) {
         if (section.carouselId && !section.blockCarousels) {
-          ensureCarouselExists(section.carouselId, `${page.title} — ${section.type}`);
+          await ensureCarouselExists(section.carouselId, `${page.title} — ${section.type}`);
         }
         if (section.blockCarousels && section.layoutId) {
           const layout = layoutsData.layouts?.[section.layoutId];
@@ -31,7 +31,7 @@ export const POST = withAuth(async (req: NextRequest) => {
             if (!carouselId) continue;
             const block = layout?.blocks?.find((b: { blockId: string; type: string }) => b.blockId === blockId);
             const maxImages = block?.type === 'image' ? 1 : 20;
-            ensureCarouselExists(carouselId, carouselId, maxImages);
+            await ensureCarouselExists(carouselId, carouselId, maxImages);
           }
         }
       }

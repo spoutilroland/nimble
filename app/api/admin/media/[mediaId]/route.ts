@@ -22,7 +22,7 @@ export const PATCH = withAuth(async (
   ctx?: { params: Promise<Record<string, string>> }
 ) => {
   const { mediaId } = await ctx!.params;
-  const mediaData = readMediaRegistry();
+  const mediaData = await readMediaRegistry();
   const entry = mediaData.media[mediaId];
 
   if (!entry) {
@@ -60,7 +60,7 @@ export const DELETE = withAuth(async (
   ctx?: { params: Promise<Record<string, string>> }
 ) => {
   const { mediaId } = await ctx!.params;
-  const mediaData = readMediaRegistry();
+  const mediaData = await readMediaRegistry();
   const entry = mediaData.media[mediaId];
 
   if (!entry) {
@@ -73,7 +73,7 @@ export const DELETE = withAuth(async (
       'carousels.json': path.join(dataDir, 'carousels.json'),
     });
 
-    const carouselsData = readCarouselsConfig();
+    const carouselsData = await readCarouselsConfig();
     for (const carousel of Object.values(carouselsData.carousels)) {
       carousel.images = (carousel.images || []).filter((id) => id !== mediaId);
     }

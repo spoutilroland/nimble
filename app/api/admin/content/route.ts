@@ -12,8 +12,8 @@ export const POST = withAuth(async (req: NextRequest) => {
     const contentFile = path.join(process.cwd(), 'data', 'content.json');
     pushUndo('Texte inline', { 'content.json': contentFile });
 
-    const content = readContent();
-    const site = readSiteConfig();
+    const content = await readContent();
+    const site = await readSiteConfig();
     const available = site.languages?.available || ['fr'];
     const defaultLang = site.languages?.default || 'fr';
     const targetLang = lang && available.includes(lang) ? lang : defaultLang;

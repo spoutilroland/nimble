@@ -12,7 +12,7 @@ export const PUT = withAuth(async (
   const { label, blocks } = await req.json();
 
   try {
-    const data = readLayoutsConfig();
+    const data = await readLayoutsConfig();
     if (!data.layouts[id]) {
       return NextResponse.json({ error: 'Layout introuvable' }, { status: 404 });
     }
@@ -33,12 +33,12 @@ export const DELETE = withAuth(async (
   const { id } = await ctx!.params;
 
   try {
-    const data = readLayoutsConfig();
+    const data = await readLayoutsConfig();
     if (!data.layouts[id]) {
       return NextResponse.json({ error: 'Layout introuvable' }, { status: 404 });
     }
 
-    const pagesData = readPagesConfig();
+    const pagesData = await readPagesConfig();
     const usedIn: string[] = [];
     for (const page of pagesData.pages || []) {
       for (const section of page.sections || []) {

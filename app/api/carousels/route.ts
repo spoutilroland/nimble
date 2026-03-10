@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { readCarouselsConfig } from '@/lib/data';
 
 export async function GET() {
-  const data = readCarouselsConfig();
+  const data = await readCarouselsConfig();
   const carouselsInfo: Record<string, { id: string; title: string; maxImages: number }> = {};
   for (const [key, carousel] of Object.entries(data.carousels)) {
     carouselsInfo[key] = {

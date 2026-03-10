@@ -13,7 +13,7 @@ export const PUT = withAuth(async (req: NextRequest) => {
   }
   try {
     pushUndo('Mode logo', { 'site.json': path.join(process.cwd(), 'data', 'site.json') });
-    const site = readSiteConfig();
+    const site = await readSiteConfig();
     site.logoMode = mode;
     await writeSiteConfig(site);
     return NextResponse.json({ success: true });

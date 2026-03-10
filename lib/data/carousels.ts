@@ -5,11 +5,14 @@ import type { CarouselsConfig, CarouselEntry } from '@/lib/types';
 import type { PagesConfig } from '@/lib/types';
 import type { MediaUrls } from '@/lib/types';
 import { readMediaRegistry, getMediaUrls } from './media';
-import { syncJsonToBlob } from '@/lib/storage';
+import { isBlobEnabled, readJsonFromBlob, syncJsonToBlob } from '@/lib/storage';
 
 const carouselsFile = path.join(process.cwd(), 'data', 'carousels.json');
 
-export function readCarouselsConfig(): CarouselsConfig {
+export async function readCarouselsConfig(): Promise<CarouselsConfig> {
+  if (isBlobEnabled()) {
+    return readJsonFromBlob<CarouselsConfig>('carousels.json', { carousels: {} });
+  }
   try {
     return JSON.parse(fs.readFileSync(carouselsFile, 'utf8'));
   } catch {
@@ -22,14 +25,9 @@ export async function writeCarouselsConfig(data: CarouselsConfig): Promise<void>
   await syncJsonToBlob('carousels.json', data).catch(() => {});
 }
 
-export function writeCarouselsConfigSync(data: CarouselsConfig): void {
-  fs.writeFileSync(carouselsFile, JSON.stringify(data, null, 2));
-  syncJsonToBlob('carousels.json', data).catch(() => {});
-}
-
-export function getCarouselImages(carouselId: string): MediaUrls[] {
-  const carouselsData = readCarouselsConfig();
-  const mediaData = readMediaRegistry();
+export async function getCarouselImages(carouselId: string): Promise<MediaUrls[]> {
+  const carouselsData = await readCarouselsConfig();
+  const mediaData = await readMediaRegistry();
   const carousel = carouselsData.carousels[carouselId];
   if (!carousel) return [];
   return (carousel.images || [])
@@ -37,12 +35,12 @@ export function getCarouselImages(carouselId: string): MediaUrls[] {
     .map((mediaId) => getMediaUrls(mediaData.media[mediaId]));
 }
 
-export function ensureCarouselExists(
+export async function ensureCarouselExists(
   carouselId: string,
   title?: string,
   maxImages?: number
-): CarouselEntry {
-  const data = readCarouselsConfig();
+): Promise<CarouselEntry> {
+  const data = await readCarouselsConfig();
   if (!data.carousels[carouselId]) {
     data.carousels[carouselId] = {
       id: carouselId,
@@ -50,10 +48,10 @@ export function ensureCarouselExists(
       maxImages: maxImages ?? 20,
       images: [],
     };
-    writeCarouselsConfigSync(data);
+    await writeCarouselsConfig(data);
   } else if (maxImages !== undefined && data.carousels[carouselId].maxImages !== maxImages) {
     data.carousels[carouselId].maxImages = maxImages;
-    writeCarouselsConfigSync(data);
+    await writeCarouselsConfig(data);
   }
   return data.carousels[carouselId];
 }
@@ -77,7 +75,7 @@ export function extractCarouselIds(pagesData: PagesConfig): string[] {
 
 export async function cleanOrphanedCarousels(newPagesData: PagesConfig): Promise<void> {
   const activeIds = new Set(extractCarouselIds(newPagesData));
-  const carouselsData = readCarouselsConfig();
+  const carouselsData = await readCarouselsConfig();
 
   // Supprimer uniquement les entrées carousel non référencées par aucune page
   // Les media ne sont JAMAIS supprimés ici — c'est la médiathèque qui gère ça

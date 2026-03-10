@@ -27,8 +27,8 @@ export const POST = withAuth(async (req: NextRequest) => {
       'carousels.json': path.join(dataDir, 'carousels.json'),
     });
 
-    const mediaData = readMediaRegistry();
-    const carouselsData = readCarouselsConfig();
+    const mediaData = await readMediaRegistry();
+    const carouselsData = await readCarouselsConfig();
     let deleted = 0;
 
     for (const mediaId of mediaIds) {

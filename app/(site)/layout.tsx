@@ -7,7 +7,7 @@ import { AdminBar } from '@/components/layout/AdminBar';
 import '../globals.css';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const site = readSiteConfig();
+  const site = await readSiteConfig();
   return {
     title: site.seo.defaultTitle || site.business.name,
     description: site.seo.defaultDescription || '',
@@ -31,8 +31,8 @@ export default async function SiteLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const site = readSiteConfig();
-  const { theme } = readThemeFile();
+  const site = await readSiteConfig();
+  const { theme } = await readThemeFile();
   const lang = await detectLang();
   const borderStyle = site.design?.borderStyle || 'angular';
 

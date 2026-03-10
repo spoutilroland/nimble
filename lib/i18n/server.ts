@@ -2,7 +2,7 @@ import { cookies, headers } from 'next/headers';
 import { readSiteConfig } from '@/lib/data/site';
 
 export async function detectLang(): Promise<string> {
-  const site = readSiteConfig();
+  const site = await readSiteConfig();
   const available = site.languages?.available || ['fr'];
   const defaultLang = site.languages?.default || 'fr';
 

@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Vérification captcha
-    const siteConfig = readSiteConfig();
+    const siteConfig = await readSiteConfig();
     const captchaProvider = siteConfig.captcha?.provider;
     const captchaSecret = process.env.CAPTCHA_SECRET_KEY || process.env.TURNSTILE_SECRET_KEY;
 

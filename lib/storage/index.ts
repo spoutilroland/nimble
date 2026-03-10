@@ -132,8 +132,46 @@ export async function proxyBlobFile(pathname: string): Promise<{ buffer: Buffer;
 }
 
 /**
+ * Lit un fichier JSON directement depuis Vercel Blob (source de vérité).
+ * Jamais de cache — chaque appel va chercher la dernière version.
+ */
+export async function readJsonFromBlob<T>(filename: string, fallback: T): Promise<T> {
+  if (!isBlobEnabled()) return fallback;
+
+  const pathname = `data/${filename}`;
+  let url = blobUrlMap.get(pathname);
+
+  // Fallback : chercher dans le blob store si pas dans la map en mémoire
+  if (!url) {
+    try {
+      const { blobs } = await list({ prefix: pathname, limit: 1 });
+      const match = blobs.find((b) => b.pathname === pathname);
+      if (match) {
+        url = match.url;
+        blobUrlMap.set(pathname, url);
+      }
+    } catch { /* ignore */ }
+  }
+
+  if (!url) return fallback;
+
+  try {
+    const res = await fetchPrivateBlob(url);
+    if (!res.ok) return fallback;
+
+    const text = await res.text();
+    if (!text || text.trim().length < 10) return fallback;
+
+    return JSON.parse(text) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+/**
  * Bootstrap : télécharge toutes les données depuis Vercel Blob vers le filesystem local.
  * Appelé une seule fois au démarrage via instrumentation.ts.
+ * NOTE : media.json est exclu — il est lu directement depuis Blob à chaque requête.
  */
 export async function bootstrapDataFromBlob(): Promise<void> {
   if (!isBlobEnabled() || bootstrapped) return;
@@ -150,10 +188,9 @@ export async function bootstrapDataFromBlob(): Promise<void> {
       blobUrlMap.set(blob.pathname, blob.url);
       totalBlobs++;
 
-      // Télécharger les fichiers JSON data + tous les uploads
-      const shouldDownload =
-        blob.pathname.startsWith('data/') ||
-        blob.pathname.startsWith('uploads/');
+      // Télécharger uniquement les uploads (binaires).
+      // Les JSON data/ sont lus directement depuis Blob à chaque requête (source de vérité unique).
+      const shouldDownload = blob.pathname.startsWith('uploads/');
 
       if (shouldDownload) {
         try {
@@ -162,18 +199,6 @@ export async function bootstrapDataFromBlob(): Promise<void> {
           const res = await fetchPrivateBlob(blob.url);
           const buffer = Buffer.from(await res.arrayBuffer());
 
-          // Protection : ne jamais écrire un JSON vide/invalide
-          if (blob.pathname.endsWith('.json')) {
-            const content = buffer.toString('utf8').trim();
-            if (!content || content === '{}' || content === '{"media":{}}') {
-              console.warn(`[storage] Blob ${blob.pathname} vide/invalide — skip`);
-              continue;
-            }
-          }
-
-          // Toujours écrire le Blob s'il a du contenu valide.
-          // Sur Vercel (filesystem éphémère), le local est toujours un fichier par défaut.
-          // Sur Hostinger, le Blob contient la même donnée que le local (ou plus récente).
           await fsp.mkdir(path.dirname(localPath), { recursive: true });
           await fsp.writeFile(localPath, buffer);
           downloaded++;

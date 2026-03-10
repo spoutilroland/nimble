@@ -45,7 +45,7 @@ export const POST = withAuth(async (req: NextRequest) => {
 
     await fsp.mkdir(mediaDir, { recursive: true });
 
-    const mediaData = readMediaRegistry();
+    const mediaData = await readMediaRegistry();
     const uploaded: Array<{ id: string; filename: string; url: string }> = [];
 
     for (const file of files) {

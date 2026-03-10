@@ -12,7 +12,7 @@ export async function buildStaticExport(): Promise<Buffer> {
   const baseUrl = `http://localhost:${port}`;
 
   // Récupère la liste des pages
-  const { pages } = readPagesConfig();
+  const { pages } = await readPagesConfig();
 
   // Construit la liste des URLs à crawler :
   // - page d'accueil (slug vide ou "home" → /)

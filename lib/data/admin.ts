@@ -2,11 +2,15 @@ import fs from 'fs';
 import fsp from 'fs/promises';
 import path from 'path';
 import type { AdminData } from '@/lib/types';
-import { syncJsonToBlob } from '@/lib/storage';
+import { isBlobEnabled, readJsonFromBlob, syncJsonToBlob } from '@/lib/storage';
 
 const adminFile = path.join(process.cwd(), 'data', 'admin.json');
 
-export function readAdminHash(): string | null {
+export async function readAdminHash(): Promise<string | null> {
+  if (isBlobEnabled()) {
+    const data = await readJsonFromBlob<AdminData>('admin.json', { passwordHash: '' });
+    return data.passwordHash || null;
+  }
   try {
     const data: AdminData = JSON.parse(fs.readFileSync(adminFile, 'utf8'));
     return data.passwordHash || null;

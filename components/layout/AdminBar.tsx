@@ -11,7 +11,7 @@ export async function AdminBar() {
       <span className="font-semibold tracking-wide uppercase opacity-60">Administration</span>
       <div className="flex items-center gap-3">
         <a
-          href={`/${getAdminSlug()}`}
+          href={`/${await getAdminSlug()}`}
           className="text-neutral-200 underline underline-offset-2 hover:text-white transition-colors"
         >
           Back office
