@@ -88,41 +88,75 @@ export function CinematicSplitSection({ section }: Props) {
           };
 
           const imagePanel = (
-            <div className="cinematic-image-panel">
-              <img src={proj.imageUrl || images[i]} alt={imgAlt} />
-              <div className="cinematic-image-overlay" />
+            <div className="relative overflow-hidden">
+              <img
+                src={proj.imageUrl || images[i]}
+                alt={imgAlt}
+                className="w-full h-full object-cover block transition-transform duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-black/15 to-transparent pointer-events-none" />
             </div>
           );
 
           const textPanel = (
-            <div className={`cinematic-text-panel${isDark ? ' cinematic-text-panel--dark' : ''}`} data-num={num}>
-              <div className="cinematic-accent-bar" />
+            <div
+              className={`relative flex flex-col justify-center px-9 py-12 ${
+                isDark
+                  ? 'bg-[var(--secondary)] text-[var(--bg-light)]'
+                  : 'bg-[var(--bg-light)] text-[var(--text)]'
+              } ${
+                reversed
+                  ? '[clip-path:polygon(0_0,calc(100%-25px)_0,100%_100%,0_100%)]'
+                  : '[clip-path:polygon(25px_0,100%_0,100%_100%,0_100%)]'
+              }`}
+            >
+              {/* Numéro en filigrane */}
+              <span className="absolute top-6 right-8 font-['Oswald',sans-serif] text-[4rem] font-bold leading-none opacity-[0.07] pointer-events-none">
+                {num}
+              </span>
 
-              {/* Tags au-dessus du titre */}
+              {/* Accent bar */}
+              <div className="w-10 h-[3px] bg-[var(--accent)] mb-5" />
+
+              {/* Tags */}
               {proj.tags.filter(Boolean).length > 0 && (
-                <div className="cinematic-tags">
+                <div className="flex flex-wrap gap-2 mb-3">
                   {proj.tags.filter(Boolean).map((tag, ti) => (
-                    <span key={ti} className="cinematic-tag">{tag}</span>
+                    <span
+                      key={ti}
+                      className={`inline-block px-3 py-1 text-[0.7rem] font-bold tracking-[1.5px] uppercase border-[1.5px] [clip-path:polygon(4px_0,100%_0,calc(100%-4px)_100%,0_100%)] ${
+                        isDark
+                          ? 'border-[var(--primary-light)] text-[var(--primary-light)]'
+                          : 'border-[var(--primary)] text-[var(--primary)]'
+                      }`}
+                    >
+                      {tag}
+                    </span>
                   ))}
                 </div>
               )}
 
               {/* Titre */}
-              <h3 className="cinematic-title" data-content-key={keys.title}>
+              <h3
+                className="font-['Oswald',sans-serif] text-[1.75rem] font-bold leading-tight uppercase tracking-[1px] mb-4"
+                data-content-key={keys.title}
+              >
                 {def.title.split('\n').map((line, j) => (
                   <span key={j}>{line}{j === 0 && <br />}</span>
                 ))}
               </h3>
 
               {/* Description */}
-              <p className="cinematic-desc" data-content-key={keys.desc}>{def.desc}</p>
+              <p className="text-[0.92rem] leading-relaxed opacity-85 mb-5" data-content-key={keys.desc}>
+                {def.desc}
+              </p>
 
-              {/* Méta (lieu · durée · …) */}
+              {/* Méta */}
               {proj.metaItems.filter(Boolean).length > 0 && (
-                <div className="cinematic-meta">
+                <div className="flex items-center gap-1.5 text-[0.78rem] font-semibold tracking-[0.5px] uppercase opacity-65">
                   {proj.metaItems.filter(Boolean).map((item, mi) => (
-                    <span key={mi} className="cinematic-meta-item">
-                      {mi > 0 && <span className="cinematic-meta-sep">·</span>}
+                    <span key={mi}>
+                      {mi > 0 && <span className="mx-1">·</span>}
                       {item}
                     </span>
                   ))}
@@ -134,7 +168,9 @@ export function CinematicSplitSection({ section }: Props) {
           return (
             <div
               key={i}
-              className={`cinematic-row${reversed ? ' cinematic-row--reversed' : ''} reveal`}
+              className={`group grid grid-cols-1 md:grid-cols-2 max-w-[1200px] mx-auto mb-10 min-h-[360px] overflow-hidden ${
+                reversed ? 'md:[direction:rtl] [&>*]:md:[direction:ltr]' : ''
+              } reveal`}
               id={i === 0 ? `cinematic-${section.carouselId}` : undefined}
             >
               {imagePanel}
