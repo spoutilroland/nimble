@@ -28,6 +28,7 @@ import { LayoutsSection } from '@/components/admin/sections/LayoutsSection/index
 import { ExportSection } from '@/components/admin/sections/ExportSection/index';
 import { MediaLibrarySection } from '@/components/admin/sections/MediaLibrarySection/index';
 import { ContactReplySection } from '@/components/admin/sections/ContactReplySection';
+import { BackupSection } from '@/components/admin/sections/BackupSection/index';
 
 const SECTION_REGISTRY: SectionDescriptor[] = [
   // tab-design
@@ -38,7 +39,6 @@ const SECTION_REGISTRY: SectionDescriptor[] = [
   // tab-content
   { id: 'pages', tab: 'tab-content', order: 0, anchor: 'pages-section', labelKey: 'nav.pages', component: PagesSection },
   { id: 'layouts', tab: 'tab-content', order: 1, anchor: 'layouts-section', labelKey: 'nav.layouts', component: LayoutsSection },
-  { id: 'contact-reply', tab: 'tab-content', order: 2, anchor: 'contact-reply-section', labelKey: 'nav.contactReply', component: ContactReplySection },
 
   // tab-media
   { id: 'media-library', tab: 'tab-media', order: 0, anchor: 'media-library-section', labelKey: 'nav.media', component: MediaLibrarySection },
@@ -50,8 +50,12 @@ const SECTION_REGISTRY: SectionDescriptor[] = [
 
   // tab-config
   { id: 'config', tab: 'tab-config', order: 0, anchor: 'config-section', labelKey: 'nav.languages', component: ConfigSection },
-  { id: 'snapshots', tab: 'tab-config', order: 1, anchor: 'snapshots-section', labelKey: 'nav.snapshots', component: SnapshotsSection },
-  { id: 'export', tab: 'tab-config', order: 2, anchor: 'export-section', labelKey: 'nav.export', component: ExportSection },
+  { id: 'contact-reply', tab: 'tab-config', order: 1, anchor: 'contact-reply-section', labelKey: 'nav.contactReply', component: ContactReplySection },
+
+  // tab-backup
+  { id: 'backup', tab: 'tab-backup', order: 0, anchor: 'backup-section', labelKey: 'nav.backup', component: BackupSection },
+  { id: 'snapshots', tab: 'tab-backup', order: 1, anchor: 'snapshots-section', labelKey: 'nav.snapshots', component: SnapshotsSection },
+  { id: 'export', tab: 'tab-backup', order: 2, anchor: 'export-section', labelKey: 'nav.export', component: ExportSection },
 
   // tab-security
   { id: 'security', tab: 'tab-security', order: 0, anchor: 'security-section', labelKey: 'nav.password', component: SecuritySection },

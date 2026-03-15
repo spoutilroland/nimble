@@ -39,6 +39,7 @@ export const LayoutBlockSchema = z.object({
 export const LayoutSchema = z.object({
   id: z.string(),
   label: z.string(),
+  description: z.string().max(60).optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
   blocks: z.array(LayoutBlockSchema),

@@ -5,7 +5,7 @@ import path from 'path';
 import fsp from 'fs/promises';
 import sharp from 'sharp';
 import { withAuth } from '@/lib/auth';
-import { readMediaRegistry, writeMediaRegistry, readCarouselsConfig, getMediaUrls } from '@/lib/data';
+import { readMediaRegistry, writeMediaRegistry, readCarouselsConfig, getMediaUrls, generateThumb } from '@/lib/data';
 
 const mediaDir = path.join(process.cwd(), 'uploads', 'media');
 
@@ -43,6 +43,17 @@ export const GET = withAuth(async () => {
         }
       }
 
+      // Génération rétroactive du thumbnail si manquant
+      if (!entry.hasThumb && /\.(jpg|jpeg|png|webp)$/i.test(entry.filename)) {
+        try {
+          const filePath = path.join(mediaDir, entry.filename);
+          entry.hasThumb = await generateThumb(filePath);
+          if (entry.hasThumb) dirty = true;
+        } catch {
+          // silencieux
+        }
+      }
+
       return { ...entry, ...getMediaUrls(entry), usedIn };
     })
   );
@@ -52,5 +63,6 @@ export const GET = withAuth(async () => {
     await writeMediaRegistry(mediaData);
   }
 
-  return NextResponse.json({ media: items });
+  const folders = Object.values(mediaData.folders ?? {});
+  return NextResponse.json({ media: items, folders });
 });

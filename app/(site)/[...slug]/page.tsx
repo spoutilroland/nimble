@@ -63,7 +63,7 @@ export default async function DynamicPage({ params }: PageProps) {
       />
 
       {page.sections.map((section, i) => (
-        <div key={i}>
+        <div key={i} className={`section-slot-${i % 2 === 0 ? 'a' : 'b'}`}>
           <SectionRenderer
             section={section}
             site={site}

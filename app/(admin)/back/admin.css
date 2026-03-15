@@ -31,19 +31,41 @@
 /* Reset animations hero sur les boutons */
 /* Reset complet des styles site sur les boutons du backoffice */
 .backoffice-body .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
     opacity: 1;
     animation: none;
     clip-path: none;
     border-radius: 10px;
     transform: none;
     box-shadow: none;
-    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
     font-family: 'Inter', sans-serif;
     letter-spacing: 0;
     text-transform: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.5rem 1.1rem;
+    cursor: pointer;
+    border: none;
 }
 .backoffice-body .btn:hover {
     transform: none;
+}
+
+/* Bouton primaire backoffice */
+.backoffice-body .btn-primary {
+    background: var(--bo-accent, #6366f1);
+    color: white;
+    border: none;
+    box-shadow: none;
+}
+.backoffice-body .btn-primary:hover {
+    background: var(--bo-accent, #6366f1);
+    opacity: 0.85;
+    transform: none;
+    box-shadow: none;
 }
 
 /* Bouton secondaire backoffice — remplace le border 3px coloré du site */
@@ -51,14 +73,18 @@
     background: rgba(255,255,255,0.06);
     color: var(--bo-text-dim);
     border: 1px solid var(--bo-border);
-    font-size: 0.875rem;
-    font-weight: 500;
-    padding: 0.5rem 1.1rem;
 }
 .backoffice-body .btn-secondary:hover {
     background: rgba(255,255,255,0.11);
     border-color: var(--bo-border-hover);
     color: var(--bo-text);
+}
+
+/* Bouton danger dans le contexte backoffice */
+.backoffice-body .btn-danger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
 }
 
 /* Override form-group du globals.css — trop de marge et padding */
@@ -361,9 +387,9 @@
 }
 
 .btn-danger {
-    background: rgba(239,68,68,0.1);
-    color: #fca5a5;
-    border: 1px solid rgba(239,68,68,0.25);
+    background: rgba(239,68,68,0.18);
+    color: #f87171;
+    border: 1px solid rgba(239,68,68,0.5);
     border-radius: 12px;
     font-family: 'Inter', sans-serif;
     font-size: 0.78rem;
@@ -375,9 +401,9 @@
 }
 
 .btn-danger:hover {
-    background: rgba(229,57,53,0.3);
-    border-color: rgba(229,57,53,0.6);
-    color: white;
+    background: rgba(239,68,68,0.35);
+    border-color: rgba(239,68,68,0.8);
+    color: #fff;
 }
 
 .btn-sm {
@@ -878,44 +904,7 @@
 }
 
 /* ─── DESIGN BORDURES ─────────────────────────────────────────── */
-
-[data-border="flat"]    { --radius: 0; }
-[data-border="rounded"] { --radius: 8px; }
-[data-border="pill"]    { --radius: 24px; }
-/* custom : --radius est injecté inline par le serveur ou le backoffice */
-
-/* En mode flat/rounded/pill/custom, on retire les clip-path angulaires */
-[data-border="flat"] .btn,
-[data-border="rounded"] .btn,
-[data-border="pill"] .btn,
-[data-border="custom"] .btn {
-    clip-path: none;
-}
-
-[data-border="flat"] .feature-card,
-[data-border="rounded"] .feature-card,
-[data-border="pill"] .feature-card,
-[data-border="custom"] .feature-card {
-    clip-path: none;
-}
-
-[data-border="flat"] .service-card,
-[data-border="rounded"] .service-card,
-[data-border="pill"] .service-card,
-[data-border="custom"] .service-card {
-    clip-path: none;
-}
-
-[data-border="flat"] .form-group input,
-[data-border="flat"] .form-group textarea,
-[data-border="rounded"] .form-group input,
-[data-border="rounded"] .form-group textarea,
-[data-border="pill"] .form-group input,
-[data-border="pill"] .form-group textarea,
-[data-border="custom"] .form-group input,
-[data-border="custom"] .form-group textarea {
-    clip-path: none;
-}
+/* Les règles de bordure sont dans globals.css, scopées à body.site-page */
 
 /* ─── INDICATEUR DE FORCE MOT DE PASSE ───────────────────────── */
 .pwd-strength-fill {

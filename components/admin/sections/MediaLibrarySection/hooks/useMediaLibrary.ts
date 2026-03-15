@@ -10,12 +10,17 @@ export type FilterType = 'all' | 'jpg' | 'png' | 'webp' | 'svg';
 
 export function useMediaLibrary() {
   const mediaItems = useAdminStore((s) => s.mediaItems);
+  const mediaFolders = useAdminStore((s) => s.mediaFolders);
   const mediaLoading = useAdminStore((s) => s.mediaLoading);
   const loadMedia = useAdminStore((s) => s.loadMedia);
   const uploadMedia = useAdminStore((s) => s.uploadMedia);
   const deleteMedia = useAdminStore((s) => s.deleteMedia);
   const bulkDeleteMedia = useAdminStore((s) => s.bulkDeleteMedia);
   const updateMediaEntry = useAdminStore((s) => s.updateMediaEntry);
+  const createFolder = useAdminStore((s) => s.createFolder);
+  const renameFolder = useAdminStore((s) => s.renameFolder);
+  const deleteFolderAction = useAdminStore((s) => s.deleteFolder);
+  const moveMedia = useAdminStore((s) => s.moveMedia);
 
   const [sort, setSort] = useState<SortMode>('newest');
   const [filterUsage, setFilterUsage] = useState<FilterUsage>('all');
@@ -26,6 +31,13 @@ export function useMediaLibrary() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<'single' | 'bulk'>('single');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Dossier actuellement ouvert (null = racine)
+  const [currentFolderId, setCurrentFolderId] = useState<string | null>(null);
+  const [showMoveModal, setShowMoveModal] = useState(false);
+
+  // Mode sélection : clic sur l'image = sélectionner (au lieu d'ouvrir le panel)
+  const [selectMode, setSelectMode] = useState(false);
 
   useEffect(() => {
     loadMedia();
@@ -48,8 +60,17 @@ export function useMediaLibrary() {
       .sort((a, b) => b.area - a.area);
   }, [mediaItems]);
 
+  // Items filtrés par dossier courant + filtres
   const filtered = useMemo(() => {
     let items = [...mediaItems];
+
+    // Filtre par dossier courant
+    if (currentFolderId) {
+      items = items.filter((m) => m.folderId === currentFolderId);
+    } else {
+      // Racine : seulement les médias sans dossier
+      items = items.filter((m) => !m.folderId);
+    }
 
     // Filtre usage
     if (filterUsage === 'used') items = items.filter((m) => m.usedIn.length > 0);
@@ -84,7 +105,23 @@ export function useMediaLibrary() {
     }
 
     return items;
-  }, [mediaItems, sort, filterUsage, filterType, filterDimension]);
+  }, [mediaItems, sort, filterUsage, filterType, filterDimension, currentFolderId]);
+
+  // Nombre de médias dans chaque dossier
+  const folderMediaCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const m of mediaItems) {
+      if (m.folderId) {
+        counts[m.folderId] = (counts[m.folderId] ?? 0) + 1;
+      }
+    }
+    return counts;
+  }, [mediaItems]);
+
+  const currentFolder = useMemo(
+    () => mediaFolders.find((f) => f.id === currentFolderId) ?? null,
+    [mediaFolders, currentFolderId]
+  );
 
   const toggleSelect = useCallback((id: string) => {
     setSelectedIds((prev) => {
@@ -97,6 +134,14 @@ export function useMediaLibrary() {
 
   const clearSelection = useCallback(() => {
     setSelectedIds(new Set());
+    setSelectMode(false);
+  }, []);
+
+  const toggleSelectMode = useCallback(() => {
+    setSelectMode((prev) => {
+      if (prev) setSelectedIds(new Set()); // sortie = vider la sélection
+      return !prev;
+    });
   }, []);
 
   const openPanel = useCallback((id: string) => {
@@ -113,8 +158,8 @@ export function useMediaLibrary() {
   );
 
   const handleUpload = useCallback(async (files: FileList | File[]) => {
-    return uploadMedia(files);
-  }, [uploadMedia]);
+    return uploadMedia(files, currentFolderId ?? undefined);
+  }, [uploadMedia, currentFolderId]);
 
   const handleDeleteSingle = useCallback((id: string) => {
     setDeleteTarget('single');
@@ -136,7 +181,7 @@ export function useMediaLibrary() {
     }
     if (deleteTarget === 'bulk' && selectedIds.size > 0) {
       const result = await bulkDeleteMedia(Array.from(selectedIds));
-      if (result.ok) setSelectedIds(new Set());
+      if (result.ok) { setSelectedIds(new Set()); setSelectMode(false); }
       return result.ok;
     }
     return false;
@@ -158,6 +203,52 @@ export function useMediaLibrary() {
     return [];
   }, [deleteTarget, panelMediaId, selectedIds, mediaItems]);
 
+  // Navigation dossiers
+  const openFolder = useCallback((folderId: string) => {
+    setCurrentFolderId(folderId);
+    setSelectedIds(new Set());
+  }, []);
+
+  const goToRoot = useCallback(() => {
+    setCurrentFolderId(null);
+    setSelectedIds(new Set());
+  }, []);
+
+  // CRUD dossiers
+  const handleCreateFolder = useCallback(async (name: string) => {
+    return createFolder(name);
+  }, [createFolder]);
+
+  const handleRenameFolder = useCallback(async (folderId: string, name: string) => {
+    return renameFolder(folderId, name);
+  }, [renameFolder]);
+
+  const handleDeleteFolder = useCallback(async (folderId: string) => {
+    const ok = await deleteFolderAction(folderId);
+    if (ok && currentFolderId === folderId) {
+      setCurrentFolderId(null);
+    }
+    return ok;
+  }, [deleteFolderAction, currentFolderId]);
+
+  // Déplacement
+  const handleMoveMedia = useCallback(async (mediaIds: string[], folderId: string | null) => {
+    const ok = await moveMedia(mediaIds, folderId);
+    if (ok) {
+      setSelectedIds(new Set());
+      setShowMoveModal(false);
+    }
+    return ok;
+  }, [moveMedia]);
+
+  const openMoveModal = useCallback(() => {
+    setShowMoveModal(true);
+  }, []);
+
+  const closeMoveModal = useCallback(() => {
+    setShowMoveModal(false);
+  }, []);
+
   return {
     // Data
     filtered,
@@ -172,7 +263,7 @@ export function useMediaLibrary() {
     availableDimensions,
 
     // Sélection
-    selectedIds, toggleSelect, clearSelection,
+    selectedIds, toggleSelect, clearSelection, selectMode, toggleSelectMode,
 
     // Panel
     panelMedia, panelMediaId, openPanel, closePanel,
@@ -186,5 +277,15 @@ export function useMediaLibrary() {
 
     // Update
     updateMediaEntry,
+
+    // Dossiers
+    mediaFolders, folderMediaCounts,
+    currentFolderId, currentFolder,
+    openFolder, goToRoot,
+    handleCreateFolder, handleRenameFolder, handleDeleteFolder,
+
+    // Déplacement
+    showMoveModal, openMoveModal, closeMoveModal,
+    handleMoveMedia,
   };
 }

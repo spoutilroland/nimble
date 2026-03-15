@@ -82,9 +82,6 @@ export function HeroSection({ section }: Props) {
             <p className="hero-subtitle" data-content-key="hero-subtitle">
               Expert en renovation alpine depuis plus de 15 ans
             </p>
-            <a href="#contact" className="btn btn-primary" data-content-key="hero-cta">
-              Demander un devis gratuit
-            </a>
           </div>
         </div>
       </div>

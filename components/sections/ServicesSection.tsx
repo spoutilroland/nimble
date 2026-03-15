@@ -1,5 +1,9 @@
 // Server Component — port de _old/views/sections/services.ejs
-export function ServicesSection() {
+import type { Section } from '@/lib/types';
+
+interface Props { section: Section; }
+
+export function ServicesSection({ section: _section }: Props) {
   return (
     <section className="section section-services" id="services">
       <div className="max-w-[1200px] mx-auto px-5">

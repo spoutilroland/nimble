@@ -74,12 +74,6 @@ export function SiteSection() {
             <div className="carousel-info">{t('site.sectionInfo')}</div>
           </div>
         </div>
-        <div className="flex items-center gap-[0.8rem]">
-          {message && <div className={`form-message ${message.type}`}>{message.text}</div>}
-          <button className="bg-[var(--bo-green)] text-[#0b0d12] font-['Plus_Jakarta_Sans',sans-serif] text-[0.875rem] font-bold tracking-[0.2px] py-[0.65rem] px-6 border-none rounded-xl cursor-pointer transition-[background,box-shadow] duration-200 hover:bg-[var(--primary-light)] hover:shadow-[var(--bo-green-glow)]" disabled={saving} onClick={save}>
-            {t('common.save')}
-          </button>
-        </div>
       </div>
 
       {!collapsed && (
@@ -89,17 +83,26 @@ export function SiteSection() {
               <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-[0.8rem] tracking-[0.12em] uppercase text-[var(--bo-green)] m-0 mb-4">{t('site.identityGroupTitle')}</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="form-group">
-                  <label>{t('site.nameLabel')}</label>
-                  <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                  <label className="flex items-center">
+                    <span>{t('site.nameLabel')}</span>
+                    <span className={`text-[0.72rem] font-normal ml-3 ${name.length >= 18 ? 'text-[var(--bo-red,#e05252)]' : 'text-[var(--bo-text-dim)]'}`}>{name.length} / 20</span>
+                  </label>
+                  <input type="text" value={name} maxLength={20} onChange={(e) => setName(e.target.value)} />
                 </div>
                 <div className="form-group">
-                  <label>{t('site.taglineLabel')}</label>
-                  <input type="text" value={tagline} onChange={(e) => setTagline(e.target.value)} />
+                  <label className="flex items-center">
+                    <span>{t('site.taglineLabel')}</span>
+                    <span className={`text-[0.72rem] font-normal ml-3 ${tagline.length >= 18 ? 'text-[var(--bo-red,#e05252)]' : 'text-[var(--bo-text-dim)]'}`}>{tagline.length} / 20</span>
+                  </label>
+                  <input type="text" value={tagline} maxLength={20} onChange={(e) => setTagline(e.target.value)} />
                 </div>
               </div>
               <div className="form-group">
-                <label>{t('site.descriptionLabel')}</label>
-                <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
+                <label className="flex items-center">
+                  <span>{t('site.descriptionLabel')}</span>
+                  <span className={`text-[0.72rem] font-normal ml-3 ${description.length >= 72 ? 'text-[var(--bo-red,#e05252)]' : 'text-[var(--bo-text-dim)]'}`}>{description.length} / 80</span>
+                </label>
+                <input type="text" value={description} maxLength={80} onChange={(e) => setDescription(e.target.value)} />
               </div>
             </div>
 

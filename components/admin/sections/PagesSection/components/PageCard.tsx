@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useI18n } from '@/lib/i18n/context';
 import { SECTION_TYPES } from '@/lib/admin/constants/pages';
 import { SectionRow } from './SectionRow';
+import { SectionPickerModal } from './SectionPickerModal';
 import type { PageData, Section } from '@/lib/types';
 import type { Layout } from '@/lib/schemas/layouts';
 
@@ -25,7 +26,7 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
   const [seoDesc, setSeoDesc] = useState(page.seo?.description || '');
   const [seoImage, setSeoImage] = useState(page.seo?.ogImage || '');
   const [sections, setSections] = useState<Section[]>(page.sections || []);
-  const [addSectionType, setAddSectionType] = useState('hero');
+  const [showPicker, setShowPicker] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: string } | null>(null);
 
   useEffect(() => {
@@ -38,10 +39,13 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
     setSections(page.sections || []);
   }, [page]);
 
-  const addSection = () => {
-    const info = SECTION_TYPES.find(st => st.type === addSectionType);
+  const addSection = (type: string, layoutId?: string) => {
+    const info = SECTION_TYPES.find(st => st.type === type);
     const carouselId = info?.needsCarousel ? Math.random().toString(36).slice(2, 8) : '';
-    setSections(prev => [...prev, { type: addSectionType as Section['type'], carouselId }]);
+    const newSection: Section = { type: type as Section['type'], carouselId };
+    if (layoutId) newSection.layoutId = layoutId;
+    setSections(prev => [...prev, newSection]);
+    setShowPicker(false);
   };
 
   const removeSection = (idx: number) => {
@@ -130,12 +134,15 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
               <input type="text" value={slug} onChange={(e) => setSlug(e.target.value)} />
             </div>
           </div>
-          <div className="form-group">
-            <label className="flex items-center gap-2 cursor-pointer text-[0.9rem] text-[var(--bo-text)] checkbox-inline">
-              {t('pages.showInNavLabel')}
-              <input type="checkbox" checked={showInNav} onChange={(e) => setShowInNav(e.target.checked)} />
-            </label>
-          </div>
+          <label className="inline-flex items-center gap-2 cursor-pointer text-[0.85rem] text-[var(--bo-text)] mb-4">
+            <input
+              type="checkbox"
+              checked={showInNav}
+              onChange={(e) => setShowInNav(e.target.checked)}
+              style={{ width: '16px', height: '16px', minWidth: '16px', padding: 0 }}
+            />
+            {t('pages.showInNavLabel')}
+          </label>
 
           <details className="border border-[var(--bo-border)] p-[0.6rem_0.8rem] mb-4 [&>summary::-webkit-details-marker]:hidden">
             <summary className="text-[0.75rem] uppercase tracking-[0.1em] text-[var(--bo-green)] mb-2 cursor-pointer list-none">{t('pages.seoDetails')}</summary>
@@ -164,22 +171,29 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
                 index={idx}
                 total={sections.length}
                 layouts={layouts}
+                isEven={idx % 2 === 0}
                 onRemove={() => removeSection(idx)}
                 onMoveUp={() => moveSection(idx, -1)}
                 onMoveDown={() => moveSection(idx, 1)}
                 onUpdate={(updates) => updateSection(idx, updates)}
+                onSave={handleSave}
               />
             ))}
           </div>
 
-          <div className="flex items-center gap-2 mt-3">
-            <select className="flex-1 py-[0.4rem] px-[0.6rem] bg-[var(--bo-bg,#0b0d12)] border border-[var(--bo-border)] text-[var(--bo-text)] text-[0.85rem]" value={addSectionType} onChange={(e) => setAddSectionType(e.target.value)}>
-              {SECTION_TYPES.map(st => (
-                <option key={st.type} value={st.type}>{t(`sectionType.${st.type}`)}</option>
-              ))}
-            </select>
-            <button className="btn btn-secondary btn-sm" onClick={addSection}>{t('pages.btnAddSection')}</button>
+          <div className="mt-3">
+            <button className="btn btn-secondary btn-sm" onClick={() => setShowPicker(true)}>
+              {t('pages.btnAddSection')}
+            </button>
           </div>
+
+          {showPicker && (
+            <SectionPickerModal
+              layouts={layouts}
+              onSelect={addSection}
+              onClose={() => setShowPicker(false)}
+            />
+          )}
 
           <div className="flex justify-between items-center mt-4">
             <button className="btn btn-secondary btn-sm" onClick={() => setEditing(false)}>{t('pages.btnCancel')}</button>

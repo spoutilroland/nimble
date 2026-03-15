@@ -1,1 +1,1 @@
-export type { MediaEntry, MediaRegistry, MediaUrls, MediaUsage, MediaItemWithMeta } from '@/lib/schemas/media';
+export type { MediaEntry, MediaFolder, MediaRegistry, MediaUrls, MediaUsage, MediaItemWithMeta } from '@/lib/schemas/media';

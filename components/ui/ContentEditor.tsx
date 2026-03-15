@@ -8,15 +8,107 @@ interface Props {
   backPath?: string;
 }
 
+// Limites de caractères par content-key (textContent, sans HTML)
+const CHAR_LIMITS: Record<string, number> = {
+  // Titres hero
+  'hero-title': 80,
+  'hero-eyebrow': 40,
+  'hero-subtitle': 150,
+  // Titres de sections (s1/s2/s3 = galeries bento)
+  's1-title': 80,  's1-tag': 40,
+  's2-title': 80,  's2-tag': 40,
+  's3-title': 80,  's3-tag': 40,
+  // About
+  'about-title': 80,
+  'about-p1': 400,
+  'about-p2': 400,
+  // Services
+  'services-title': 80,
+  'service-1-title': 60, 'service-1-desc': 220,
+  'service-2-title': 60, 'service-2-desc': 220,
+  'service-3-title': 60, 'service-3-desc': 220,
+  'service-4-title': 60, 'service-4-desc': 220,
+  // Features (about cards)
+  'feature-1-title': 60, 'feature-1-desc': 220,
+  'feature-2-title': 60, 'feature-2-desc': 220,
+  'feature-3-title': 60, 'feature-3-desc': 220,
+  // Gallery
+  'gallery-title': 80,
+  // Bento hero
+  'bento-hero-title': 70,
+  'bento-hero-tag': 30,
+  'bento-hero-desc': 150,
+  // Bento cards
+  'bento-card1-title': 45, 'bento-card1-tag': 30, 'bento-card1-desc': 200,
+  'bento-card2-title': 45, 'bento-card2-tag': 30, 'bento-card2-desc': 200,
+  // Cinematic
+  'cinematic-title': 80,
+  'cinematic-desc': 220,
+  // Contact
+  'contact-title': 80,
+};
+
+// Fallback basé sur le suffixe de la clé
+function getLimitForKey(key: string): number {
+  if (key.endsWith('-title') || key === 'hero-title') return 80;
+  if (key.endsWith('-tag') || key === 'hero-eyebrow') return 40;
+  if (key.endsWith('-subtitle')) return 150;
+  if (key.endsWith('-desc')) return 220;
+  if (key.startsWith('about-p') || key.endsWith('-p1') || key.endsWith('-p2')) return 400;
+  return 300;
+}
+
+function getLimit(key: string): number {
+  return CHAR_LIMITS[key] ?? getLimitForKey(key);
+}
+
 export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
   useEffect(() => {
     let editBar: HTMLDivElement | null = null;
     let editTrigger: HTMLButtonElement | null = null;
     let editToolbar: HTMLDivElement | null = null;
     let richToolbar: HTMLDivElement | null = null;
+    let charCounter: HTMLDivElement | null = null;
     let currentEl: HTMLElement | null = null;
     let savedContent: string | null = null;
     let isEditing = false;
+    let currentLimit = 300;
+    let hideTimeout: ReturnType<typeof setTimeout> | null = null;
+
+    function getTextLength(el: HTMLElement): number {
+      return (el.textContent || '').length;
+    }
+
+    function updateCounter(el: HTMLElement) {
+      if (!charCounter) return;
+      const len = getTextLength(el);
+      const remaining = currentLimit - len;
+      charCounter.textContent = `${len} / ${currentLimit}`;
+      charCounter.className = `content-editor-counter${remaining <= 10 ? ' content-editor-counter--danger' : remaining <= 30 ? ' content-editor-counter--warn' : ''}`;
+
+      const rect = el.getBoundingClientRect();
+      charCounter.style.top = (rect.bottom + window.scrollY + 4) + 'px';
+      charCounter.style.left = (rect.right + window.scrollX) + 'px';
+      charCounter.style.display = 'block';
+    }
+
+    function onInput() {
+      if (!currentEl) return;
+      const len = getTextLength(currentEl);
+      if (len > currentLimit) {
+        // Tronquer si dépassement
+        const text = (currentEl.textContent || '').slice(0, currentLimit);
+        currentEl.textContent = text;
+        // Replacer le curseur à la fin
+        const range = document.createRange();
+        range.selectNodeContents(currentEl);
+        range.collapse(false);
+        const sel = window.getSelection();
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+      }
+      updateCounter(currentEl);
+    }
 
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === 'Enter' && !e.shiftKey) {
@@ -51,6 +143,10 @@ export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
       el.classList.add('is-editing');
       el.focus();
 
+      // Déterminer la limite pour cet élément
+      const key = el.dataset.contentKey || '';
+      currentLimit = getLimit(key);
+
       const range = document.createRange();
       range.selectNodeContents(el);
       range.collapse(false);
@@ -69,6 +165,8 @@ export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
       }
 
       el.addEventListener('keydown', onKeyDown);
+      el.addEventListener('input', onInput);
+      updateCounter(el);
     }
 
     async function saveEdit() {
@@ -101,10 +199,28 @@ export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
       currentEl.contentEditable = 'false';
       currentEl.classList.remove('is-editing');
       currentEl.removeEventListener('keydown', onKeyDown);
+      currentEl.removeEventListener('input', onInput);
       if (editToolbar) editToolbar.style.display = 'none';
       if (richToolbar) richToolbar.style.display = 'none';
+      if (charCounter) charCounter.style.display = 'none';
+      if (editTrigger) editTrigger.style.display = 'none';
       isEditing = false;
+      currentEl = null;
       savedContent = null;
+    }
+
+    // Sauvegarde automatique si clic en dehors de la zone d'édition
+    function onDocumentMouseDown(e: MouseEvent) {
+      if (!isEditing || !currentEl) return;
+      const target = e.target as Node;
+      if (
+        currentEl.contains(target) ||
+        editToolbar?.contains(target) ||
+        richToolbar?.contains(target) ||
+        charCounter?.contains(target) ||
+        editTrigger?.contains(target)
+      ) return;
+      saveEdit();
     }
 
     function showFlash(msg: string, type: string) {
@@ -130,7 +246,6 @@ export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
     }
 
     async function checkAdmin(): Promise<boolean> {
-      // Pas de cookie indicateur admin → pas admin, on skip le fetch
       if (!document.cookie.includes('is_admin=')) return false;
       try {
         const res = await fetch('/api/auth/check');
@@ -198,6 +313,12 @@ export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
       editToolbar.querySelector('.edit-cancel')?.addEventListener('click', cancelEdit);
       document.body.appendChild(editToolbar);
 
+      // Compteur de caractères
+      charCounter = document.createElement('div');
+      charCounter.className = 'content-editor-counter';
+      charCounter.style.display = 'none';
+      document.body.appendChild(charCounter);
+
       richToolbar = document.createElement('div');
       richToolbar.className = 'rich-toolbar';
       richToolbar.style.display = 'none';
@@ -226,29 +347,51 @@ export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
       document.body.appendChild(richToolbar);
     }
 
+    function cancelHide() {
+      if (hideTimeout !== null) {
+        clearTimeout(hideTimeout);
+        hideTimeout = null;
+      }
+    }
+
+    function scheduleHide() {
+      cancelHide();
+      hideTimeout = setTimeout(() => {
+        if (!isEditing) {
+          if (editTrigger) editTrigger.style.display = 'none';
+          currentEl = null;
+        }
+        hideTimeout = null;
+      }, 200);
+    }
+
     function bindHoverListeners() {
       document.querySelectorAll('[data-content-key]').forEach((el) => {
         el.addEventListener('mouseenter', () => {
           if (isEditing) return;
+          cancelHide();
           currentEl = el as HTMLElement;
           positionTrigger(el as HTMLElement);
         });
-        el.addEventListener('mouseleave', (e) => {
+        el.addEventListener('mouseleave', () => {
           if (isEditing) return;
-          if ((e as MouseEvent).relatedTarget !== editTrigger) {
-            if (editTrigger) editTrigger.style.display = 'none';
-            currentEl = null;
-          }
+          scheduleHide();
+        });
+        el.addEventListener('dblclick', () => {
+          if (isEditing) return;
+          cancelHide();
+          currentEl = el as HTMLElement;
+          openEditor(el as HTMLElement);
         });
       });
 
-      editTrigger?.addEventListener('mouseleave', (e) => {
+      editTrigger?.addEventListener('mouseenter', () => {
         if (isEditing) return;
-        const related = (e as MouseEvent).relatedTarget as HTMLElement | null;
-        if (!related?.dataset?.contentKey) {
-          if (editTrigger) editTrigger.style.display = 'none';
-          currentEl = null;
-        }
+        cancelHide();
+      });
+      editTrigger?.addEventListener('mouseleave', () => {
+        if (isEditing) return;
+        scheduleHide();
       });
     }
 
@@ -260,15 +403,19 @@ export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
       document.body.classList.add('admin-mode');
       createEditorUI();
       bindHoverListeners();
+      document.addEventListener('mousedown', onDocumentMouseDown);
     }
 
     init();
 
     return () => {
+      if (hideTimeout !== null) clearTimeout(hideTimeout);
+      document.removeEventListener('mousedown', onDocumentMouseDown);
       editBar?.remove();
       editTrigger?.remove();
       editToolbar?.remove();
       richToolbar?.remove();
+      charCounter?.remove();
       document.body.classList.remove('admin-mode');
       const header = document.querySelector<HTMLElement>('.header');
       if (header) header.style.top = '';

@@ -82,12 +82,6 @@ export function ConfigSection() {
           <h2>{t('config.sectionTitle')}</h2>
           <div className="carousel-info">{t('config.sectionInfo')}</div>
         </div>
-        <div className="flex items-center gap-[0.8rem]">
-          {message && <div className={`form-message ${message.type}`}>{message.text}</div>}
-          <button className="btn btn-success" disabled={saving} onClick={save}>
-            {t('common.save')}
-          </button>
-        </div>
       </div>
 
       <div className="flex flex-col gap-[0.9rem] mt-0">
@@ -143,6 +137,13 @@ export function ConfigSection() {
             </>
           )}
         </div>
+      </div>
+
+      <div className="flex justify-end items-center gap-3 mt-4">
+        {message && <div className={`form-message ${message.type}`}>{message.text}</div>}
+        <button className="btn btn-success" disabled={saving} onClick={save}>
+          {t('common.save')}
+        </button>
       </div>
     </div>
   );

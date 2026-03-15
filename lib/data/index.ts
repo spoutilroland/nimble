@@ -27,6 +27,7 @@ export {
   getFaviconUrl,
   getSocialIconUrl,
   processImageWithSharp,
+  generateThumb,
   escapeHtml,
   sanitizeRichText,
   ensureUploadDirs,

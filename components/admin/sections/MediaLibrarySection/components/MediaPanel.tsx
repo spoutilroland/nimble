@@ -65,11 +65,24 @@ export function MediaPanel({ media, onClose, onSave, onDelete }: MediaPanelProps
   }, []);
 
   const handleCopyUrl = useCallback(async () => {
+    const url = window.location.origin + media.url;
     try {
-      await navigator.clipboard.writeText(window.location.origin + media.url);
+      await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch { /* ignore */ }
+    } catch {
+      // Fallback pour HTTP ou navigateurs sans clipboard API
+      const ta = document.createElement('textarea');
+      ta.value = url;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   }, [media.url]);
 
   const isSvg = media.mimeType === 'image/svg+xml';
@@ -191,17 +204,17 @@ export function MediaPanel({ media, onClose, onSave, onDelete }: MediaPanelProps
         </div>
 
         {/* Actions */}
-        <div className="px-5 py-4 border-t border-[var(--bo-border)] flex flex-wrap gap-2">
-          <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
+        <div className="px-5 py-4 border-t border-[var(--bo-border)] flex gap-2">
+          <button className="btn btn-primary shrink-0 text-[0.82rem] py-[0.4rem] px-[0.8rem]" onClick={handleSave} disabled={saving}>
             {t('mediaLibrary.panelBtnSave')}
           </button>
-          <button className="btn btn-secondary inline-flex items-center gap-[0.3rem] text-[0.82rem]" onClick={handleCopyUrl}>
-            <Copy size={14} />
-            {copied ? t('mediaLibrary.panelUrlCopied') : t('mediaLibrary.panelBtnCopyUrl')}
+          <button className="btn btn-secondary flex-1 min-w-0 inline-flex items-center justify-center gap-[0.3rem] text-[0.82rem] py-[0.4rem] px-[0.6rem]" onClick={handleCopyUrl}>
+            <Copy size={13} className="shrink-0" />
+            <span className="text-center leading-tight">{copied ? t('mediaLibrary.panelUrlCopied') : t('mediaLibrary.panelBtnCopyUrl')}</span>
           </button>
-          <button className="btn btn-danger inline-flex items-center gap-[0.3rem] text-[0.82rem]" onClick={() => onDelete(media.id)}>
-            <Trash2 size={14} />
-            {t('mediaLibrary.panelBtnDelete')}
+          <button className="btn btn-danger shrink-0 inline-flex items-center gap-[0.3rem] text-[0.82rem] py-[0.4rem] px-[0.6rem]" onClick={() => onDelete(media.id)}>
+            <Trash2 size={13} className="shrink-0" />
+            <span className="whitespace-nowrap">{t('common.delete')}</span>
           </button>
         </div>
       </aside>

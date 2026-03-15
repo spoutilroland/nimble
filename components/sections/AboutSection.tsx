@@ -1,5 +1,9 @@
 // Server Component — port de _old/views/sections/about.ejs
-export function AboutSection() {
+import type { Section } from '@/lib/types';
+
+interface Props { section: Section; }
+
+export function AboutSection({ section: _section }: Props) {
   return (
     <section className="section section-about">
       <div className="max-w-[1200px] mx-auto px-5">

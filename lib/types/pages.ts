@@ -1,6 +1,9 @@
 export type {
   SectionType,
   DividerConfig,
+  BentoCellOverlay,
+  BentoCellContent,
+  BentoCell,
   Section,
   PageSEO,
   PageData,

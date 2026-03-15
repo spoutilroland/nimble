@@ -13,9 +13,9 @@ export const SECTION_TYPES: SectionTypeDef[] = [
   { type: 'services', needsCarousel: false },
   { type: 'gallery', needsCarousel: true, imageHint: 'WebP · 800 × 600 px (4:3)' },
   { type: 'contact', needsCarousel: false },
-  { type: 'bento-grid', needsCarousel: true, maxImages: 3, imageHint: 'WebP · 900 × 700 / 600 × 350 px' },
+  { type: 'bento-grid', needsCarousel: true, maxImages: 20, imageHint: 'WebP · carré ou paysage, min 400 × 400 px' },
   { type: 'cinematic-split', needsCarousel: true, maxImages: 3, imageHint: 'WebP · 900 × 550 px (16:9)' },
-  { type: 'polaroids', needsCarousel: true, imageHint: 'WebP · 600 × 480 px (5:4)' },
+  { type: 'polaroids', needsCarousel: true, maxImages: 12, imageHint: 'WebP · 600 × 480 px (5:4)' },
   { type: 'stats', needsCarousel: false },
   { type: 'custom-layout', needsCarousel: true, isCustomLayout: true },
 ];

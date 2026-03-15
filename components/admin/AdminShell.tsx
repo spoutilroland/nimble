@@ -23,6 +23,7 @@ const TABS: TabDef[] = [
   { id: 'tab-media', labelKey: 'tabs.media' },
   { id: 'tab-identity', labelKey: 'tabs.identity' },
   { id: 'tab-config', labelKey: 'tabs.config' },
+  { id: 'tab-backup', labelKey: 'tabs.backup' },
   { id: 'tab-security', labelKey: 'tabs.security' },
 ];
 

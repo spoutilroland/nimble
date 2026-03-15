@@ -17,6 +17,7 @@ export function useLayoutEditor({ existingLayout, onSaved }: UseLayoutEditorArgs
   const storeUpdateLayout = useAdminStore((s) => s.updateLayout);
   const isNew = !existingLayout;
   const [label, setLabel] = useState(existingLayout?.label || '');
+  const [description, setDescription] = useState(existingLayout?.description || '');
   const [id, setId] = useState(existingLayout?.id || '');
   const [blocks, setBlocks] = useState<LayoutBlock[]>(() => {
     if (!existingLayout) return [];
@@ -105,8 +106,8 @@ export function useLayoutEditor({ existingLayout, onSaved }: UseLayoutEditorArgs
     }
 
     const ok = isNew
-      ? await storeCreateLayout(id.trim(), label.trim(), blocks)
-      : await storeUpdateLayout(existingLayout!.id, label.trim(), blocks);
+      ? await storeCreateLayout(id.trim(), label.trim(), blocks, description.trim() || undefined)
+      : await storeUpdateLayout(existingLayout!.id, label.trim(), blocks, description.trim() || undefined);
 
     if (ok) {
       setMessage({ text: t('layouts.saved'), type: 'success' });
@@ -119,6 +120,8 @@ export function useLayoutEditor({ existingLayout, onSaved }: UseLayoutEditorArgs
   return {
     isNew,
     label,
+    description,
+    setDescription,
     id,
     setId,
     blocks,

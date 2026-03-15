@@ -6,8 +6,8 @@ export interface LayoutsSlice {
   layoutsLoading: boolean;
 
   loadLayouts: () => Promise<void>;
-  createLayout: (id: string, label: string, blocks: LayoutBlock[]) => Promise<boolean>;
-  updateLayout: (id: string, label: string, blocks: LayoutBlock[]) => Promise<boolean>;
+  createLayout: (id: string, label: string, blocks: LayoutBlock[], description?: string) => Promise<boolean>;
+  updateLayout: (id: string, label: string, blocks: LayoutBlock[], description?: string) => Promise<boolean>;
   deleteLayout: (id: string) => Promise<{ ok: boolean; error?: string }>;
 }
 
@@ -27,12 +27,12 @@ export const createLayoutsSlice: StateCreator<LayoutsSlice, [], [], LayoutsSlice
     }
   },
 
-  createLayout: async (id, label, blocks) => {
+  createLayout: async (id, label, blocks, description) => {
     try {
       const res = await fetch('/api/admin/layouts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, label, blocks }),
+        body: JSON.stringify({ id, label, blocks, description }),
       });
       if (!res.ok) return false;
       await get().loadLayouts();
@@ -42,12 +42,12 @@ export const createLayoutsSlice: StateCreator<LayoutsSlice, [], [], LayoutsSlice
     }
   },
 
-  updateLayout: async (id, label, blocks) => {
+  updateLayout: async (id, label, blocks, description) => {
     try {
       const res = await fetch(`/api/admin/layouts/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ label, blocks }),
+        body: JSON.stringify({ label, blocks, description }),
       });
       if (!res.ok) return false;
       await get().loadLayouts();

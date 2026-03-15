@@ -20,6 +20,28 @@ export const DividerConfigSchema = z.object({
   flip: z.boolean().optional(),
 });
 
+export const BentoCellOverlaySchema = z.object({
+  position: z.enum(['top', 'bottom', 'left', 'right']),
+  textAlign: z.enum(['left', 'center', 'right']).optional(),
+  verticalAlign: z.enum(['top', 'center', 'bottom']).optional(),
+  title: z.string().max(40),
+  body: z.string().max(120),
+});
+
+export const BentoCellContentSchema = z.object({
+  imageUrl: z.string().optional(),
+  overlay: BentoCellOverlaySchema.optional(),
+});
+
+export const BentoCellSchema = z.object({
+  id: z.string(),
+  col: z.number().int().min(1).max(9),
+  row: z.number().int().min(1).max(9),
+  colSpan: z.number().int().min(1).max(6),
+  rowSpan: z.number().int().min(1).max(6),
+  content: BentoCellContentSchema.nullable(),
+});
+
 export const SectionSchema = z.object({
   type: SectionTypeSchema,
   carouselId: z.string().optional(),
@@ -53,6 +75,9 @@ export const PagesConfigSchema = z.object({
 
 export type SectionType = z.infer<typeof SectionTypeSchema>;
 export type DividerConfig = z.infer<typeof DividerConfigSchema>;
+export type BentoCellOverlay = z.infer<typeof BentoCellOverlaySchema>;
+export type BentoCellContent = z.infer<typeof BentoCellContentSchema>;
+export type BentoCell = z.infer<typeof BentoCellSchema>;
 export type Section = z.infer<typeof SectionSchema>;
 export type PageSEO = z.infer<typeof PageSEOSchema>;
 export type PageData = z.infer<typeof PageDataSchema>;

@@ -93,18 +93,6 @@ export function ContactSection({ captchaProvider, captchaSiteKey }: Props) {
     }
   };
 
-  if (status === 'success') {
-    return (
-      <section className="section section-contact" id="contact">
-        <div className="max-w-[1200px] mx-auto px-5">
-          <p className="contact-msg contact-msg--success">
-            Votre demande a bien ete envoyee ! Nous vous repondrons rapidement.
-          </p>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section className="section section-contact" id="contact">
       <div className="max-w-[1200px] mx-auto px-5">
@@ -152,15 +140,22 @@ export function ContactSection({ captchaProvider, captchaSiteKey }: Props) {
             <div className="contact-msg contact-msg--error">{errorMsg}</div>
           )}
 
-          <div className="text-center">
-            <button
-              type="submit"
-              className="btn btn-primary"
-              disabled={status === 'sending'}
-            >
-              {status === 'sending' ? 'Envoi en cours...' : 'Envoyer la demande'}
-            </button>
-          </div>
+          {status === 'success' ? (
+            <div className="contact-msg contact-msg--success text-center">
+              Votre demande a bien été envoyée ! Nous vous répondrons rapidement.
+            </div>
+          ) : (
+            <div className="text-center">
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={status === 'sending'}
+                style={{ pointerEvents: status === 'sending' ? 'none' : undefined }}
+              >
+                {status === 'sending' ? 'Envoi en cours...' : 'Envoyer la demande'}
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </section>

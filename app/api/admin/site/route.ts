@@ -11,6 +11,13 @@ export const POST = withAuth(async (req: NextRequest) => {
     const siteFile = path.join(process.cwd(), 'data', 'site.json');
     pushUndo('Identité du site', { 'site.json': siteFile });
     const body = await req.json();
+
+    // Si le front renvoie la valeur sentinelle, conserver le vrai mot de passe existant
+    if (body.mail?.pass === '••set••') {
+      const current = readSiteConfig();
+      body.mail.pass = current.mail?.pass ?? '';
+    }
+
     await writeSiteConfig(body);
     return NextResponse.json({ success: true });
   } catch {

@@ -8,6 +8,7 @@ import { MediaSourcePicker } from '@/components/admin/shared/MediaSourcePicker';
 interface CarouselImage {
   filename: string;
   url: string;
+  thumbUrl?: string | null;
 }
 
 interface InlineCarouselEditorProps {
@@ -103,7 +104,7 @@ export function InlineCarouselEditor({ carouselId, maxImages: maxImagesProp, ima
       <div className="grid grid-cols-[repeat(auto-fill,minmax(56px,1fr))] gap-1">
         {images.map((img) => (
           <div key={img.filename} className="inline-carousel-thumb group relative aspect-square rounded overflow-hidden border border-[var(--bo-border)]">
-            <img src={img.url} alt="" />
+            <img src={img.thumbUrl || img.url} alt="" />
             <button
               className="inline-carousel-delete absolute top-px right-px w-[18px] h-[18px] bg-[rgba(0,0,0,0.7)] text-[#e55a2a] border-none rounded-[3px] text-[0.7rem] cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex items-center justify-center leading-none p-0"
               onClick={() => handleDelete(img.filename)}
