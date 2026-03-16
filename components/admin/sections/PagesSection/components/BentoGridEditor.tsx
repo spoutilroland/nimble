@@ -166,19 +166,20 @@ export function BentoGridEditor({ section, onUpdate, onSave }: Props) {
     setUploading(false);
   };
 
-  const loadCarouselImages = useCallback(async () => {
-    if (!carouselId) return;
-    try {
-      const res = await fetch(`/api/carousel/${carouselId}/images`);
-      const data = await res.json();
-      const urls = (data.images || []).map((img: { url: string }) => img.url);
-      setUploadedImages(prev => {
-        const existing = new Set(prev);
-        const toAdd = urls.filter((u: string) => !existing.has(u));
-        return toAdd.length ? [...prev, ...toAdd] : prev;
-      });
-    } catch { /* skip */ }
-  }, [carouselId]);
+const loadCarouselImages = useCallback(async () => {
+  if (!carouselId) return;
+  try {
+    const res = await fetch(`/api/carousel/${carouselId}/images`);
+    const data = await res.json();
+    const urls = (data.images || []).map((img: { url: string }) => img.url);
+    
+    setUploadedImages(prev => {
+      const existing = new Set(prev);
+      const toAdd = urls.filter((u: string) => !existing.has(u));
+      return toAdd.length ? [...prev, ...toAdd] : prev;
+    });
+  } catch { /* skip */ }
+}, [carouselId, setUploadedImages])
 
   // Charger les images au montage
   useEffect(() => { loadCarouselImages(); }, [loadCarouselImages]);
@@ -321,7 +322,7 @@ export function BentoGridEditor({ section, onUpdate, onSave }: Props) {
     setResizePreview({ cellId, col: cell.col, row: cell.row, colSpan: cell.colSpan, rowSpan: cell.rowSpan, valid: true });
   };
 
-  const handleResizeMoveNative = useCallback((e: PointerEvent) => {
+  const handleResizeMoveNative = (e: PointerEvent) => {
     const info = resizeRef.current;
     if (!info || !gridRef.current) return;
 
@@ -374,7 +375,7 @@ export function BentoGridEditor({ section, onUpdate, onSave }: Props) {
       if (prev && prev.col === newCol && prev.row === newRow && prev.colSpan === newColSpan && prev.rowSpan === newRowSpan && prev.valid === !hasCollision) return prev;
       return { cellId: info.cellId, col: newCol, row: newRow, colSpan: newColSpan, rowSpan: newRowSpan, valid: !hasCollision };
     });
-  }, [cells, colCount, rowCount]);
+  };
 
   const resizePreviewRef = useRef<ResizePreview | null>(null);
  
@@ -382,7 +383,7 @@ export function BentoGridEditor({ section, onUpdate, onSave }: Props) {
     resizePreviewRef.current = resizePreview;
   }, [resizePreview]);
 
-  const handleResizeEnd = useCallback(() => {
+  const handleResizeEnd = () => {
     const info = resizeRef.current;
     const preview = resizePreviewRef.current;
     resizeRef.current = null;
@@ -394,7 +395,7 @@ export function BentoGridEditor({ section, onUpdate, onSave }: Props) {
         ? { ...c, col: preview.col, row: preview.row, colSpan: preview.colSpan, rowSpan: preview.rowSpan }
         : c
     ));
-  }, [cells, updateCells]);
+  };
 
   useEffect(() => {
     document.addEventListener('pointermove', handleResizeMoveNative);

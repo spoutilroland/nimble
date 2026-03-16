@@ -147,7 +147,7 @@ const addSection = useCallback((type: string, layoutId?: string, label?: string)
 
   // ── Sortable : pointer events ──
 
-  const handleGripDown = useCallback((e: React.PointerEvent, dragIdx: number) => {
+  const handleGripDown = (e: React.PointerEvent, dragIdx: number) => {
     e.preventDefault();
     const list = listRef.current;
     if (!list) return;
@@ -254,30 +254,25 @@ const addSection = useCallback((type: string, layoutId?: string, label?: string)
 
     document.addEventListener('pointermove', handleMove);
     document.addEventListener('pointerup', handleUp);
-  }, [sections, saveWithSections]);
+  };
 
   // ── Calcul des displacements pour chaque item ──
 
-  const getDisplacement = (idx: number): number => {
-    if (!sortRender) return 0;
-    const { dragIdx, insertIdx } = sortRender;
-    if (idx === dragIdx) return 0; // masqué via isDragged
+const getDisplacement = (idx: number): number => {
+  if (!sortRender) return 0;
+  const { dragIdx, insertIdx, dragHeight } = sortRender; // On récupère la hauteur du state
+  
+  if (idx === dragIdx) return 0;
 
-    const rects = sortRef.current?.itemRects;
-    if (!rects) return 0;
-    const dragH = rects[dragIdx].height + 6.4; // height + gap (0.4rem ≈ 6.4px)
+  const dragH = dragHeight + 6.4; // Plus besoin de sortRef.current !
 
-    // L'élément dragué va de dragIdx vers insertIdx
-    // Les items entre les deux doivent se décaler
-    if (insertIdx <= dragIdx) {
-      // Drag vers le haut : items [insertIdx, dragIdx-1] descendent
-      if (idx >= insertIdx && idx < dragIdx) return dragH;
-    } else {
-      // Drag vers le bas : items [dragIdx+1, insertIdx-1] montent
-      if (idx > dragIdx && idx < insertIdx) return -dragH;
-    }
-    return 0;
-  };
+  if (insertIdx <= dragIdx) {
+    if (idx >= insertIdx && idx < dragIdx) return dragH;
+  } else {
+    if (idx > dragIdx && idx < insertIdx) return -dragH;
+  }
+  return 0;
+};
 
   return (
     <div className="border border-[var(--bo-border)] rounded-2xl overflow-hidden" data-page-id={page.id}>
