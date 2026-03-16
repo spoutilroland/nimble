@@ -290,7 +290,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
   }, []);
 
   // Props section change (stats, cinematic, polaroids)
-  const handlePropsChange = useCallback((sectionIdx: number, propsPatch: Record<string, unknown>) => {
+  const handlePropsChange = (sectionIdx: number, propsPatch: Record<string, unknown>) => {
     setLocalSections(prev => {
       const next = [...prev];
       next[sectionIdx] = { ...next[sectionIdx], props: { ...(next[sectionIdx].props || {}), ...propsPatch } };
@@ -353,10 +353,10 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
       }));
       triggerFlash(sectionIdx, ok ? 'saved' : 'error');
     }, 500);
-  }, []);
+  };
 
   // Divider change + WYSIWYG live
-  const handleDividerChange = useCallback((sectionIdx: number, divider: DividerConfig | undefined) => {
+  const handleDividerChange = (sectionIdx: number, divider: DividerConfig | undefined) => {
     setLocalSections(prev => {
       const next = [...prev];
       next[sectionIdx] = { ...next[sectionIdx], dividerAfter: divider };
@@ -399,7 +399,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
       }));
       triggerFlash(sectionIdx, ok ? 'saved' : 'error');
     }, 500);
-  }, []);
+  };
 
   // Section update via pages API
   const persistSectionUpdate = useCallback(async (sectionIdx: number, updater: (s: Section) => Section): Promise<boolean> => {

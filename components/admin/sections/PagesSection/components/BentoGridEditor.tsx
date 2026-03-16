@@ -166,7 +166,7 @@ export function BentoGridEditor({ section, onUpdate, onSave }: Props) {
     setUploading(false);
   };
 
-const loadCarouselImages = useCallback(async () => {
+const loadCarouselImages = async () => {
   if (!carouselId) return;
   try {
     const res = await fetch(`/api/carousel/${carouselId}/images`);
@@ -179,7 +179,7 @@ const loadCarouselImages = useCallback(async () => {
       return toAdd.length ? [...prev, ...toAdd] : prev;
     });
   } catch { /* skip */ }
-}, [carouselId, setUploadedImages])
+};
 
   // Charger les images au montage
   useEffect(() => { loadCarouselImages(); }, [loadCarouselImages]);

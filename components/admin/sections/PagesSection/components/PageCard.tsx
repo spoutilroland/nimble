@@ -44,7 +44,7 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
   const listRef = useRef<HTMLDivElement>(null);
   const sortRef = useRef<SortState | null>(null);
   const ghostRef = useRef<HTMLDivElement | null>(null);
-  const [sortRender, setSortRender] = useState<{ dragIdx: number; insertIdx: number } | null>(null);
+  const [sortRender, setSortRender] = useState<{ dragIdx: number; insertIdx: number, dragHeight: number } | null>(null);
 
   useEffect(() => {
     setTitle(page.title);
@@ -192,7 +192,7 @@ const addSection = useCallback((type: string, layoutId?: string, label?: string)
       itemRects,
     };
 
-    setSortRender({ dragIdx, insertIdx: dragIdx });
+    setSortRender({ dragIdx, insertIdx: dragIdx, dragHeight: dragRect.height });
 
     // Capturer le pointer
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
@@ -217,7 +217,7 @@ const addSection = useCallback((type: string, layoutId?: string, label?: string)
 
       if (newInsert !== s.insertIdx) {
         s.insertIdx = newInsert;
-        setSortRender({ dragIdx: s.dragIdx, insertIdx: newInsert });
+        setSortRender({ dragIdx: s.dragIdx, insertIdx: newInsert, dragHeight: dragRect.height });
       }
     };
 
