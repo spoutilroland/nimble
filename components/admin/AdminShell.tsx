@@ -45,16 +45,6 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
   const toggleTheme = useAdminStore((s) => s.toggleTheme);
   const initTheme = useAdminStore((s) => s.initTheme);
 
-  // Vérification session au chargement
-  useEffect(() => {
-    checkSession();
-  }, []);
-
-  // Init dark theme state
-  useEffect(() => {
-    initTheme();
-  }, [initTheme]);
-
   const checkSession = async () => {
     try {
       const res = await fetch('/api/auth/check');
@@ -64,6 +54,16 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
       setIsAuthenticated(false);
     }
   };
+
+  // Vérification session au chargement
+  useEffect(() => {
+    checkSession();
+  }, []);
+
+  // Init dark theme state
+  useEffect(() => {
+    initTheme();
+  }, [initTheme]);
 
   const handleLogin = useCallback(() => {
     setIsAuthenticated(true);
