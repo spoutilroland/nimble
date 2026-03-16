@@ -42,12 +42,6 @@ export function FooterSection() {
             <div className="carousel-info">{t('footerSection.sectionInfo')}</div>
           </div>
         </div>
-        <div className="flex items-center gap-[0.8rem]">
-          {message && <div className={`form-message ${message.type}`}>{message.text}</div>}
-          <button className="btn btn-success" disabled={saving || hasOverlap} onClick={save}>
-            {t('common.save')}
-          </button>
-        </div>
       </div>
 
       {!collapsed && (

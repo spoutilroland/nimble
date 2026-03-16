@@ -7,11 +7,12 @@ import { MediaThumb } from './MediaThumb';
 interface MediaGridProps {
   items: MediaItemWithMeta[];
   selectedIds: Set<string>;
+  selectMode: boolean;
   onToggleSelect: (id: string) => void;
   onOpen: (id: string) => void;
 }
 
-export function MediaGrid({ items, selectedIds, onToggleSelect, onOpen }: MediaGridProps) {
+export function MediaGrid({ items, selectedIds, selectMode, onToggleSelect, onOpen }: MediaGridProps) {
   const { t } = useI18n();
 
   if (items.length === 0) {
@@ -29,6 +30,7 @@ export function MediaGrid({ items, selectedIds, onToggleSelect, onOpen }: MediaG
           key={item.id}
           item={item}
           selected={selectedIds.has(item.id)}
+          selectMode={selectMode}
           onToggleSelect={onToggleSelect}
           onOpen={onOpen}
         />

@@ -24,9 +24,6 @@ export function ThemeSection() {
           <h2>{t('theme.sectionTitle')}</h2>
           <div className="carousel-info">{t('theme.sectionInfo')}</div>
         </div>
-        <button className="btn btn-success" onClick={() => setShowCreator(true)}>
-          {t('theme.btnCreate')}
-        </button>
       </div>
 
       <ThemeGrid
@@ -39,6 +36,12 @@ export function ThemeSection() {
       {message && (
         <div className={`form-message ${message.type}`}>{message.text}</div>
       )}
+
+      <div className="flex justify-end mt-3">
+        <button className="btn btn-success" onClick={() => setShowCreator(true)}>
+          {t('theme.btnCreate')}
+        </button>
+      </div>
 
       {showCreator && (
         <ThemeCreatorModal

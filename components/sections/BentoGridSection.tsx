@@ -1,152 +1,115 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
 import type { Section } from '@/lib/types';
+import type { BentoCell } from '@/lib/types/pages';
 
-interface Props {
-  section: Section;
-}
+interface Props { section: Section; }
 
 export function BentoGridSection({ section }: Props) {
-  const sectionRef = useRef<HTMLElement>(null);
+  const cells = (section.props?.cells as BentoCell[]) || [];
+  const gridCols = (section.props?.gridCols as number) || 6;
+  const maxRow = cells.reduce((m, c) => Math.max(m, c.row + c.rowSpan - 1), 1);
 
-  // Count-up animation
-  useEffect(() => {
-    const statsBar = sectionRef.current?.querySelector('.stats-bar');
-    if (!statsBar) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll('[data-count]').forEach((el) => {
-              const target = parseInt((el as HTMLElement).dataset.count || '0');
-              const span = el.querySelector('span');
-              if (!span) return;
-              let start = 0;
-              const step = target / (1600 / 16);
-              const timer = setInterval(() => {
-                start = Math.min(start + step, target);
-                span.textContent = String(Math.floor(start));
-                if (start >= target) clearInterval(timer);
-              }, 16);
-            });
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-    observer.observe(statsBar);
-    return () => observer.disconnect();
-  }, []);
-
-  // Charger les images depuis l'API
-  useEffect(() => {
-    fetch(`/api/carousel/${section.carouselId}/images`)
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.images?.length > 0 && sectionRef.current) {
-          const allImgs = sectionRef.current.querySelectorAll<HTMLImageElement>(
-            '.bento-hero img, .bento-card img'
-          );
-          data.images.forEach((img: { webpUrl?: string; url: string }, i: number) => {
-            if (allImgs[i]) allImgs[i].src = img.webpUrl || img.url;
-          });
-        }
-      })
-      .catch(() => {});
-  }, [section.carouselId]);
+  if (!cells.length) return null;
 
   return (
-    <section className="s1" ref={sectionRef}>
+    <section className="s1">
+      <style>{`
+        .bento-cell:hover .bento-overlay { opacity: 1 !important; }
+        .bento-cell:hover .bento-slide { opacity: 1 !important; transform: translate(0, 0) !important; }
+      `}</style>
       <div className="max-w-[1200px] mx-auto px-5">
-        <div className="section-header text-center mb-16 reveal">
-          <span className="section-tag inline-block font-['Oswald',sans-serif] text-[0.75rem] tracking-[5px] uppercase text-[var(--accent)] mb-4" data-content-key="s1-tag">
-            &mdash; Solidite &amp; Fondations &mdash;
-          </span>
-          <h2
-            className="section-title"
-            style={{ color: 'var(--primary-dark)' }}
-            data-content-key="s1-title"
-          >
-            Maconnerie &amp; Gros Oeuvre
-          </h2>
-        </div>
+        <div
+          className="visible"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
+            gridTemplateRows: `repeat(${maxRow}, clamp(80px, 10vw, 120px))`,
+            gap: '2rem',
+          }}
+        >
+          {cells.map(cell => {
+            if (!cell.content) return null;
+            const hasImage = !!cell.content.imageUrl;
+            const hasOverlay = !!cell.content.overlay;
+            if (!hasImage && !hasOverlay) return null;
 
-        <div className="bento grid grid-cols-[2fr_1fr] grid-rows-[320px_320px] gap-[1.2rem] mb-[1.2rem] reveal" id={`bento-${section.carouselId}`}>
-          <div className="bento-hero">
-            <img
-              src="https://images.unsplash.com/photo-1590012314607-cda9d9b699ae?w=900&h=700&fit=crop&q=80"
-              alt="Maconnerie gros oeuvre"
-            />
-            <div className="bento-hero-text">
-              <span className="tag-pill" data-content-key="bento-hero-tag">Projet phare</span>
-              <h3 className="font-['Oswald',sans-serif] text-[2.2rem] font-bold uppercase tracking-[2px] leading-[1.1] mb-2" data-content-key="bento-hero-title">
-                Fondation &amp; Soubassement
-                <br />
-                Chalet Belledonne
-              </h3>
-              <p className="text-[0.95rem] text-white/75" data-content-key="bento-hero-desc">
-                Dalles beton arme, reprises en sous-oeuvre, maconnerie traditionnelle pierre
-              </p>
-            </div>
-          </div>
-          <div className="bento-card">
-            <img
-              src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&h=350&fit=crop&q=80"
-              alt="Mur porteur"
-            />
-            <div className="bento-card-info">
-              <span className="tag-pill slate" data-content-key="bento-card1-tag">Murs porteurs</span>
-              <h4 className="font-['Oswald',sans-serif] text-white text-[1.1rem] uppercase tracking-[1px]" data-content-key="bento-card1-title">Parpaing &amp; Beton arme</h4>
-            </div>
-            <div className="bento-card-overlay">
-              <span className="tag-pill slate" data-content-key="bento-card1-tag">Murs porteurs</span>
-              <p className="text-[0.9rem] leading-[1.7] text-white/90 mt-2" data-content-key="bento-card1-desc">
-                Creation de murs porteurs en parpaing enduit, renforcement de structure existante,
-                coulage poteaux beton arme.
-              </p>
-            </div>
-          </div>
-          <div className="bento-card">
-            <img
-              src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&h=350&fit=crop&q=80"
-              alt="Dalle beton"
-            />
-            <div className="bento-card-info">
-              <span className="tag-pill green" data-content-key="bento-card2-tag">Dalles</span>
-              <h4 className="font-['Oswald',sans-serif] text-white text-[1.1rem] uppercase tracking-[1px]" data-content-key="bento-card2-title">Dalle beton avec chauffage</h4>
-            </div>
-            <div className="bento-card-overlay">
-              <span className="tag-pill green" data-content-key="bento-card2-tag">Dalles beton</span>
-              <p className="text-[0.9rem] leading-[1.7] text-white/90 mt-2" data-content-key="bento-card2-desc">
-                Pose de dalle chauffante, isolation sous-dalle, chape ciment lissee, compatible
-                plancher bois massif.
-              </p>
-            </div>
-          </div>
-        </div>
+            const overlayPos = cell.content.overlay?.position;
+            const textAlign = cell.content.overlay?.textAlign || 'left';
+            const vAlign = cell.content.overlay?.verticalAlign || 'center';
+            const isHorizontal = overlayPos === 'top' || overlayPos === 'bottom';
 
-        <div className="stats-bar bg-[var(--primary-dark)] py-10 px-12 flex flex-wrap justify-center reveal">
-          <div className="stat-item text-center relative px-8">
-            <span className="stat-number font-['Oswald',sans-serif] text-[3.5rem] font-bold text-white leading-none block" data-count="23">
-              <span>0</span>
-            </span>
-            <span className="stat-label text-[0.8rem] tracking-[3px] uppercase text-white/60 mt-[0.4rem] block font-semibold" data-content-key="bento-stat1-label">Fondations realisees</span>
-          </div>
-          <div className="stat-item text-center relative px-8">
-            <span className="stat-number font-['Oswald',sans-serif] text-[3.5rem] font-bold text-white leading-none block" data-count="47">
-              <span>0</span>
-            </span>
-            <span className="stat-label text-[0.8rem] tracking-[3px] uppercase text-white/60 mt-[0.4rem] block font-semibold" data-content-key="bento-stat2-label">Murs porteurs</span>
-          </div>
-          <div className="stat-item text-center relative px-8">
-            <span className="stat-number font-['Oswald',sans-serif] text-[3.5rem] font-bold text-white leading-none block" data-count="12">
-              <span>0</span>
-            </span>
-            <span className="stat-label text-[0.8rem] tracking-[3px] uppercase text-white/60 mt-[0.4rem] block font-semibold" data-content-key="bento-stat3-label">Dalles beton</span>
-          </div>
+            let titleFrom = 'translate(0,0)';
+            let bodyFrom = 'translate(0,0)';
+            if (hasOverlay) {
+              if (isHorizontal) {
+                titleFrom = textAlign === 'right' ? 'translateX(60px)' : 'translateX(-60px)';
+                bodyFrom = textAlign === 'right' ? 'translateX(-60px)' : 'translateX(60px)';
+              } else {
+                titleFrom = vAlign === 'bottom' ? 'translateY(-60px)' : 'translateY(60px)';
+                bodyFrom = vAlign === 'bottom' ? 'translateY(60px)' : 'translateY(-60px)';
+              }
+            }
+
+            return (
+              <div
+                key={cell.id}
+                className={`bento-cell overflow-hidden rounded-xl relative h-full transition-all duration-300 ease-out border border-transparent hover:-translate-y-[5px] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] hover:border-[rgba(255,255,255,0.4)]${!hasImage ? ' bento-cell-text' : ''}`}
+                style={{
+                  gridColumn: `${cell.col} / span ${cell.colSpan}`,
+                  gridRow: `${cell.row} / span ${cell.rowSpan}`,
+                  minHeight: 0,
+                }}
+              >
+                {hasImage && (
+                  <img src={cell.content.imageUrl} alt="" loading="lazy" className="w-full h-full object-cover" />
+                )}
+                {hasOverlay && cell.content.overlay && (
+                  <div
+                    className={`bento-overlay absolute flex flex-col ${
+                      (vAlign === 'top' ? 'justify-start' :
+                       vAlign === 'bottom' ? 'justify-end' : 'justify-center')
+                    } ${(overlayPos === 'left' || overlayPos === 'right') ? 'py-6' : 'py-3'} px-5 ${
+                      textAlign === 'center' ? 'text-center' :
+                      textAlign === 'right' ? 'text-right' : 'text-left'
+                    } ${hasImage ? 'bg-[color-mix(in_srgb,var(--primary-dark)_50%,transparent)]' : ''}`}
+                    style={{
+                      opacity: 0,
+                      transition: 'opacity 0.2s ease-out',
+                      ...(
+                        !hasImage
+                          ? { inset: 0 }
+                          : overlayPos === 'top'
+                          ? { top: 0, left: 0, right: 0 }
+                          : overlayPos === 'bottom'
+                          ? { bottom: 0, left: 0, right: 0 }
+                          : overlayPos === 'left'
+                          ? { top: 0, bottom: 0, left: 0, width: '45%' }
+                          : { top: 0, bottom: 0, right: 0, width: '45%' }
+                      ),
+                    }}
+                  >
+                    {cell.content.overlay.title && (
+                      <strong
+                        className="bento-slide block text-[clamp(0.9rem,1.5vw,1.3rem)] font-bold mb-2 text-[var(--text-heading,#fff)] break-words"
+                        style={{ opacity: 0, transform: titleFrom, transition: 'opacity 0.35s ease-out, transform 0.35s ease-out', transitionDelay: '0.05s' }}
+                      >
+                        {cell.content.overlay.title}
+                      </strong>
+                    )}
+                    {cell.content.overlay.body && (
+                      <p
+                        className="bento-slide text-[clamp(0.75rem,1.1vw,1rem)] text-[var(--text-body,rgba(255,255,255,0.8))] leading-[1.5] m-0 break-words"
+                        style={{ opacity: 0, transform: bodyFrom, transition: 'opacity 0.35s ease-out, transform 0.35s ease-out', transitionDelay: '0.12s' }}
+                      >
+                        {cell.content.overlay.body}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

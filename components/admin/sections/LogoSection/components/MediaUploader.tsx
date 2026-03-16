@@ -47,7 +47,7 @@ export function MediaUploader({
       {url ? (
         <div className="flex items-center gap-[1.2rem] mb-4">
           <img src={url} alt={t(imgAltKey)} className={previewClassName} />
-          <button className="bg-[rgba(239,68,68,0.1)] text-[#fca5a5] border border-[rgba(239,68,68,0.25)] rounded-xl font-['Inter',sans-serif] text-[0.78rem] font-semibold tracking-[0.2px] py-[0.4rem] px-4 cursor-pointer transition-all duration-150 hover:bg-[rgba(229,57,53,0.3)] hover:border-[rgba(229,57,53,0.6)] hover:text-white py-[0.35rem] px-[0.8rem] text-[0.8rem] rounded-xl" onClick={onDelete}>
+          <button className="btn btn-danger" onClick={onDelete}>
             {t(deleteLabelKey)}
           </button>
         </div>

@@ -9,7 +9,7 @@ export const PUT = withAuth(async (
   ctx?: { params: Promise<Record<string, string>> }
 ) => {
   const { id } = await ctx!.params;
-  const { label, blocks } = await req.json();
+  const { label, blocks, description } = await req.json();
 
   try {
     const data = readLayoutsConfig();
@@ -17,6 +17,7 @@ export const PUT = withAuth(async (
       return NextResponse.json({ error: 'Layout introuvable' }, { status: 404 });
     }
     if (label) data.layouts[id].label = label.trim();
+    if (description !== undefined) data.layouts[id].description = description?.trim() || undefined;
     if (Array.isArray(blocks)) data.layouts[id].blocks = blocks;
     data.layouts[id].updatedAt = new Date().toISOString();
     await writeLayoutsConfig(data);

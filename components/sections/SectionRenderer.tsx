@@ -25,14 +25,15 @@ export function SectionRenderer({ section, site, layouts }: Props) {
     case 'hero-simple':
       return <HeroSimpleSection section={section} />;
     case 'about':
-      return <AboutSection />;
+      return <AboutSection section={section} />;
     case 'services':
-      return <ServicesSection />;
+      return <ServicesSection section={section} />;
     case 'gallery':
       return <GallerySection section={section} />;
     case 'contact':
       return (
         <ContactSection
+          section={section}
           captchaProvider={site.captcha?.provider || undefined}
           captchaSiteKey={site.captcha?.siteKey || undefined}
         />

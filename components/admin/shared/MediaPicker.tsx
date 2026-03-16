@@ -8,6 +8,7 @@ interface PickerImage {
   filename: string;
   url: string;
   webpUrl?: string | null;
+  thumbUrl?: string | null;
   carouselId: string;
   carouselTitle: string;
 }
@@ -109,7 +110,7 @@ export function MediaPicker({ targetCarouselId, isOpen, onClose, onCopySuccess }
   return createPortal(
     <div
       className="modal"
-      style={{ display: 'flex', zIndex: 10010 }}
+      style={{ display: 'flex', zIndex: 10020 }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
@@ -154,7 +155,7 @@ export function MediaPicker({ targetCarouselId, isOpen, onClose, onCopySuccess }
                           title={img.filename}
                           onClick={() => copyImage(img)}
                         >
-                          <img src={img.webpUrl || img.url} alt={img.filename} loading="lazy" className="w-full h-full object-cover block" />
+                          <img src={img.thumbUrl || img.webpUrl || img.url} alt={img.filename} loading="lazy" className="w-full h-full object-cover block" />
                         </div>
                       ))}
                     </div>

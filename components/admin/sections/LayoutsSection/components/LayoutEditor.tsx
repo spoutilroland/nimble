@@ -16,6 +16,8 @@ export function LayoutEditor({ existingLayout, onCancel, onSaved }: LayoutEditor
   const {
     isNew,
     label,
+    description,
+    setDescription,
     id,
     setId,
     blocks,
@@ -30,7 +32,7 @@ export function LayoutEditor({ existingLayout, onCancel, onSaved }: LayoutEditor
   } = useLayoutEditor({ existingLayout, onSaved });
 
   return (
-    <div className="mt-4 p-4 bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.1)] rounded-lg">
+    <div className="mt-4 p-5 bg-[var(--bo-surface)] border border-[var(--bo-border)] rounded-xl">
       <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-[0.8rem] tracking-[0.12em] uppercase text-[var(--bo-green)] m-0 mb-4 mt-4">
         {isNew ? t('layouts.editorTitleNew') : t('layouts.editorTitleEdit', { name: label })}
       </h3>
@@ -46,15 +48,25 @@ export function LayoutEditor({ existingLayout, onCancel, onSaved }: LayoutEditor
           />
         </div>
         <div className="form-group">
-          <label>{t('layouts.idAutoLabel')}</label>
+          <label>{t('layouts.descriptionLabel')}</label>
           <input
             type="text"
-            value={id}
-            placeholder={t('layouts.idPlaceholder')}
-            readOnly={!isNew}
-            onChange={(e) => setId(e.target.value)}
+            value={description}
+            placeholder={t('layouts.descriptionPlaceholder')}
+            maxLength={60}
+            onChange={(e) => setDescription(e.target.value)}
           />
         </div>
+      </div>
+      <div className="form-group mt-2">
+        <label>{t('layouts.idAutoLabel')}</label>
+        <input
+          type="text"
+          value={id}
+          placeholder={t('layouts.idPlaceholder')}
+          readOnly={!isNew}
+          onChange={(e) => setId(e.target.value)}
+        />
       </div>
 
       {/* Builder : palette + canvas */}

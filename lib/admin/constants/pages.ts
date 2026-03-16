@@ -4,18 +4,24 @@ export interface SectionTypeDef {
   maxImages?: number;
   imageHint?: string;
   isCustomLayout?: boolean;
+  disabled?: boolean;
 }
 
+/** Sections masquées du SectionPicker (désactivées sans supprimer le code) */
+export const DISABLED_SECTIONS: string[] = [
+  'cinematic-split',
+];
+
 export const SECTION_TYPES: SectionTypeDef[] = [
-  { type: 'hero', needsCarousel: true, imageHint: 'WebP · 1920 × 1080 px (16:9)' },
+  { type: 'hero', needsCarousel: true, maxImages: 5, imageHint: 'WebP · 1920 × 1080 px (16:9)' },
   { type: 'hero-simple', needsCarousel: true, maxImages: 1, imageHint: 'WebP · 1920 × 1080 px (16:9)' },
   { type: 'about', needsCarousel: false },
   { type: 'services', needsCarousel: false },
   { type: 'gallery', needsCarousel: true, imageHint: 'WebP · 800 × 600 px (4:3)' },
   { type: 'contact', needsCarousel: false },
-  { type: 'bento-grid', needsCarousel: true, maxImages: 3, imageHint: 'WebP · 900 × 700 / 600 × 350 px' },
+  { type: 'bento-grid', needsCarousel: true, maxImages: 20, imageHint: 'WebP · carré ou paysage, min 400 × 400 px' },
   { type: 'cinematic-split', needsCarousel: true, maxImages: 3, imageHint: 'WebP · 900 × 550 px (16:9)' },
-  { type: 'polaroids', needsCarousel: true, imageHint: 'WebP · 600 × 480 px (5:4)' },
+  { type: 'polaroids', needsCarousel: true, maxImages: 12, imageHint: 'WebP · 600 × 480 px (5:4)' },
   { type: 'stats', needsCarousel: false },
   { type: 'custom-layout', needsCarousel: true, isCustomLayout: true },
 ];

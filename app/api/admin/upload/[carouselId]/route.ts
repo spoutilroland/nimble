@@ -7,7 +7,7 @@ import { withAuth } from '@/lib/auth';
 import {
   readCarouselsConfig, writeCarouselsConfig, ensureCarouselExists,
   readMediaRegistry, writeMediaRegistry, generateMediaId, getMediaUrls,
-  processImageWithSharp, MIME_TO_EXT, ALLOWED_TYPES, MAX_FILE_SIZE,
+  processImageWithSharp, generateThumb, MIME_TO_EXT, ALLOWED_TYPES, MAX_FILE_SIZE,
 } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
 import { uploadToBlob, appendMediaToBlob } from '@/lib/storage';
@@ -62,6 +62,18 @@ export const POST = withAuth(async (
     const hasWebp = /\.(jpg|jpeg|png)$/i.test(filename);
     if (hasWebp) processImageWithSharp(filePath).catch(() => {});
 
+    // Thumbnail admin (200px WebP)
+    let hasThumb = false;
+    if (/\.(jpg|jpeg|png|webp)$/i.test(filename)) {
+      hasThumb = await generateThumb(filePath);
+      if (hasThumb) {
+        const thumbName = filename.replace(/\.(jpg|jpeg|png|webp)$/i, '') + '-thumb.webp';
+        const thumbPath = path.join(mediaDir, thumbName);
+        const thumbBuffer = await fsp.readFile(thumbPath);
+        await uploadToBlob(`uploads/media/${thumbName}`, thumbBuffer, 'image/webp').catch(() => {});
+      }
+    }
+
     const mediaId = generateMediaId();
     const mediaData = readMediaRegistry();
     mediaData.media[mediaId] = {
@@ -70,6 +82,7 @@ export const POST = withAuth(async (
       originalName: file.name,
       mimeType: file.type,
       hasWebp,
+      hasThumb,
       uploadedAt: new Date().toISOString(),
     };
     await writeMediaRegistry(mediaData);

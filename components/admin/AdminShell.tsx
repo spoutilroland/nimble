@@ -23,6 +23,7 @@ const TABS: TabDef[] = [
   { id: 'tab-media', labelKey: 'tabs.media' },
   { id: 'tab-identity', labelKey: 'tabs.identity' },
   { id: 'tab-config', labelKey: 'tabs.config' },
+  { id: 'tab-backup', labelKey: 'tabs.backup' },
   { id: 'tab-security', labelKey: 'tabs.security' },
 ];
 
@@ -44,16 +45,6 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
   const toggleTheme = useAdminStore((s) => s.toggleTheme);
   const initTheme = useAdminStore((s) => s.initTheme);
 
-  // Vérification session au chargement
-  useEffect(() => {
-    checkSession();
-  }, []);
-
-  // Init dark theme state
-  useEffect(() => {
-    initTheme();
-  }, [initTheme]);
-
   const checkSession = async () => {
     try {
       const res = await fetch('/api/auth/check');
@@ -63,6 +54,16 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
       setIsAuthenticated(false);
     }
   };
+
+  // Vérification session au chargement
+  useEffect(() => {
+    checkSession();
+  }, []);
+
+  // Init dark theme state
+  useEffect(() => {
+    initTheme();
+  }, [initTheme]);
 
   const handleLogin = useCallback(() => {
     setIsAuthenticated(true);

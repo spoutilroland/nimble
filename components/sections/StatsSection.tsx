@@ -18,7 +18,8 @@ const DEFAULT_ITEMS: StatItem[] = [
 
 export function StatsSection({ section }: Props) {
   const barRef = useRef<HTMLDivElement>(null);
-  const items: StatItem[] = (section.props?.items as StatItem[] | undefined) || DEFAULT_ITEMS;
+  const rawItems = section.props?.items as StatItem[] | undefined;
+  const items: StatItem[] = Array.isArray(rawItems) ? rawItems : DEFAULT_ITEMS;
 
   useEffect(() => {
     const statsBar = barRef.current;
@@ -50,16 +51,29 @@ export function StatsSection({ section }: Props) {
     return () => observer.disconnect();
   }, []);
 
+  const isOddCount = items.length % 2 !== 0;
+
+  if (items.length === 0) {
+    return <div className="stats-bar bg-[var(--primary-dark)] py-8 px-4 sm:py-10 sm:px-12 reveal" ref={barRef} />;
+  }
+
   return (
-    <div className="stats-bar bg-[var(--primary-dark)] py-8 px-4 sm:py-10 sm:px-12 flex flex-wrap justify-center gap-y-6 reveal" ref={barRef}>
-      {items.map((item, i) => (
-        <div key={i} className="stat-item text-center relative px-4 sm:px-8 min-w-[140px]">
-          <span className="stat-number font-['Oswald',sans-serif] text-[2.5rem] sm:text-[3.5rem] font-bold text-white leading-none block" data-count={item.count}>
-            <span>0</span>
-          </span>
-          <span className="stat-label text-[0.7rem] sm:text-[0.8rem] tracking-[2px] sm:tracking-[3px] uppercase text-white/60 mt-[0.4rem] block font-semibold">{item.label}</span>
-        </div>
-      ))}
+    <div className="stats-bar bg-[var(--primary-dark)] py-8 px-4 sm:py-10 sm:px-12 grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-y-6 reveal" ref={barRef}>
+      {items.map((item, i) => {
+        const isLast = i === items.length - 1;
+        const isLastAlone = isLast && isOddCount;
+        return (
+          <div
+            key={i}
+            className={`stat-item text-center relative px-4 sm:px-8 min-w-[140px]${isLastAlone ? ' col-span-2' : ''}`}
+          >
+            <span className="stat-number font-['Oswald',sans-serif] text-[2.5rem] sm:text-[3.5rem] font-bold text-white leading-none block" data-count={item.count}>
+              <span>0</span>
+            </span>
+            <span className="stat-label text-[0.7rem] sm:text-[0.8rem] tracking-[2px] sm:tracking-[3px] uppercase text-white/60 mt-[0.4rem] block font-semibold">{item.label}</span>
+          </div>
+        );
+      })}
     </div>
   );
 }

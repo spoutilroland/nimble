@@ -13,10 +13,11 @@ export function readMediaRegistry(): MediaRegistry {
     if (!raw) return { media: {} };
     const parsed = JSON.parse(raw);
     // Protection : ne jamais retourner un objet sans clé "media"
-    if (!parsed || typeof parsed.media !== 'object') return { media: {} };
+    if (!parsed || typeof parsed.media !== 'object') return { media: {}, folders: {} };
+    if (!parsed.folders) parsed.folders = {};
     return parsed;
   } catch {
-    return { media: {} };
+    return { media: {}, folders: {} };
   }
 }
 
@@ -41,11 +42,16 @@ export function generateMediaId(): string {
 }
 
 export function getMediaUrls(mediaEntry: MediaEntry): MediaUrls {
+  const base = mediaEntry.filename.replace(/\.(jpg|jpeg|png|webp)$/i, '');
+  const v = mediaEntry.fileSize ? `?v=${mediaEntry.fileSize}` : '';
   return {
     filename: mediaEntry.filename,
-    url: '/uploads/media/' + mediaEntry.filename,
+    url: '/uploads/media/' + mediaEntry.filename + v,
     webpUrl: mediaEntry.hasWebp
-      ? '/uploads/media/' + mediaEntry.filename.replace(/\.(jpg|jpeg|png)$/i, '') + '.webp'
+      ? '/uploads/media/' + base + '.webp' + v
+      : null,
+    thumbUrl: mediaEntry.hasThumb
+      ? '/uploads/media/' + base + '-thumb.webp' + v
       : null,
   };
 }

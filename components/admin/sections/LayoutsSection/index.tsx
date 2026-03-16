@@ -39,9 +39,6 @@ export function LayoutsSection() {
           <h2>{t('layouts.sectionTitle')}</h2>
           <div className="carousel-info">{tp('layouts.count', layouts.length)}</div>
         </div>
-        <button className="btn btn-success" onClick={() => setEditingLayout('new')}>
-          {t('layouts.btnNew')}
-        </button>
       </div>
 
       {layouts.length === 0 ? (
@@ -69,6 +66,12 @@ export function LayoutsSection() {
       )}
 
       {message && <div className={`form-message ${message.type}`}>{message.text}</div>}
+
+      <div className="flex justify-end mt-3">
+        <button className="btn btn-success" onClick={() => setEditingLayout('new')}>
+          {t('layouts.btnNew')}
+        </button>
+      </div>
     </div>
   );
 }

@@ -6,7 +6,7 @@ import fsp from 'fs/promises';
 import { withAuth } from '@/lib/auth';
 import {
   readMediaRegistry, writeMediaRegistry, generateMediaId, getMediaUrls,
-  processImageWithSharp, MIME_TO_EXT, ALLOWED_TYPES, MAX_FILE_SIZE,
+  processImageWithSharp, generateThumb, MIME_TO_EXT, ALLOWED_TYPES, MAX_FILE_SIZE,
 } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
 import { uploadToBlob, appendMediaToBlob } from '@/lib/storage';
@@ -18,6 +18,7 @@ export const POST = withAuth(async (req: NextRequest) => {
   try {
     const formData = await req.formData();
     const files = formData.getAll('images') as File[];
+    const folderId = formData.get('folderId') as string | null;
 
     if (files.length === 0) {
       return NextResponse.json({ error: 'No files uploaded' }, { status: 400 });
@@ -60,6 +61,8 @@ export const POST = withAuth(async (req: NextRequest) => {
       let hasWebp = false;
       let finalBuffer: Buffer = buffer;
 
+      let hasThumb = false;
+
       if (isRaster) {
         try {
           // Redimensionner l'original si trop grand (max 1920px)
@@ -85,6 +88,17 @@ export const POST = withAuth(async (req: NextRequest) => {
         }
       }
 
+      // Thumbnail admin (200px WebP) — fonctionne aussi pour les .webp natifs
+      if (/\.(jpg|jpeg|png|webp)$/i.test(filename)) {
+        hasThumb = await generateThumb(filePath);
+        if (hasThumb) {
+          const thumbName = filename.replace(/\.(jpg|jpeg|png|webp)$/i, '') + '-thumb.webp';
+          const thumbPath = path.join(mediaDir, thumbName);
+          const thumbBuffer = await fsp.readFile(thumbPath);
+          await uploadToBlob(`uploads/media/${thumbName}`, thumbBuffer, 'image/webp').catch(() => {});
+        }
+      }
+
       // Sync l'original (potentiellement redimensionné) vers Blob
       await uploadToBlob(`uploads/media/${filename}`, finalBuffer, file.type).catch(() => {});
 
@@ -95,8 +109,10 @@ export const POST = withAuth(async (req: NextRequest) => {
         originalName: file.name,
         mimeType: file.type,
         hasWebp,
+        hasThumb,
         uploadedAt: new Date().toISOString(),
         fileSize: file.size,
+        ...(folderId ? { folderId } : {}),
       };
 
       // Append atomique vers Blob (ne remplace jamais le fichier entier)

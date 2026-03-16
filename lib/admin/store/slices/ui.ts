@@ -1,6 +1,6 @@
 import type { StateCreator } from 'zustand';
 
-export type TabId = 'tab-design' | 'tab-content' | 'tab-media' | 'tab-identity' | 'tab-config' | 'tab-security';
+export type TabId = 'tab-design' | 'tab-content' | 'tab-media' | 'tab-identity' | 'tab-config' | 'tab-backup' | 'tab-security';
 
 export interface FlashMessage {
   text: string;

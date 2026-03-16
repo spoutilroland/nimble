@@ -1,13 +1,16 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import type { Section } from '@/lib/types';
+import { ck } from '@/lib/content-key';
 
 interface Props {
+  section: Section;
   captchaProvider?: string;
   captchaSiteKey?: string;
 }
 
-export function ContactSection({ captchaProvider, captchaSiteKey }: Props) {
+export function ContactSection({ section, captchaProvider, captchaSiteKey }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
@@ -64,6 +67,7 @@ export function ContactSection({ captchaProvider, captchaSiteKey }: Props) {
         email: formData.get('email') as string,
         phone: formData.get('phone') as string,
         message: formData.get('message') as string,
+        website: formData.get('website') as string || '',
       };
 
       if (token && captchaProvider && tokenFields[captchaProvider]) {
@@ -93,22 +97,10 @@ export function ContactSection({ captchaProvider, captchaSiteKey }: Props) {
     }
   };
 
-  if (status === 'success') {
-    return (
-      <section className="section section-contact" id="contact">
-        <div className="max-w-[1200px] mx-auto px-5">
-          <p className="contact-msg contact-msg--success">
-            Votre demande a bien ete envoyee ! Nous vous repondrons rapidement.
-          </p>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section className="section section-contact" id="contact">
       <div className="max-w-[1200px] mx-auto px-5">
-        <h2 className="section-title" data-content-key="contact-title">
+        <h2 className="section-title" data-content-key={ck(section.contentId, 'contact-title')}>
           Demandez votre devis gratuit
         </h2>
         <form className="contact-form max-w-[750px] mx-auto" ref={formRef} onSubmit={handleSubmit}>
@@ -132,6 +124,11 @@ export function ContactSection({ captchaProvider, captchaSiteKey }: Props) {
             <textarea name="message" placeholder="Decrivez votre projet..." rows={5} required />
           </div>
 
+          {/* Honeypot anti-bot */}
+          <div className="absolute -left-[9999px]" aria-hidden="true">
+            <input type="text" name="website" tabIndex={-1} autoComplete="off" />
+          </div>
+
           {captchaProvider === 'turnstile' && captchaSiteKey && (
             <div className="form-group text-center">
               <div className="cf-turnstile" data-sitekey={captchaSiteKey} data-theme="light" />
@@ -152,15 +149,22 @@ export function ContactSection({ captchaProvider, captchaSiteKey }: Props) {
             <div className="contact-msg contact-msg--error">{errorMsg}</div>
           )}
 
-          <div className="text-center">
-            <button
-              type="submit"
-              className="btn btn-primary"
-              disabled={status === 'sending'}
-            >
-              {status === 'sending' ? 'Envoi en cours...' : 'Envoyer la demande'}
-            </button>
-          </div>
+          {status === 'success' ? (
+            <div className="contact-msg contact-msg--success text-center">
+              Votre demande a bien été envoyée ! Nous vous répondrons rapidement.
+            </div>
+          ) : (
+            <div className="text-center">
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={status === 'sending'}
+                style={{ pointerEvents: status === 'sending' ? 'none' : undefined }}
+              >
+                {status === 'sending' ? 'Envoi en cours...' : 'Envoyer la demande'}
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </section>

@@ -24,7 +24,7 @@ export function SiteFooter({ site, logoUrl, lang }: Props) {
   const l = b.legal || { siret: '', certifications: '', copyright: '' };
 
   return (
-    <footer className="footer">
+    <footer className="footer mt-16">
       <div className="footer-grid" style={{ '--footer-cols': footerCols } as React.CSSProperties}>
         {footerBlocks.map((block) => (
           <div

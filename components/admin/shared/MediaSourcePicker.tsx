@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { Upload, Images, ArrowLeft } from 'lucide-react';
+import { Upload, Images, ArrowLeft, Folder } from 'lucide-react';
 import { useI18n } from '@/lib/i18n/context';
 import { useAdminStore } from '@/lib/admin/store';
+import type { MediaFolder } from '@/lib/types';
 
 interface MediaSourcePickerProps {
   carouselId: string;
@@ -13,6 +14,8 @@ interface MediaSourcePickerProps {
   onFileUpload: (files: FileList) => void;
   onSuccess: () => void;
   maxSelection?: number;
+  /** Si fourni, court-circuite l'API add-media et retourne l'URL directement */
+  onPickFromLibrary?: (url: string) => void;
 }
 
 type FilterType = 'all' | 'jpg' | 'png' | 'webp' | 'svg';
@@ -26,9 +29,11 @@ export function MediaSourcePicker({
   onFileUpload,
   onSuccess,
   maxSelection = 1,
+  onPickFromLibrary,
 }: MediaSourcePickerProps) {
   const { t, tp } = useI18n();
   const mediaItems = useAdminStore((s) => s.mediaItems);
+  const mediaFolders = useAdminStore((s) => s.mediaFolders);
   const loadMedia = useAdminStore((s) => s.loadMedia);
 
   const [screen, setScreen] = useState<'choice' | 'library'>('choice');
@@ -42,6 +47,9 @@ export function MediaSourcePicker({
   const [filterType, setFilterType] = useState<FilterType>('all');
   const [filterDimension, setFilterDimension] = useState('all');
 
+  // Navigation dossier dans le picker
+  const [pickerFolderId, setPickerFolderId] = useState<string | null>(null);
+
   // Reset à chaque ouverture
   useEffect(() => {
     if (isOpen) {
@@ -51,6 +59,7 @@ export function MediaSourcePicker({
       setSearch('');
       setFilterType('all');
       setFilterDimension('all');
+      setPickerFolderId(null);
     }
   }, [isOpen]);
 
@@ -92,9 +101,17 @@ export function MediaSourcePicker({
       });
   }, [imageItems]);
 
-  // Filtrage + tri
+  // Filtrage + tri avec support dossier
   const filtered = useMemo(() => {
     let items = [...imageItems];
+
+    // Filtre par dossier
+    if (pickerFolderId) {
+      items = items.filter((m) => m.folderId === pickerFolderId);
+    } else {
+      // Racine : uniquement sans dossier
+      items = items.filter((m) => !m.folderId);
+    }
 
     // Recherche par nom
     if (search) {
@@ -119,7 +136,23 @@ export function MediaSourcePicker({
     }
 
     return items;
-  }, [imageItems, search, filterType, filterDimension]);
+  }, [imageItems, search, filterType, filterDimension, pickerFolderId]);
+
+  // Nombre de médias par dossier
+  const folderMediaCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const m of imageItems) {
+      if (m.folderId) {
+        counts[m.folderId] = (counts[m.folderId] ?? 0) + 1;
+      }
+    }
+    return counts;
+  }, [imageItems]);
+
+  const currentPickerFolder = useMemo(
+    () => mediaFolders.find((f) => f.id === pickerFolderId) ?? null,
+    [mediaFolders, pickerFolderId]
+  );
 
   const toggleSelection = useCallback((mediaId: string) => {
     setSelected((prev) => {
@@ -140,6 +173,18 @@ export function MediaSourcePicker({
 
   const handleConfirmAdd = useCallback(async () => {
     if (selected.size === 0 || adding) return;
+
+    // Mode direct : retourner l'URL sans passer par le carousel
+    if (onPickFromLibrary) {
+      const mediaId = [...selected][0];
+      const item = imageItems.find((m) => m.id === mediaId);
+      if (item) {
+        onPickFromLibrary(item.webpUrl || item.url);
+        onClose();
+      }
+      return;
+    }
+
     setAdding(true);
     try {
       for (const mediaId of selected) {
@@ -154,7 +199,7 @@ export function MediaSourcePicker({
     } finally {
       setAdding(false);
     }
-  }, [selected, adding, carouselId, onClose, onSuccess]);
+  }, [selected, adding, carouselId, onClose, onSuccess, onPickFromLibrary, imageItems]);
 
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -172,7 +217,7 @@ export function MediaSourcePicker({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 backdrop-blur-[2px]"
+      className="fixed inset-0 z-[10020] flex items-center justify-center bg-black/60 backdrop-blur-[2px]"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div className="bg-[var(--bo-surface)] border border-[var(--bo-border)] rounded-xl w-[90%] max-w-[780px] max-h-[85vh] flex flex-col overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
@@ -207,13 +252,26 @@ export function MediaSourcePicker({
 
           {screen === 'library' && (
             <>
+              {/* Navigation retour */}
               <div className="flex items-center justify-between mb-4">
-                <button
-                  className="flex items-center gap-[0.3rem] bg-transparent border-none text-[var(--bo-accent,#6366f1)] cursor-pointer text-[0.85rem] p-0 hover:underline"
-                  onClick={() => setScreen('choice')}
-                >
-                  <ArrowLeft size={16} /> {t('mediaSourcePicker.title')}
-                </button>
+                {pickerFolderId ? (
+                  <button
+                    className="flex items-center gap-[0.3rem] bg-transparent border-none text-[var(--bo-accent,#6366f1)] cursor-pointer text-[0.85rem] p-0 hover:underline"
+                    onClick={() => setPickerFolderId(null)}
+                  >
+                    <ArrowLeft size={16} /> {t('mediaLibrary.sectionTitle')}
+                  </button>
+                ) : (
+                  <button
+                    className="flex items-center gap-[0.3rem] bg-transparent border-none text-[var(--bo-accent,#6366f1)] cursor-pointer text-[0.85rem] p-0 hover:underline"
+                    onClick={() => setScreen('choice')}
+                  >
+                    <ArrowLeft size={16} /> {t('mediaSourcePicker.title')}
+                  </button>
+                )}
+                {currentPickerFolder && (
+                  <span className="text-[0.85rem] font-medium text-[var(--bo-text)]">{currentPickerFolder.name}</span>
+                )}
               </div>
 
               {/* Barre de filtres */}
@@ -255,6 +313,29 @@ export function MediaSourcePicker({
                 )}
               </div>
 
+              {/* Dossiers (uniquement à la racine du picker) */}
+              {!pickerFolderId && mediaFolders.length > 0 && (
+                <div className="mb-3">
+                  <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(90px, 1fr))' }}>
+                    {mediaFolders.map((folder) => (
+                      <div
+                        key={folder.id}
+                        className="flex flex-col items-center gap-1 p-2 bg-[var(--bo-bg)] border border-[var(--bo-border)] rounded-[6px] cursor-pointer transition-[border-color] duration-150 hover:border-[var(--bo-accent,#6366f1)]"
+                        onClick={() => setPickerFolderId(folder.id)}
+                      >
+                        <Folder size={24} className="text-[var(--bo-accent,#6366f1)]" />
+                        <span className="text-[0.7rem] font-medium text-[var(--bo-text)] text-center leading-tight truncate max-w-full">
+                          {folder.name}
+                        </span>
+                        <span className="text-[0.65rem] text-[var(--bo-text-dim)]">
+                          {folderMediaCounts[folder.id] ?? 0}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {imageItems.length === 0 ? (
                 <p className="px-8 py-8 text-center text-[var(--bo-text-dim)] text-[0.85rem]">{t('mediaSourcePicker.noMedia')}</p>
               ) : filtered.length === 0 ? (
@@ -268,7 +349,7 @@ export function MediaSourcePicker({
                       onClick={() => toggleSelection(item.id)}
                       title={item.originalName}
                     >
-                      <img src={item.webpUrl || item.url} alt={item.altText || item.originalName} loading="lazy" className="w-full h-full object-cover" />
+                      <img src={item.thumbUrl || item.webpUrl || item.url} alt={item.altText || item.originalName} loading="lazy" className="w-full h-full object-cover" />
                     </div>
                   ))}
                 </div>

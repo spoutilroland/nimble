@@ -5,7 +5,7 @@ import { withAuth } from '@/lib/auth';
 import { readLayoutsConfig, writeLayoutsConfig } from '@/lib/data';
 
 export const POST = withAuth(async (req: NextRequest) => {
-  const { id, label, blocks } = await req.json();
+  const { id, label, blocks, description } = await req.json();
 
   if (!id || !/^[a-z0-9-]+$/.test(id)) {
     return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
@@ -23,7 +23,7 @@ export const POST = withAuth(async (req: NextRequest) => {
       return NextResponse.json({ error: 'Un layout avec cet ID existe déjà' }, { status: 409 });
     }
     const now = new Date().toISOString();
-    data.layouts[id] = { id, label: label.trim(), createdAt: now, updatedAt: now, blocks };
+    data.layouts[id] = { id, label: label.trim(), description: description?.trim() || undefined, createdAt: now, updatedAt: now, blocks };
     await writeLayoutsConfig(data);
     return NextResponse.json({ success: true, layout: data.layouts[id] });
   } catch {

@@ -51,15 +51,15 @@ export function SiteHeader({ site, pages, currentPath, logoUrl }: Props) {
 
   // Logo JSX — partagé entre les deux modes
   const logoJsx = (
-    <div className="logo shrink-0">
-      <a href="/" className="flex items-center gap-5 no-underline">
+    <div className="logo min-w-0 shrink max-w-[calc(100%-60px)] sm:max-w-[45%]">
+      <a href="/" className="flex items-center gap-5 no-underline min-w-0">
         {logoUrl && (logoMode === 'logo-only' || logoMode === 'logo-name') && (
-          <img src={logoUrl} alt={site.business.name} className="logo-img h-[60px] w-auto max-w-[220px] object-contain" />
+          <img src={logoUrl} alt={site.business.name} className="logo-img h-[60px] w-auto max-w-[120px] sm:max-w-[220px] object-contain" />
         )}
         {(logoMode === 'name-only' || logoMode === 'logo-name' || !logoUrl) && (
-          <div className="flex flex-col">
-            <span className="logo-name font-['Oswald',sans-serif] text-[var(--primary-dark)] text-[1.6rem] font-bold tracking-[2px] uppercase leading-none whitespace-nowrap">{site.business.name}</span>
-            <span className="logo-tagline text-[var(--accent)] text-[0.8rem] font-semibold mt-[0.3rem] tracking-[3px] uppercase whitespace-nowrap">{site.business.tagline}</span>
+          <div className="flex flex-col min-w-0 break-words">
+            <span className="logo-name font-['Oswald',sans-serif] text-[var(--primary-dark)] text-[1.6rem] font-bold tracking-[2px] uppercase leading-none">{site.business.name}</span>
+            <span className="logo-tagline text-[var(--accent)] text-[0.8rem] font-semibold mt-[0.3rem] tracking-[3px] uppercase">{site.business.tagline}</span>
           </div>
         )}
       </a>
@@ -84,7 +84,7 @@ export function SiteHeader({ site, pages, currentPath, logoUrl }: Props) {
           </div>
         ) : (
           /* ── Mode gauche / droite : flex [logo] [nav] ── */
-          <div className={`flex justify-between items-center gap-6 flex-nowrap logo-pos-${logoPos}`}>
+          <div className={`flex justify-between items-start gap-6 flex-nowrap logo-pos-${logoPos}`}>
             {logoJsx}
             <NavBurger />
             <nav className="nav" id="main-nav">

@@ -34,9 +34,6 @@ export function PagesSection() {
           <h2>{t('pages.sectionTitle')}</h2>
           <div className="carousel-info">{tp('pages.count', pages.length)}</div>
         </div>
-        <button className="btn btn-success" onClick={() => setShowNewForm(!showNewForm)}>
-          {t('pages.btnNew')}
-        </button>
       </div>
 
       {/* Redirection de la page d'accueil */}
@@ -74,6 +71,12 @@ export function PagesSection() {
             onSave={(updated) => savePage(page.id, updated)}
           />
         ))}
+      </div>
+
+      <div className="flex justify-end mt-3">
+        <button className="btn btn-success" onClick={() => setShowNewForm(!showNewForm)}>
+          {t('pages.btnNew')}
+        </button>
       </div>
 
       {showNewForm && (

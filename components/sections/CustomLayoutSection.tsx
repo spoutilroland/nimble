@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import type { Section, Layout, LayoutBlock } from '@/lib/types';
+import { ck } from '@/lib/content-key';
 import { FooterSocial } from '@/components/layout/FooterSocial';
 import { FooterMap } from '@/components/layout/FooterMap';
 
@@ -91,7 +92,7 @@ export function CustomLayoutSection({ section, layout }: Props) {
             if (colA !== colB) return colA - colB;
             return (a.row || 1) - (b.row || 1);
           }).map((block) => {
-            const contentKey = `layout-${section.layoutId}-${block.blockId}`;
+            const contentKey = ck(section.contentId, `layout-${section.layoutId}-${block.blockId}`);
             const bcId = section.blockCarousels?.[block.blockId];
             const gridStyle = `grid-row:${block.row || 1}; grid-column:${block.col || 1} / span ${block.colSpan || 1}`;
             const extBlock = block as LayoutBlock & Record<string, unknown>;

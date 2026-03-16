@@ -51,6 +51,23 @@ export async function processImageWithSharp(filePath: string): Promise<void> {
   }
 }
 
+/** Génère un thumbnail 200px WebP pour l'admin (léger, rapide à charger) */
+export async function generateThumb(filePath: string): Promise<boolean> {
+  try {
+    const dir = path.dirname(filePath);
+    const base = path.basename(filePath, path.extname(filePath));
+    const thumbPath = path.join(dir, base + '-thumb.webp');
+    await sharp(filePath)
+      .resize({ width: 200, height: 200, fit: 'inside', withoutEnlargement: true })
+      .webp({ quality: 60 })
+      .toFile(thumbPath);
+    return true;
+  } catch (err) {
+    console.warn('Thumb generation skipped:', (err as Error).message);
+    return false;
+  }
+}
+
 export function escapeHtml(str: string): string {
   if (typeof str !== 'string') return '';
   return str

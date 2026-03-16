@@ -1,16 +1,12 @@
-export const runtime = 'nodejs';
-
-import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
-import fsp from 'fs/promises';
+import { NextRequest, NextResponse } from 'next/server';
 import { withAuth } from '@/lib/auth';
 import {
   readCarouselsConfig, writeCarouselsConfig,
-  readMediaRegistry, writeMediaRegistry,
+  readMediaRegistry,
 } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
 
-const mediaDir = path.join(process.cwd(), 'uploads', 'media');
 const dataDir = path.join(process.cwd(), 'data');
 
 export const DELETE = withAuth(async (req: NextRequest) => {
@@ -41,21 +37,6 @@ export const DELETE = withAuth(async (req: NextRequest) => {
 
     carousel.images = (carousel.images || []).filter((id) => id !== mediaId);
     await writeCarouselsConfig(carouselsData);
-
-    const isStillUsed = Object.values(carouselsData.carousels).some(
-      (c) => c.id !== carouselId && (c.images || []).includes(mediaId)
-    );
-
-    if (!isStillUsed) {
-      const entry = mediaData.media[mediaId];
-      await fsp.unlink(path.join(mediaDir, entry.filename)).catch(() => {});
-      if (entry.hasWebp) {
-        const webpName = entry.filename.replace(/\.(jpg|jpeg|png)$/i, '') + '.webp';
-        await fsp.unlink(path.join(mediaDir, webpName)).catch(() => {});
-      }
-      delete mediaData.media[mediaId];
-      await writeMediaRegistry(mediaData);
-    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

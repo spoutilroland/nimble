@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { Upload } from 'lucide-react';
+import { Upload, FolderPlus, ArrowLeft, CheckSquare, CheckCheck } from 'lucide-react';
 import { useI18n } from '@/lib/i18n/context';
 import { useAdminStore } from '@/lib/admin/store';
 import { useMediaLibrary } from './hooks/useMediaLibrary';
@@ -10,6 +10,8 @@ import { MediaGrid } from './components/MediaGrid';
 import { MediaPanel } from './components/MediaPanel';
 import { SelectionBar } from './components/SelectionBar';
 import { DeleteConfirmModal } from './components/DeleteConfirmModal';
+import { FolderCard } from './components/FolderCard';
+import { MoveToFolderModal } from './components/MoveToFolderModal';
 
 export function MediaLibrarySection() {
   const { t } = useI18n();
@@ -18,17 +20,27 @@ export function MediaLibrarySection() {
     filtered, mediaLoading, totalCount,
     sort, setSort, filterUsage, setFilterUsage, filterType, setFilterType,
     filterDimension, setFilterDimension, availableDimensions,
-    selectedIds, toggleSelect, clearSelection,
+    selectedIds, toggleSelect, clearSelection, selectMode, toggleSelectMode, selectAll,
     panelMedia, openPanel, closePanel,
     handleUpload, fileInputRef,
     showDeleteModal, deleteTarget, deleteItems,
     handleDeleteSingle, handleDeleteBulk, confirmDelete, cancelDelete,
     updateMediaEntry,
+    // Dossiers
+    mediaFolders, folderMediaCounts,
+    currentFolderId, currentFolder,
+    openFolder, goToRoot,
+    handleCreateFolder, handleRenameFolder, handleDeleteFolder,
+    // Déplacement
+    showMoveModal, openMoveModal, closeMoveModal, handleMoveMedia,
   } = useMediaLibrary();
 
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [showNewFolder, setShowNewFolder] = useState(false);
+  const [newFolderName, setNewFolderName] = useState('');
   const dragCounter = useRef(0);
+  const newFolderRef = useRef<HTMLInputElement>(null);
 
   // Drag & drop global
   const handleDragEnter = useCallback((e: DragEvent) => {
@@ -101,7 +113,6 @@ export function MediaLibrarySection() {
     } else {
       showFlash(result.error || t('mediaLibrary.uploadError'), 'error');
     }
-    // Reset pour permettre re-upload du même fichier
     e.target.value = '';
   }, [handleUpload, showFlash, t]);
 
@@ -114,6 +125,27 @@ export function MediaLibrarySection() {
     else showFlash(t('mediaLibrary.panelSaveError'), 'error');
     return ok;
   }, [updateMediaEntry, showFlash, t]);
+
+  const handleTransform = useCallback(async (id: string, operation: string) => {
+    try {
+      const res = await fetch(`/api/admin/media/${id}/transform`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ operation }),
+      });
+      if (res.ok) {
+        await useAdminStore.getState().loadMedia();
+        showFlash(t('mediaLibrary.transformSuccess'), 'success');
+        return true;
+      }
+      const data = await res.json().catch(() => ({}));
+      showFlash(data.error || t('mediaLibrary.transformError'), 'error');
+      return false;
+    } catch {
+      showFlash(t('mediaLibrary.transformError'), 'error');
+      return false;
+    }
+  }, [showFlash, t]);
 
   const handleDeleteFromPanel = useCallback((id: string) => {
     handleDeleteSingle(id);
@@ -133,6 +165,32 @@ export function MediaLibrarySection() {
       showFlash(t('mediaLibrary.deleteError'), 'error');
     }
   }, [confirmDelete, deleteItems.length, showFlash, t]);
+
+  const handleCreateNewFolder = useCallback(async () => {
+    const name = newFolderName.trim();
+    if (!name) return;
+    const folder = await handleCreateFolder(name);
+    if (folder) {
+      showFlash(t('mediaLibrary.folderCreated'), 'success');
+      setNewFolderName('');
+      setShowNewFolder(false);
+    } else {
+      showFlash(t('mediaLibrary.folderCreateError'), 'error');
+    }
+  }, [newFolderName, handleCreateFolder, showFlash, t]);
+
+  const handleMoveConfirm = useCallback(async (folderId: string | null) => {
+    const ok = await handleMoveMedia(Array.from(selectedIds), folderId);
+    if (ok) {
+      showFlash(t('mediaLibrary.moved'), 'success');
+    } else {
+      showFlash(t('mediaLibrary.moveError'), 'error');
+    }
+  }, [handleMoveMedia, selectedIds, showFlash, t]);
+
+  useEffect(() => {
+    if (showNewFolder) newFolderRef.current?.focus();
+  }, [showNewFolder]);
 
   if (mediaLoading && totalCount === 0) {
     return (
@@ -156,7 +214,21 @@ export function MediaLibrarySection() {
         </div>
       </div>
 
-      {/* Barre d'import + filtres */}
+      {/* Breadcrumb navigation */}
+      {currentFolder && (
+        <div className="flex items-center gap-2 mb-3">
+          <button
+            className="flex items-center gap-[0.3rem] bg-transparent border-none text-[var(--bo-accent,#6366f1)] cursor-pointer text-[0.85rem] p-0 hover:underline"
+            onClick={goToRoot}
+          >
+            <ArrowLeft size={16} /> {t('mediaLibrary.sectionTitle')}
+          </button>
+          <span className="text-[var(--bo-text-dim)] text-[0.85rem]">/</span>
+          <span className="text-[var(--bo-text)] text-[0.85rem] font-medium">{currentFolder.name}</span>
+        </div>
+      )}
+
+      {/* Barre d'import + nouveau dossier */}
       <div className="flex items-center gap-[0.6rem] mb-[0.8rem]">
         <button
           className="btn btn-primary inline-flex items-center gap-[0.4rem]"
@@ -166,6 +238,40 @@ export function MediaLibrarySection() {
           <Upload size={16} />
           {uploading ? t('mediaLibrary.loading') : t('mediaLibrary.btnImport')}
         </button>
+        {!currentFolderId && (
+          <button
+            className="btn btn-secondary inline-flex items-center gap-[0.4rem]"
+            onClick={() => setShowNewFolder(true)}
+          >
+            <FolderPlus size={16} />
+            {t('mediaLibrary.btnNewFolder')}
+          </button>
+        )}
+        <button
+          className={`btn inline-flex items-center gap-[0.4rem] ${selectMode ? 'btn-primary' : 'btn-secondary'}`}
+          onClick={toggleSelectMode}
+        >
+          <CheckSquare size={16} />
+          {selectMode ? t('mediaLibrary.btnSelectModeOn') : t('mediaLibrary.btnSelectMode')}
+        </button>
+        {filtered.length > 0 && (
+          <button
+            className="btn btn-secondary inline-flex items-center gap-[0.4rem]"
+            onClick={() => selectAll(filtered)}
+          >
+            <CheckCheck size={16} />
+            {t('mediaLibrary.btnSelectAll')}
+          </button>
+        )}
+        {selectedIds.size > 0 && (
+          <button
+            className="btn btn-secondary inline-flex items-center gap-[0.4rem]"
+            onClick={clearSelection}
+          >
+            <CheckCheck size={16} />
+            {t('mediaLibrary.btnDeselectAll')}
+          </button>
+        )}
         <input
           ref={fileInputRef}
           type="file"
@@ -175,6 +281,26 @@ export function MediaLibrarySection() {
           onChange={handleFileInput}
         />
       </div>
+
+      {/* Création nouveau dossier */}
+      {showNewFolder && (
+        <div className="flex items-center gap-2 mb-3 p-3 bg-[var(--bo-bg)] border border-[var(--bo-border)] rounded-[8px]">
+          <input
+            ref={newFolderRef}
+            className="flex-1 bg-[var(--bo-surface)] border border-[var(--bo-border)] text-[var(--bo-text)] text-[0.85rem] px-3 py-[0.35rem] rounded-[4px] outline-none focus:border-[var(--bo-accent,#6366f1)]"
+            placeholder={t('mediaLibrary.folderNamePlaceholder')}
+            value={newFolderName}
+            onChange={(e) => setNewFolderName(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleCreateNewFolder(); if (e.key === 'Escape') setShowNewFolder(false); }}
+          />
+          <button className="btn btn-primary text-[0.8rem] px-3 py-[0.3rem]" onClick={handleCreateNewFolder}>
+            {t('mediaLibrary.btnCreate')}
+          </button>
+          <button className="btn btn-secondary text-[0.8rem] px-3 py-[0.3rem]" onClick={() => setShowNewFolder(false)}>
+            {t('common.cancel')}
+          </button>
+        </div>
+      )}
 
       <MediaFilters
         sort={sort}
@@ -186,13 +312,42 @@ export function MediaLibrarySection() {
         filterDimension={filterDimension}
         setFilterDimension={setFilterDimension}
         availableDimensions={availableDimensions}
-        totalCount={filtered.length}
+        totalCount={currentFolderId ? filtered.length : totalCount}
       />
 
-      {/* Grille */}
+      {/* Grille des dossiers (seulement à la racine) */}
+      {!currentFolderId && mediaFolders.length > 0 && (
+        <div className="mb-4">
+          <h3 className="text-[0.8rem] font-semibold text-[var(--bo-text-dim)] uppercase tracking-wide mb-2">
+            {t('mediaLibrary.foldersLabel')}
+          </h3>
+          <div className="grid gap-[0.6rem]" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))' }}>
+            {mediaFolders.map((folder) => (
+              <FolderCard
+                key={folder.id}
+                folder={folder}
+                mediaCount={folderMediaCounts[folder.id] ?? 0}
+                onOpen={openFolder}
+                onRename={handleRenameFolder}
+                onDelete={handleDeleteFolder}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Séparateur si dossiers ET images à la racine */}
+      {!currentFolderId && mediaFolders.length > 0 && filtered.length > 0 && (
+        <h3 className="text-[0.8rem] font-semibold text-[var(--bo-text-dim)] uppercase tracking-wide mb-2">
+          {t('mediaLibrary.unsortedLabel')}
+        </h3>
+      )}
+
+      {/* Grille images */}
       <MediaGrid
         items={filtered}
         selectedIds={selectedIds}
+        selectMode={selectMode}
         onToggleSelect={toggleSelect}
         onOpen={openPanel}
       />
@@ -201,8 +356,20 @@ export function MediaLibrarySection() {
       <SelectionBar
         count={selectedIds.size}
         onDeselect={clearSelection}
+        onMove={openMoveModal}
         onDelete={handleDeleteBulk}
       />
+
+      {/* Modal déplacement */}
+      {showMoveModal && selectedIds.size > 0 && (
+        <MoveToFolderModal
+          folders={mediaFolders}
+          currentFolderId={currentFolderId}
+          selectedCount={selectedIds.size}
+          onMove={handleMoveConfirm}
+          onClose={closeMoveModal}
+        />
+      )}
 
       {/* Panel latéral */}
       {panelMedia && (
@@ -211,6 +378,7 @@ export function MediaLibrarySection() {
           onClose={closePanel}
           onSave={handleSave}
           onDelete={handleDeleteFromPanel}
+          onTransform={handleTransform}
         />
       )}
 
