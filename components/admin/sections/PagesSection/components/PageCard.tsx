@@ -56,42 +56,6 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
     setSections(page.sections || []);
   }, [page]);
 
-  const addSection = (type: string, layoutId?: string, label?: string) => {
-    const info = SECTION_TYPES.find(st => st.type === type);
-    const carouselId = info?.needsCarousel ? Math.random().toString(36).slice(2, 8) : '';
-    const contentId = Math.random().toString(36).slice(2, 8);
-    const newSection: Section = { type: type as Section['type'], carouselId, contentId };
-    if (layoutId) newSection.layoutId = layoutId;
-    if (type === 'stats') newSection.props = { items: [] };
-    if (label) {
-      newSection.label = label;
-    } else {
-      const sameTypeCount = sections.filter(s => s.type === type).length;
-      newSection.label = `#${sameTypeCount + 1}`;
-    }
-    const updated = [...sections, newSection];
-    setSections(updated);
-    setShowPicker(false);
-    saveWithSections(updated);
-  };
-
-  const removeSection = (idx: number) => {
-    setSections(prev => prev.filter((_, i) => i !== idx));
-  };
-
-  const moveSection = (idx: number, dir: -1 | 1) => {
-    const arr = [...sections];
-    const newIdx = idx + dir;
-    if (newIdx < 0 || newIdx >= arr.length) return;
-    [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
-    setSections(arr);
-    saveWithSections(arr);
-  };
-
-  const updateSection = (idx: number, updates: Partial<Section>) => {
-    setSections(prev => prev.map((s, i) => i === idx ? { ...s, ...updates } : s));
-  };
-
   const saveWithSections = (secs: Section[]) => {
     if (!title.trim() || !slug.trim()) {
       setMessage({ text: t('pages.validationTitleSlug'), type: 'error' });
@@ -128,6 +92,57 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
     setTimeout(() => setMessage(null), 3000);
   };
 
+const addSection = useCallback((type: string, layoutId?: string, label?: string) => {
+  const info = SECTION_TYPES.find(st => st.type === type);
+  
+  // On génère les IDs ici, à l'intérieur du callback
+  const carouselId = info?.needsCarousel 
+    ? Math.random().toString(36).slice(2, 8) 
+    : '';
+  const contentId = Math.random().toString(36).slice(2, 8);
+  
+  const newSection: Section = { 
+    type: type as Section['type'], 
+    carouselId, 
+    contentId 
+  };
+
+  if (layoutId) newSection.layoutId = layoutId;
+  if (type === 'stats') newSection.props = { items: [] };
+
+  if (label) {
+    newSection.label = label;
+  } else {
+    // Note : on utilise 'sections' qui doit être dans les dépendances du useCallback
+    const sameTypeCount = sections.filter(s => s.type === type).length;
+    newSection.label = `#${sameTypeCount + 1}`;
+  }
+
+  const updated = [...sections, newSection];
+  setSections(updated);
+  setShowPicker(false);
+  saveWithSections(updated);
+  
+  // On ajoute les dépendances nécessaires pour que la fonction soit toujours à jour
+}, [sections, setSections, setShowPicker, saveWithSections]);
+
+
+  const removeSection = (idx: number) => {
+    setSections(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  const moveSection = (idx: number, dir: -1 | 1) => {
+    const arr = [...sections];
+    const newIdx = idx + dir;
+    if (newIdx < 0 || newIdx >= arr.length) return;
+    [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
+    setSections(arr);
+    saveWithSections(arr);
+  };
+
+  const updateSection = (idx: number, updates: Partial<Section>) => {
+    setSections(prev => prev.map((s, i) => i === idx ? { ...s, ...updates } : s));
+  };
   const handleSave = () => saveWithSections(sections);
 
   // ── Sortable : pointer events ──

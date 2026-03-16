@@ -377,7 +377,10 @@ export function BentoGridEditor({ section, onUpdate, onSave }: Props) {
   }, [cells, colCount, rowCount]);
 
   const resizePreviewRef = useRef<ResizePreview | null>(null);
-  resizePreviewRef.current = resizePreview;
+ 
+  useEffect(() => {
+    resizePreviewRef.current = resizePreview;
+  }, [resizePreview]);
 
   const handleResizeEnd = useCallback(() => {
     const info = resizeRef.current;
