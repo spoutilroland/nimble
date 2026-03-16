@@ -110,7 +110,7 @@ export function MediaPicker({ targetCarouselId, isOpen, onClose, onCopySuccess }
   return createPortal(
     <div
       className="modal"
-      style={{ display: 'flex', zIndex: 10010 }}
+      style={{ display: 'flex', zIndex: 10020 }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div

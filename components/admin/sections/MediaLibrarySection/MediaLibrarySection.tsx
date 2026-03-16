@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { Upload, FolderPlus, ArrowLeft, CheckSquare } from 'lucide-react';
+import { Upload, FolderPlus, ArrowLeft, CheckSquare, CheckCheck } from 'lucide-react';
 import { useI18n } from '@/lib/i18n/context';
 import { useAdminStore } from '@/lib/admin/store';
 import { useMediaLibrary } from './hooks/useMediaLibrary';
@@ -20,7 +20,7 @@ export function MediaLibrarySection() {
     filtered, mediaLoading, totalCount,
     sort, setSort, filterUsage, setFilterUsage, filterType, setFilterType,
     filterDimension, setFilterDimension, availableDimensions,
-    selectedIds, toggleSelect, clearSelection, selectMode, toggleSelectMode,
+    selectedIds, toggleSelect, clearSelection, selectMode, toggleSelectMode, selectAll,
     panelMedia, openPanel, closePanel,
     handleUpload, fileInputRef,
     showDeleteModal, deleteTarget, deleteItems,
@@ -125,6 +125,27 @@ export function MediaLibrarySection() {
     else showFlash(t('mediaLibrary.panelSaveError'), 'error');
     return ok;
   }, [updateMediaEntry, showFlash, t]);
+
+  const handleTransform = useCallback(async (id: string, operation: string) => {
+    try {
+      const res = await fetch(`/api/admin/media/${id}/transform`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ operation }),
+      });
+      if (res.ok) {
+        await useAdminStore.getState().loadMedia();
+        showFlash(t('mediaLibrary.transformSuccess'), 'success');
+        return true;
+      }
+      const data = await res.json().catch(() => ({}));
+      showFlash(data.error || t('mediaLibrary.transformError'), 'error');
+      return false;
+    } catch {
+      showFlash(t('mediaLibrary.transformError'), 'error');
+      return false;
+    }
+  }, [showFlash, t]);
 
   const handleDeleteFromPanel = useCallback((id: string) => {
     handleDeleteSingle(id);
@@ -233,6 +254,24 @@ export function MediaLibrarySection() {
           <CheckSquare size={16} />
           {selectMode ? t('mediaLibrary.btnSelectModeOn') : t('mediaLibrary.btnSelectMode')}
         </button>
+        {filtered.length > 0 && (
+          <button
+            className="btn btn-secondary inline-flex items-center gap-[0.4rem]"
+            onClick={() => selectAll(filtered)}
+          >
+            <CheckCheck size={16} />
+            {t('mediaLibrary.btnSelectAll')}
+          </button>
+        )}
+        {selectedIds.size > 0 && (
+          <button
+            className="btn btn-secondary inline-flex items-center gap-[0.4rem]"
+            onClick={clearSelection}
+          >
+            <CheckCheck size={16} />
+            {t('mediaLibrary.btnDeselectAll')}
+          </button>
+        )}
         <input
           ref={fileInputRef}
           type="file"
@@ -339,6 +378,7 @@ export function MediaLibrarySection() {
           onClose={closePanel}
           onSave={handleSave}
           onDelete={handleDeleteFromPanel}
+          onTransform={handleTransform}
         />
       )}
 

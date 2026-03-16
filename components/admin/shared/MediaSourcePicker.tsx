@@ -217,7 +217,7 @@ export function MediaSourcePicker({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 backdrop-blur-[2px]"
+      className="fixed inset-0 z-[10020] flex items-center justify-center bg-black/60 backdrop-blur-[2px]"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div className="bg-[var(--bo-surface)] border border-[var(--bo-border)] rounded-xl w-[90%] max-w-[780px] max-h-[85vh] flex flex-col overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)]">

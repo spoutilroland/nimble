@@ -3,12 +3,12 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { X, Search } from 'lucide-react';
 import { useI18n } from '@/lib/i18n/context';
-import { SECTION_TYPES } from '@/lib/admin/constants/pages';
+import { SECTION_TYPES, DISABLED_SECTIONS } from '@/lib/admin/constants/pages';
 import type { Layout } from '@/lib/schemas/layouts';
 
 interface Props {
   layouts: Layout[];
-  onSelect: (type: string, layoutId?: string) => void;
+  onSelect: (type: string, layoutId?: string, label?: string) => void;
   onClose: () => void;
 }
 
@@ -194,10 +194,15 @@ const SECTION_DESCRIPTIONS: Record<string, string> = {
   'stats': 'sectionPicker.descStats',
 };
 
+const MAX_LABEL = 16;
+
 export function SectionPickerModal({ layouts, onSelect, onClose }: Props) {
   const { t } = useI18n();
   const [search, setSearch] = useState('');
   const searchRef = useRef<HTMLInputElement>(null);
+  const [naming, setNaming] = useState<{ type: string; layoutId?: string } | null>(null);
+  const [nameValue, setNameValue] = useState('');
+  const nameRef = useRef<HTMLInputElement>(null);
 
   // Focus la barre de recherche à l'ouverture
   useEffect(() => {
@@ -213,8 +218,8 @@ export function SectionPickerModal({ layouts, onSelect, onClose }: Props) {
     return () => window.removeEventListener('keydown', handler);
   }, [onClose]);
 
-  // Sections natives (sans custom-layout)
-  const builtInTypes = SECTION_TYPES.filter(st => !st.isCustomLayout);
+  // Sections natives (sans custom-layout, sans disabled)
+  const builtInTypes = SECTION_TYPES.filter(st => !st.isCustomLayout && !DISABLED_SECTIONS.includes(st.type));
 
   // Filtrage par recherche
   const query = search.toLowerCase().trim();
@@ -281,7 +286,7 @@ export function SectionPickerModal({ layouts, onSelect, onClose }: Props) {
                   {filteredBuiltIn.map(st => (
                     <button
                       key={st.type}
-                      onClick={() => onSelect(st.type)}
+                      onClick={() => { setNaming({ type: st.type }); setNameValue(''); setTimeout(() => nameRef.current?.focus(), 50); }}
                       className="group flex flex-col bg-[var(--bo-bg)] border border-[var(--bo-border)] rounded-xl overflow-hidden text-left cursor-pointer transition-all duration-150 hover:border-[var(--bo-green)] hover:shadow-[0_0_0_1px_var(--bo-green)]"
                     >
                       <SectionPreview type={st.type} />
@@ -313,7 +318,7 @@ export function SectionPickerModal({ layouts, onSelect, onClose }: Props) {
                     {filteredLayouts.map(layout => (
                       <button
                         key={layout.id}
-                        onClick={() => onSelect('custom-layout', layout.id)}
+                        onClick={() => { setNaming({ type: 'custom-layout', layoutId: layout.id }); setNameValue(''); setTimeout(() => nameRef.current?.focus(), 50); }}
                         className="group flex flex-col bg-[var(--bo-bg)] border border-[var(--bo-border)] rounded-xl overflow-hidden text-left cursor-pointer transition-all duration-150 hover:border-[var(--bo-green)] hover:shadow-[0_0_0_1px_var(--bo-green)]"
                       >
                         {/* Preview grille du layout */}
@@ -338,6 +343,60 @@ export function SectionPickerModal({ layouts, onSelect, onClose }: Props) {
             </>
           )}
         </div>
+
+        {/* Sous-modale de nommage */}
+        {naming && (
+          <div
+            className="absolute inset-0 z-10 flex items-center justify-center bg-black/40"
+            onMouseDown={(e) => { if (e.target === e.currentTarget) setNaming(null); }}
+          >
+            <div className="bg-[var(--bo-surface)] border border-[var(--bo-border)] rounded-xl p-5 w-[320px] shadow-2xl">
+              <h4 className="text-[0.85rem] font-semibold text-[var(--bo-text)] m-0 mb-3">
+                {t('sectionPicker.namingTitle')}
+              </h4>
+              <p className="text-[0.75rem] text-[var(--bo-text-dim)] m-0 mb-3">
+                {t('sectionPicker.namingHint')}
+              </p>
+              <input
+                ref={nameRef}
+                type="text"
+                value={nameValue}
+                maxLength={MAX_LABEL}
+                onChange={(e) => setNameValue(e.target.value)}
+                placeholder={t(`sectionType.${naming.type}`)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    onSelect(naming.type, naming.layoutId, nameValue.trim() || undefined);
+                  }
+                }}
+                className="w-full px-3 py-2 text-[0.85rem] bg-[var(--bo-bg)] border border-[var(--bo-border)] rounded-lg text-[var(--bo-text)] outline-none focus:border-[var(--bo-accent)]"
+              />
+              <div className="text-right mt-1">
+                <span className={`text-[0.65rem] tabular-nums ${
+                  MAX_LABEL - nameValue.length <= 0 ? 'text-[#e55a2a]' :
+                  MAX_LABEL - nameValue.length <= 3 ? 'text-[#f59e0b]' :
+                  'text-[var(--bo-text-dim)]'
+                }`}>
+                  {nameValue.length}/{MAX_LABEL}
+                </span>
+              </div>
+              <div className="flex justify-end gap-2 mt-3">
+                <button
+                  className="px-4 py-2 text-[0.8rem] bg-transparent border border-[var(--bo-border)] text-[var(--bo-text)] rounded-lg cursor-pointer hover:bg-[rgba(255,255,255,0.06)] transition-colors"
+                  onClick={() => setNaming(null)}
+                >
+                  {t('common.cancel')}
+                </button>
+                <button
+                  className="px-4 py-2 text-[0.8rem] bg-[var(--bo-green)] text-white border-none rounded-lg cursor-pointer hover:brightness-110 transition-all"
+                  onClick={() => onSelect(naming.type, naming.layoutId, nameValue.trim() || undefined)}
+                >
+                  {t('common.add')}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

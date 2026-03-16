@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useI18n } from '@/lib/i18n/context';
 import { SECTION_TYPES } from '@/lib/admin/constants/pages';
 import { SectionRow } from './SectionRow';
@@ -16,6 +16,17 @@ interface PageCardProps {
   onSave: (updated: Partial<PageData>) => void;
 }
 
+// ── Sortable state (ref-based pour perf, pas de re-render pendant le drag) ──
+
+interface SortState {
+  active: boolean;
+  dragIdx: number;
+  insertIdx: number;
+  startY: number;
+  ghostY: number;
+  itemRects: { top: number; height: number; mid: number }[];
+}
+
 export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCardProps) {
   const { t } = useI18n();
   const [editing, setEditing] = useState(false);
@@ -29,6 +40,12 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
   const [showPicker, setShowPicker] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: string } | null>(null);
 
+  // ── Sortable refs ──
+  const listRef = useRef<HTMLDivElement>(null);
+  const sortRef = useRef<SortState | null>(null);
+  const ghostRef = useRef<HTMLDivElement | null>(null);
+  const [sortRender, setSortRender] = useState<{ dragIdx: number; insertIdx: number } | null>(null);
+
   useEffect(() => {
     setTitle(page.title);
     setSlug(page.slug);
@@ -39,13 +56,23 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
     setSections(page.sections || []);
   }, [page]);
 
-  const addSection = (type: string, layoutId?: string) => {
+  const addSection = (type: string, layoutId?: string, label?: string) => {
     const info = SECTION_TYPES.find(st => st.type === type);
     const carouselId = info?.needsCarousel ? Math.random().toString(36).slice(2, 8) : '';
-    const newSection: Section = { type: type as Section['type'], carouselId };
+    const contentId = Math.random().toString(36).slice(2, 8);
+    const newSection: Section = { type: type as Section['type'], carouselId, contentId };
     if (layoutId) newSection.layoutId = layoutId;
-    setSections(prev => [...prev, newSection]);
+    if (type === 'stats') newSection.props = { items: [] };
+    if (label) {
+      newSection.label = label;
+    } else {
+      const sameTypeCount = sections.filter(s => s.type === type).length;
+      newSection.label = `#${sameTypeCount + 1}`;
+    }
+    const updated = [...sections, newSection];
+    setSections(updated);
     setShowPicker(false);
+    saveWithSections(updated);
   };
 
   const removeSection = (idx: number) => {
@@ -53,32 +80,31 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
   };
 
   const moveSection = (idx: number, dir: -1 | 1) => {
-    setSections(prev => {
-      const arr = [...prev];
-      const newIdx = idx + dir;
-      if (newIdx < 0 || newIdx >= arr.length) return arr;
-      [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
-      return arr;
-    });
+    const arr = [...sections];
+    const newIdx = idx + dir;
+    if (newIdx < 0 || newIdx >= arr.length) return;
+    [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
+    setSections(arr);
+    saveWithSections(arr);
   };
 
   const updateSection = (idx: number, updates: Partial<Section>) => {
     setSections(prev => prev.map((s, i) => i === idx ? { ...s, ...updates } : s));
   };
 
-  const handleSave = async () => {
+  const saveWithSections = (secs: Section[]) => {
     if (!title.trim() || !slug.trim()) {
       setMessage({ text: t('pages.validationTitleSlug'), type: 'error' });
       return;
     }
 
-    const invalidLayout = sections.find(s => s.type === 'custom-layout' && (!s.layoutId || !s.carouselId));
+    const invalidLayout = secs.find(s => s.type === 'custom-layout' && (!s.layoutId || !s.carouselId));
     if (invalidLayout) {
       setMessage({ text: t('pages.validationLayoutConfig'), type: 'error' });
       return;
     }
 
-    const processedSections = sections.map(s => {
+    const processedSections = secs.map(s => {
       if (s.type !== 'custom-layout' || !s.layoutId || !s.carouselId) return s;
       const layout = layouts.find(l => l.id === s.layoutId);
       if (!layout) return s;
@@ -100,6 +126,142 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
     });
     setMessage({ text: t('pages.saved'), type: 'success' });
     setTimeout(() => setMessage(null), 3000);
+  };
+
+  const handleSave = () => saveWithSections(sections);
+
+  // ── Sortable : pointer events ──
+
+  const handleGripDown = useCallback((e: React.PointerEvent, dragIdx: number) => {
+    e.preventDefault();
+    const list = listRef.current;
+    if (!list) return;
+
+    const children = Array.from(list.children) as HTMLElement[];
+    const listRect = list.getBoundingClientRect();
+    const itemRects = children.map(child => {
+      const r = child.getBoundingClientRect();
+      return { top: r.top - listRect.top, height: r.height, mid: r.top - listRect.top + r.height / 2 };
+    });
+
+    const dragRect = itemRects[dragIdx];
+
+    // Créer le ghost
+    const ghost = document.createElement('div');
+    const source = children[dragIdx];
+    ghost.innerHTML = source.innerHTML;
+    ghost.className = source.className;
+    ghost.style.cssText = `
+      position: fixed;
+      left: ${source.getBoundingClientRect().left}px;
+      top: ${source.getBoundingClientRect().top}px;
+      width: ${source.getBoundingClientRect().width}px;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0.9;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      border: 1px solid var(--bo-accent, #6366f1);
+      border-radius: 4px;
+      background: var(--bo-surface, #1a1a2e);
+      transition: none;
+    `;
+    document.body.appendChild(ghost);
+    ghostRef.current = ghost;
+
+    sortRef.current = {
+      active: true,
+      dragIdx,
+      insertIdx: dragIdx,
+      startY: e.clientY,
+      ghostY: source.getBoundingClientRect().top,
+      itemRects,
+    };
+
+    setSortRender({ dragIdx, insertIdx: dragIdx });
+
+    // Capturer le pointer
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+
+    const handleMove = (ev: PointerEvent) => {
+      const s = sortRef.current;
+      if (!s) return;
+      const deltaY = ev.clientY - s.startY;
+      const ghost = ghostRef.current;
+      if (ghost) ghost.style.top = `${s.ghostY + deltaY}px`;
+
+      // Position du milieu de l'élément dragué (dans l'espace de la liste)
+      const dragMid = s.itemRects[s.dragIdx].mid + deltaY;
+
+      // Trouver l'index d'insertion
+      let newInsert = 0;
+      for (let i = 0; i < s.itemRects.length; i++) {
+        if (dragMid > s.itemRects[i].mid) newInsert = i + 1;
+      }
+      // Clamp
+      newInsert = Math.max(0, Math.min(newInsert, s.itemRects.length));
+
+      if (newInsert !== s.insertIdx) {
+        s.insertIdx = newInsert;
+        setSortRender({ dragIdx: s.dragIdx, insertIdx: newInsert });
+      }
+    };
+
+    const handleUp = () => {
+      const s = sortRef.current;
+      sortRef.current = null;
+
+      // Nettoyer le ghost
+      if (ghostRef.current) {
+        ghostRef.current.remove();
+        ghostRef.current = null;
+      }
+
+      setSortRender(null);
+
+      if (!s || s.dragIdx === s.insertIdx || (s.insertIdx === s.dragIdx + 1)) {
+        // Pas de changement
+      } else {
+        // Réordonner
+        setSections(prev => {
+          const arr = [...prev];
+          const [moved] = arr.splice(s.dragIdx, 1);
+          const targetIdx = s.insertIdx > s.dragIdx ? s.insertIdx - 1 : s.insertIdx;
+          arr.splice(targetIdx, 0, moved);
+          // Sauvegarder via un timeout pour que le state soit à jour
+          setTimeout(() => saveWithSections(arr), 0);
+          return arr;
+        });
+      }
+
+      document.removeEventListener('pointermove', handleMove);
+      document.removeEventListener('pointerup', handleUp);
+    };
+
+    document.addEventListener('pointermove', handleMove);
+    document.addEventListener('pointerup', handleUp);
+  }, [sections, saveWithSections]);
+
+  // ── Calcul des displacements pour chaque item ──
+
+  const getDisplacement = (idx: number): number => {
+    if (!sortRender) return 0;
+    const { dragIdx, insertIdx } = sortRender;
+    if (idx === dragIdx) return 0; // masqué via isDragged
+
+    const rects = sortRef.current?.itemRects;
+    if (!rects) return 0;
+    const dragH = rects[dragIdx].height + 6.4; // height + gap (0.4rem ≈ 6.4px)
+
+    // L'élément dragué va de dragIdx vers insertIdx
+    // Les items entre les deux doivent se décaler
+    if (insertIdx <= dragIdx) {
+      // Drag vers le haut : items [insertIdx, dragIdx-1] descendent
+      if (idx >= insertIdx && idx < dragIdx) return dragH;
+    } else {
+      // Drag vers le bas : items [dragIdx+1, insertIdx-1] montent
+      if (idx > dragIdx && idx < insertIdx) return -dragH;
+    }
+    return 0;
   };
 
   return (
@@ -163,7 +325,7 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
           </details>
 
           <div className="text-[0.75rem] uppercase tracking-[0.1em] text-[var(--bo-green)] mb-2 mt-4">{t('pages.sectionsLabel')}</div>
-          <div className="flex flex-col gap-[0.4rem] mb-[0.8rem]">
+          <div ref={listRef} className="flex flex-col gap-[0.4rem] mb-[0.8rem] relative">
             {sections.map((section, idx) => (
               <SectionRow
                 key={idx}
@@ -172,11 +334,14 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
                 total={sections.length}
                 layouts={layouts}
                 isEven={idx % 2 === 0}
+                isDragged={sortRender?.dragIdx === idx}
+                displacement={getDisplacement(idx)}
                 onRemove={() => removeSection(idx)}
                 onMoveUp={() => moveSection(idx, -1)}
                 onMoveDown={() => moveSection(idx, 1)}
                 onUpdate={(updates) => updateSection(idx, updates)}
                 onSave={handleSave}
+                onGripPointerDown={(e) => handleGripDown(e, idx)}
               />
             ))}
           </div>

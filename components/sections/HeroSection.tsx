@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import type { Section } from '@/lib/types';
+import { ck } from '@/lib/content-key';
 
 const HERO_FALLBACKS = [
   'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop&q=80',
@@ -76,10 +77,10 @@ export function HeroSection({ section }: Props) {
       <div className="hero-overlay">
         <div className="max-w-[1200px] mx-auto px-5">
           <div className="hero-content text-center text-white relative z-[2] px-4">
-            <h2 className="hero-title" data-content-key="hero-title">
+            <h2 className="hero-title" data-content-key={ck(section.contentId, 'hero-title')}>
               Votre partenaire de confiance
             </h2>
-            <p className="hero-subtitle" data-content-key="hero-subtitle">
+            <p className="hero-subtitle" data-content-key={ck(section.contentId, 'hero-subtitle')}>
               Expert en renovation alpine depuis plus de 15 ans
             </p>
           </div>

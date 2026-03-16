@@ -144,6 +144,11 @@ export function useMediaLibrary() {
     });
   }, []);
 
+  const selectAll = useCallback((items: MediaItemWithMeta[]) => {
+    setSelectedIds(new Set(items.map((m) => m.id)));
+    setSelectMode(true);
+  }, []);
+
   const openPanel = useCallback((id: string) => {
     setPanelMediaId(id);
   }, []);
@@ -263,7 +268,7 @@ export function useMediaLibrary() {
     availableDimensions,
 
     // Sélection
-    selectedIds, toggleSelect, clearSelection, selectMode, toggleSelectMode,
+    selectedIds, toggleSelect, clearSelection, selectMode, toggleSelectMode, selectAll,
 
     // Panel
     panelMedia, panelMediaId, openPanel, closePanel,

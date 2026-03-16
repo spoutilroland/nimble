@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Copy, Trash2 } from 'lucide-react';
+import { X, Copy, Trash2, RotateCw, FlipHorizontal2, FlipVertical2 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n/context';
 import type { MediaItemWithMeta } from '@/lib/types';
 
@@ -11,6 +11,7 @@ interface MediaPanelProps {
   onClose: () => void;
   onSave: (id: string, data: { altText?: string; title?: string; tags?: string[] }) => Promise<boolean>;
   onDelete: (id: string) => void;
+  onTransform?: (id: string, operation: string) => Promise<boolean>;
 }
 
 function formatSize(bytes: number): string {
@@ -29,7 +30,7 @@ function formatDate(iso: string): string {
   }
 }
 
-export function MediaPanel({ media, onClose, onSave, onDelete }: MediaPanelProps) {
+export function MediaPanel({ media, onClose, onSave, onDelete, onTransform }: MediaPanelProps) {
   const { t } = useI18n();
   const [altText, setAltText] = useState(media.altText ?? '');
   const [title, setTitle] = useState(media.title ?? '');
@@ -37,6 +38,7 @@ export function MediaPanel({ media, onClose, onSave, onDelete }: MediaPanelProps
   const [tags, setTags] = useState<string[]>(media.tags ?? []);
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [transforming, setTransforming] = useState(false);
 
   // Sync quand le média change
   useEffect(() => {
@@ -48,9 +50,10 @@ export function MediaPanel({ media, onClose, onSave, onDelete }: MediaPanelProps
 
   const handleSave = useCallback(async () => {
     setSaving(true);
-    await onSave(media.id, { altText, title, tags });
+    const ok = await onSave(media.id, { altText, title, tags });
     setSaving(false);
-  }, [media.id, altText, title, tags, onSave]);
+    if (ok) onClose();
+  }, [media.id, altText, title, tags, onSave, onClose]);
 
   const handleAddTag = useCallback(() => {
     const tag = tagInput.trim();
@@ -84,6 +87,13 @@ export function MediaPanel({ media, onClose, onSave, onDelete }: MediaPanelProps
       setTimeout(() => setCopied(false), 2000);
     }
   }, [media.url]);
+
+  const handleTransform = useCallback(async (operation: string) => {
+    if (!onTransform || transforming) return;
+    setTransforming(true);
+    await onTransform(media.id, operation);
+    setTransforming(false);
+  }, [media.id, onTransform, transforming]);
 
   const isSvg = media.mimeType === 'image/svg+xml';
   const src = media.webpUrl ?? media.url;
@@ -121,6 +131,32 @@ export function MediaPanel({ media, onClose, onSave, onDelete }: MediaPanelProps
               }}
             />
           </div>
+
+          {/* Transformation image (rotation/flip) — pas pour les SVG */}
+          {!isSvg && onTransform && (
+            <div className="flex items-center gap-2">
+              <span className="text-[0.75rem] text-[var(--bo-text-dim)] shrink-0">{t('mediaLibrary.transformLabel')}</span>
+              <div className="flex gap-1">
+                {([
+                  { op: 'rotate-90', icon: <RotateCw size={15} />, label: t('mediaLibrary.rotate90') },
+                  { op: 'rotate-180', icon: <RotateCw size={15} className="rotate-90" />, label: t('mediaLibrary.rotate180') },
+                  { op: 'rotate-270', icon: <RotateCw size={15} className="-scale-x-100" />, label: t('mediaLibrary.rotate270') },
+                  { op: 'flip-h', icon: <FlipHorizontal2 size={15} />, label: t('mediaLibrary.flipH') },
+                  { op: 'flip-v', icon: <FlipVertical2 size={15} />, label: t('mediaLibrary.flipV') },
+                ] as const).map(({ op, icon, label }) => (
+                  <button
+                    key={op}
+                    title={label}
+                    disabled={transforming}
+                    onClick={() => handleTransform(op)}
+                    className="p-[0.4rem] bg-[var(--bo-bg)] border border-[var(--bo-border)] rounded-[6px] text-[var(--bo-text-dim)] cursor-pointer transition-colors hover:text-[var(--bo-text)] hover:border-[var(--bo-accent)] disabled:opacity-40 disabled:cursor-wait"
+                  >
+                    {icon}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Métadonnées */}
           <div className="flex flex-col gap-[0.4rem] text-[0.82rem]">
@@ -205,8 +241,8 @@ export function MediaPanel({ media, onClose, onSave, onDelete }: MediaPanelProps
 
         {/* Actions */}
         <div className="px-5 py-4 border-t border-[var(--bo-border)] flex gap-2">
-          <button className="btn btn-primary shrink-0 text-[0.82rem] py-[0.4rem] px-[0.8rem]" onClick={handleSave} disabled={saving}>
-            {t('mediaLibrary.panelBtnSave')}
+          <button className="btn btn-success shrink-0 text-[0.82rem] py-[0.4rem] px-[0.8rem]" onClick={handleSave} disabled={saving}>
+            {saving ? t('mediaLibrary.loading') : t('mediaLibrary.panelBtnSave')}
           </button>
           <button className="btn btn-secondary flex-1 min-w-0 inline-flex items-center justify-center gap-[0.3rem] text-[0.82rem] py-[0.4rem] px-[0.6rem]" onClick={handleCopyUrl}>
             <Copy size={13} className="shrink-0" />

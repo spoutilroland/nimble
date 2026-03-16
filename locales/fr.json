@@ -215,7 +215,9 @@
     "descBentoGrid": "Grille asymetrique type bento box",
     "descCinematicSplit": "Image a gauche, texte a droite, style cinematique",
     "descPolaroids": "Photos style polaroid avec legendes",
-    "descStats": "Compteurs animes avec chiffres cles"
+    "descStats": "Compteurs animes avec chiffres cles",
+    "namingTitle": "Nommer cette section",
+    "namingHint": "Optionnel — utile si vous avez plusieurs sections du meme type."
   },
   "blockImage": {
     "upload": "+ Ajouter une image",
@@ -656,7 +658,17 @@
     "moveToRoot": "Racine (sans dossier)",
     "moved": "Image(s) déplacée(s) ✓",
     "moveError": "Erreur lors du déplacement",
-    "noFolders": "Aucun dossier. Créez-en un depuis la médiathèque."
+    "noFolders": "Aucun dossier. Créez-en un depuis la médiathèque.",
+    "btnSelectAll": "Tout sélectionner",
+    "btnDeselectAll": "Tout désélectionner",
+    "transformLabel": "Orientation",
+    "rotate90": "Rotation 90°",
+    "rotate180": "Rotation 180°",
+    "rotate270": "Rotation 270°",
+    "flipH": "Miroir horizontal",
+    "flipV": "Miroir vertical",
+    "transformSuccess": "Image transformée ✓",
+    "transformError": "Erreur lors de la transformation"
   },
   "inlineCarousel": {
     "deleteConfirm": "Supprimer cette image ?",
@@ -672,7 +684,8 @@
     "collapseTitle": "Réduire/Agrandir",
     "moveUp": "Monter",
     "moveDown": "Descendre",
-    "activate": "Activer"
+    "activate": "Activer",
+    "add": "Ajouter"
   },
   "smtp": {
     "groupTitle": "Envoi d'emails (SMTP)",
@@ -741,6 +754,45 @@
     "resultJson": "{n} fichier(s) JSON restaure(s)",
     "resultMedia": "{n} fichier(s) media restaure(s)",
     "warnings": "Avertissements"
+  },
+  "sidebar": {
+    "title": "Sections de la page",
+    "openTooltip": "Ouvrir la sidebar d'edition",
+    "closeTooltip": "Fermer la sidebar",
+    "noFields": "Aucun champ editable",
+    "editBento": "Modifier la grille",
+    "saved": "Enregistre",
+    "saveError": "Erreur lors de la sauvegarde",
+    "carouselImages": "Images",
+    "carouselLoading": "Chargement...",
+    "manageInBack": "Gerer dans le back-office",
+    "heroTitle": "Titre hero",
+    "heroSubtitle": "Sous-titre hero",
+    "heroCta": "Texte du bouton",
+    "aboutTitle": "Titre a propos",
+    "aboutP1": "Paragraphe 1",
+    "aboutP2": "Paragraphe 2",
+    "feature1Title": "Atout 1 — titre",
+    "feature1Desc": "Atout 1 — description",
+    "feature2Title": "Atout 2 — titre",
+    "feature2Desc": "Atout 2 — description",
+    "feature3Title": "Atout 3 — titre",
+    "feature3Desc": "Atout 3 — description",
+    "servicesTitle": "Titre services",
+    "service1Title": "Service 1 — titre",
+    "service1Desc": "Service 1 — description",
+    "service2Title": "Service 2 — titre",
+    "service2Desc": "Service 2 — description",
+    "service3Title": "Service 3 — titre",
+    "service3Desc": "Service 3 — description",
+    "service4Title": "Service 4 — titre",
+    "service4Desc": "Service 4 — description",
+    "galleryTitle": "Titre galerie",
+    "contactTitle": "Titre contact",
+    "cinematicTitle": "Titre cinematic",
+    "cinematicDesc": "Description cinematic",
+    "polaroidsTitle": "Titre polaroids",
+    "statsTitle": "Titre statistiques"
   },
   "syncBlob": {
     "sectionTitle": "Synchroniser vers le cloud",

@@ -18,7 +18,8 @@ const DEFAULT_ITEMS: StatItem[] = [
 
 export function StatsSection({ section }: Props) {
   const barRef = useRef<HTMLDivElement>(null);
-  const items: StatItem[] = (section.props?.items as StatItem[] | undefined) || DEFAULT_ITEMS;
+  const rawItems = section.props?.items as StatItem[] | undefined;
+  const items: StatItem[] = Array.isArray(rawItems) ? rawItems : DEFAULT_ITEMS;
 
   useEffect(() => {
     const statsBar = barRef.current;
@@ -51,6 +52,10 @@ export function StatsSection({ section }: Props) {
   }, []);
 
   const isOddCount = items.length % 2 !== 0;
+
+  if (items.length === 0) {
+    return <div className="stats-bar bg-[var(--primary-dark)] py-8 px-4 sm:py-10 sm:px-12 reveal" ref={barRef} />;
+  }
 
   return (
     <div className="stats-bar bg-[var(--primary-dark)] py-8 px-4 sm:py-10 sm:px-12 grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-y-6 reveal" ref={barRef}>

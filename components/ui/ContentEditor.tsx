@@ -29,9 +29,9 @@ const CHAR_LIMITS: Record<string, number> = {
   'service-3-title': 60, 'service-3-desc': 220,
   'service-4-title': 60, 'service-4-desc': 220,
   // Features (about cards)
-  'feature-1-title': 60, 'feature-1-desc': 220,
-  'feature-2-title': 60, 'feature-2-desc': 220,
-  'feature-3-title': 60, 'feature-3-desc': 220,
+  'feature-1-title': 22, 'feature-1-desc': 220,
+  'feature-2-title': 22, 'feature-2-desc': 220,
+  'feature-3-title': 22, 'feature-3-desc': 220,
   // Gallery
   'gallery-title': 80,
   // Bento hero
@@ -239,7 +239,7 @@ export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
         document.querySelectorAll('[data-content-key]').forEach((el) => {
           const key = (el as HTMLElement).dataset.contentKey;
           if (key && pageContent[key] !== undefined) {
-            el.innerHTML = pageContent[key];
+            el.innerHTML = pageContent[key].replace(/\n/g, '<br>');
           }
         });
       } catch {}

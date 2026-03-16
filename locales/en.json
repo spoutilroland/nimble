@@ -215,7 +215,9 @@
     "descBentoGrid": "Asymmetric bento box grid",
     "descCinematicSplit": "Image left, text right, cinematic style",
     "descPolaroids": "Polaroid-style photos with captions",
-    "descStats": "Animated counters with key figures"
+    "descStats": "Animated counters with key figures",
+    "namingTitle": "Name this section",
+    "namingHint": "Optional — useful if you have multiple sections of the same type."
   },
   "blockImage": {
     "upload": "+ Add an image",
@@ -645,7 +647,17 @@
     "moveToRoot": "Root (no folder)",
     "moved": "Image(s) moved ✓",
     "moveError": "Error moving",
-    "noFolders": "No folders. Create one from the media library."
+    "noFolders": "No folders. Create one from the media library.",
+    "btnSelectAll": "Select all",
+    "btnDeselectAll": "Deselect all",
+    "transformLabel": "Orientation",
+    "rotate90": "Rotate 90°",
+    "rotate180": "Rotate 180°",
+    "rotate270": "Rotate 270°",
+    "flipH": "Flip horizontal",
+    "flipV": "Flip vertical",
+    "transformSuccess": "Image transformed ✓",
+    "transformError": "Error transforming image"
   },
   "inlineCarousel": {
     "deleteConfirm": "Delete this image?",
@@ -661,7 +673,8 @@
     "collapseTitle": "Collapse/Expand",
     "moveUp": "Move up",
     "moveDown": "Move down",
-    "activate": "Activate"
+    "activate": "Activate",
+    "add": "Add"
   },
   "smtp": {
     "groupTitle": "Email sending (SMTP)",
@@ -730,6 +743,45 @@
     "resultJson": "{n} JSON file(s) restored",
     "resultMedia": "{n} media file(s) restored",
     "warnings": "Warnings"
+  },
+  "sidebar": {
+    "title": "Page sections",
+    "openTooltip": "Open editing sidebar",
+    "closeTooltip": "Close sidebar",
+    "noFields": "No editable fields",
+    "editBento": "Edit grid",
+    "saved": "Saved",
+    "saveError": "Error saving",
+    "carouselImages": "Images",
+    "carouselLoading": "Loading...",
+    "manageInBack": "Manage in back office",
+    "heroTitle": "Hero title",
+    "heroSubtitle": "Hero subtitle",
+    "heroCta": "Button text",
+    "aboutTitle": "About title",
+    "aboutP1": "Paragraph 1",
+    "aboutP2": "Paragraph 2",
+    "feature1Title": "Feature 1 — title",
+    "feature1Desc": "Feature 1 — description",
+    "feature2Title": "Feature 2 — title",
+    "feature2Desc": "Feature 2 — description",
+    "feature3Title": "Feature 3 — title",
+    "feature3Desc": "Feature 3 — description",
+    "servicesTitle": "Services title",
+    "service1Title": "Service 1 — title",
+    "service1Desc": "Service 1 — description",
+    "service2Title": "Service 2 — title",
+    "service2Desc": "Service 2 — description",
+    "service3Title": "Service 3 — title",
+    "service3Desc": "Service 3 — description",
+    "service4Title": "Service 4 — title",
+    "service4Desc": "Service 4 — description",
+    "galleryTitle": "Gallery title",
+    "contactTitle": "Contact title",
+    "cinematicTitle": "Cinematic title",
+    "cinematicDesc": "Cinematic description",
+    "polaroidsTitle": "Polaroids title",
+    "statsTitle": "Stats title"
   },
   "syncBlob": {
     "sectionTitle": "Sync to cloud",

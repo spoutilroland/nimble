@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useI18n } from '@/lib/i18n/context';
 import { MediaSourcePicker } from '@/components/admin/shared/MediaSourcePicker';
 import type { Section } from '@/lib/types';
@@ -721,6 +722,28 @@ export function BentoGridEditor({ section, onUpdate, onSave }: Props) {
               {/* formulaire texte déplacé dans un modal global */}
               </div>{/* fin contenu clippé */}
 
+              {/* Bouton supprimer image (si image présente) */}
+              {hasImage && (
+                <button
+                  className="absolute bottom-[2px] right-[2px] w-auto px-[0.4rem] h-[22px] bg-[rgba(0,0,0,0.7)] text-white border-none rounded-[4px] text-[0.55rem] cursor-pointer opacity-0 group-hover/cell:opacity-100 transition-opacity z-[10] flex items-center justify-center leading-none whitespace-nowrap"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const c = cells.find(cl => cl.id === cell.id);
+                    if (c?.content?.imageUrl) {
+                      const url = c.content.imageUrl;
+                      setUploadedImages(prev => prev.includes(url) ? prev : [...prev, url]);
+                    }
+                    // Retirer l'image mais garder la cellule + overlay
+                    const currentContent = c?.content;
+                    if (currentContent) {
+                      const { imageUrl: _, ...rest } = currentContent;
+                      updateCellContent(cell.id, Object.keys(rest).length > 0 ? rest as BentoCellContent : null);
+                    }
+                  }}
+                  title="Supprimer l'image"
+                >Retirer image</button>
+              )}
+
               {/* Bouton supprimer cellule */}
               <button
                 className="absolute top-[2px] right-[2px] w-[26px] h-[26px] bg-[rgba(229,90,42,0.85)] text-white border-none rounded-full text-[0.85rem] cursor-pointer opacity-0 group-hover/cell:opacity-100 transition-opacity z-[10] flex items-center justify-center leading-none"
@@ -771,11 +794,12 @@ export function BentoGridEditor({ section, onUpdate, onSave }: Props) {
       )}
 
       {/* Modal édition texte overlay */}
-      {textEdit && (
+      {textEdit && createPortal(
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center"
+          className="fixed inset-0 z-[10010] flex items-center justify-center"
+          onMouseDown={(e) => { if (e.target === e.currentTarget) setTextEdit(null); }}
         >
-          <div className="absolute inset-0 bg-[rgba(0,0,0,0.6)]" />
+          <div className="absolute inset-0 bg-[rgba(0,0,0,0.6)] pointer-events-none" />
           <div
             className="relative z-[1] bg-[var(--bo-bg,#1a1a2e)] border border-[var(--bo-border)] rounded-lg p-5 w-[380px] max-w-[90vw] shadow-xl"
           >
@@ -904,7 +928,8 @@ export function BentoGridEditor({ section, onUpdate, onSave }: Props) {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

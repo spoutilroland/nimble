@@ -33,6 +33,7 @@ export function SectionRenderer({ section, site, layouts }: Props) {
     case 'contact':
       return (
         <ContactSection
+          section={section}
           captchaProvider={site.captcha?.provider || undefined}
           captchaSiteKey={site.captcha?.siteKey || undefined}
         />

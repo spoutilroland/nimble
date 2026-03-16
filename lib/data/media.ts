@@ -43,14 +43,15 @@ export function generateMediaId(): string {
 
 export function getMediaUrls(mediaEntry: MediaEntry): MediaUrls {
   const base = mediaEntry.filename.replace(/\.(jpg|jpeg|png|webp)$/i, '');
+  const v = mediaEntry.fileSize ? `?v=${mediaEntry.fileSize}` : '';
   return {
     filename: mediaEntry.filename,
-    url: '/uploads/media/' + mediaEntry.filename,
+    url: '/uploads/media/' + mediaEntry.filename + v,
     webpUrl: mediaEntry.hasWebp
-      ? '/uploads/media/' + base + '.webp'
+      ? '/uploads/media/' + base + '.webp' + v
       : null,
     thumbUrl: mediaEntry.hasThumb
-      ? '/uploads/media/' + base + '-thumb.webp'
+      ? '/uploads/media/' + base + '-thumb.webp' + v
       : null,
   };
 }

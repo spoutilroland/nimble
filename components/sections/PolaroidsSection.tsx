@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { Section } from '@/lib/types';
+import { ck } from '@/lib/content-key';
 
 interface PolaroidItem { title: string; tag: string; tagColor: string; imageUrl?: string; }
 
@@ -43,10 +44,10 @@ export function PolaroidsSection({ section }: Props) {
     <section className="s3">
       <div className="max-w-[1200px] mx-auto px-5">
         <div className="section-header text-center mb-6 reveal">
-          <span className="section-tag inline-block font-['Oswald',sans-serif] text-[0.75rem] tracking-[5px] uppercase text-[var(--accent)] mb-4" data-content-key="s3-tag">
+          <span className="section-tag inline-block font-['Oswald',sans-serif] text-[0.75rem] tracking-[5px] uppercase text-[var(--accent)] mb-4" data-content-key={ck(section.contentId, 's3-tag')}>
             &mdash; {sectionTag} &mdash;
           </span>
-          <h2 className="section-title" data-content-key="s3-title">
+          <h2 className="section-title" data-content-key={ck(section.contentId, 's3-title')}>
             {sectionTitle}
           </h2>
         </div>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { Section } from '@/lib/types';
+import { ck } from '@/lib/content-key';
 
 interface Props {
   section: Section;
@@ -63,11 +64,11 @@ export function CinematicSplitSection({ section }: Props) {
         <div className="section-header text-center reveal">
           <span
             className="inline-block font-['Oswald',sans-serif] text-[0.75rem] tracking-[5px] uppercase text-[var(--accent)] mb-4"
-            data-content-key="s2-tag"
+            data-content-key={ck(section.contentId, 's2-tag')}
           >
             &mdash; Expertise &amp; Savoir-faire &mdash;
           </span>
-          <h2 className="section-title" data-content-key="s2-title">
+          <h2 className="section-title" data-content-key={ck(section.contentId, 's2-title')}>
             Rénovation Intérieure
           </h2>
         </div>
@@ -119,27 +120,25 @@ export function CinematicSplitSection({ section }: Props) {
               <div className="w-10 h-[3px] bg-[var(--accent)] mb-5" />
 
               {/* Tags */}
-              {proj.tags.filter(Boolean).length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {proj.tags.filter(Boolean).map((tag, ti) => (
-                    <span
-                      key={ti}
-                      className={`inline-block px-3 py-1 text-[0.7rem] font-bold tracking-[1.5px] uppercase border-[1.5px] [clip-path:polygon(4px_0,100%_0,calc(100%-4px)_100%,0_100%)] ${
-                        isDark
-                          ? 'border-[var(--primary-light)] text-[var(--primary-light)]'
-                          : 'border-[var(--primary)] text-[var(--primary)]'
-                      }`}
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
+              <div className={`flex flex-wrap gap-2 ${proj.tags.filter(Boolean).length > 0 ? 'mb-3' : ''}`} data-cinematic-tags={i}>
+                {proj.tags.filter(Boolean).map((tag, ti) => (
+                  <span
+                    key={ti}
+                    className={`inline-block px-3 py-1 text-[0.7rem] font-bold tracking-[1.5px] uppercase border-[1.5px] [clip-path:polygon(4px_0,100%_0,calc(100%-4px)_100%,0_100%)] ${
+                      isDark
+                        ? 'border-[var(--primary-light)] text-[var(--primary-light)]'
+                        : 'border-[var(--primary)] text-[var(--primary)]'
+                    }`}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
 
               {/* Titre */}
               <h3
                 className="font-['Oswald',sans-serif] text-[1.75rem] font-bold leading-tight uppercase tracking-[1px] mb-4"
-                data-content-key={keys.title}
+                data-content-key={ck(section.contentId, keys.title)}
               >
                 {def.title.split('\n').map((line, j) => (
                   <span key={j}>{line}{j === 0 && <br />}</span>
@@ -147,21 +146,19 @@ export function CinematicSplitSection({ section }: Props) {
               </h3>
 
               {/* Description */}
-              <p className="text-[0.92rem] leading-relaxed opacity-85 mb-5" data-content-key={keys.desc}>
+              <p className="text-[0.92rem] leading-relaxed opacity-85 mb-5" data-content-key={ck(section.contentId, keys.desc)}>
                 {def.desc}
               </p>
 
               {/* Méta */}
-              {proj.metaItems.filter(Boolean).length > 0 && (
-                <div className="flex items-center gap-1.5 text-[0.78rem] font-semibold tracking-[0.5px] uppercase opacity-65">
-                  {proj.metaItems.filter(Boolean).map((item, mi) => (
-                    <span key={mi}>
-                      {mi > 0 && <span className="mx-1">·</span>}
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              )}
+              <div className={`flex items-center gap-1.5 text-[0.78rem] font-semibold tracking-[0.5px] uppercase opacity-65`} data-cinematic-meta={i}>
+                {proj.metaItems.filter(Boolean).map((item, mi) => (
+                  <span key={mi}>
+                    {mi > 0 && <span className="mx-1">·</span>}
+                    {item}
+                  </span>
+                ))}
+              </div>
             </div>
           );
 

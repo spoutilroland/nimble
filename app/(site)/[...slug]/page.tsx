@@ -11,6 +11,7 @@ import { SectionDivider } from '@/components/layout/SectionDivider';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
 import { SmoothScroll } from '@/components/ui/SmoothScroll';
 import { ContentEditor } from '@/components/ui/ContentEditor';
+import { SidebarEditor } from '@/components/ui/SidebarEditor';
 import { getAdminSlug } from '@/lib/data/setup';
 import type { Metadata } from 'next';
 
@@ -63,7 +64,7 @@ export default async function DynamicPage({ params }: PageProps) {
       />
 
       {page.sections.map((section, i) => (
-        <div key={i} className={`section-slot-${i % 2 === 0 ? 'a' : 'b'}`}>
+        <div key={i} id={`section-${i}`} className={`section-slot-${i % 2 === 0 ? 'a' : 'b'}`}>
           <SectionRenderer
             section={section}
             site={site}
@@ -77,6 +78,7 @@ export default async function DynamicPage({ params }: PageProps) {
       <ScrollReveal />
       <SmoothScroll />
       <ContentEditor pageId={pageId} lang={lang} backPath={`/${getAdminSlug()}`} />
+      <SidebarEditor pageId={pageId} lang={lang} sections={page.sections} />
     </>
   );
 }

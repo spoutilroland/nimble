@@ -4,10 +4,16 @@ export interface SectionTypeDef {
   maxImages?: number;
   imageHint?: string;
   isCustomLayout?: boolean;
+  disabled?: boolean;
 }
 
+/** Sections masquées du SectionPicker (désactivées sans supprimer le code) */
+export const DISABLED_SECTIONS: string[] = [
+  'cinematic-split',
+];
+
 export const SECTION_TYPES: SectionTypeDef[] = [
-  { type: 'hero', needsCarousel: true, imageHint: 'WebP · 1920 × 1080 px (16:9)' },
+  { type: 'hero', needsCarousel: true, maxImages: 5, imageHint: 'WebP · 1920 × 1080 px (16:9)' },
   { type: 'hero-simple', needsCarousel: true, maxImages: 1, imageHint: 'WebP · 1920 × 1080 px (16:9)' },
   { type: 'about', needsCarousel: false },
   { type: 'services', needsCarousel: false },

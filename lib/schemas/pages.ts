@@ -44,6 +44,8 @@ export const BentoCellSchema = z.object({
 
 export const SectionSchema = z.object({
   type: SectionTypeSchema,
+  contentId: z.string().optional(),
+  label: z.string().max(16).optional(),
   carouselId: z.string().optional(),
   layoutId: z.string().optional(),
   blockCarousels: z.record(z.string(), z.string()).optional(),

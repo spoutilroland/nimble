@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import type { Section } from '@/lib/types';
+import { ck } from '@/lib/content-key';
 
 interface Props {
   section: Section;
@@ -37,13 +38,13 @@ export function HeroSimpleSection({ section }: Props) {
       <div className="hero-bg" ref={bgRef} />
       <div className="hero-overlay" />
       <div className="hero-content text-center text-white relative z-[2] px-4">
-        <p className="hero-eyebrow" data-content-key="hero-eyebrow">
+        <p className="hero-eyebrow" data-content-key={ck(section.contentId, 'hero-eyebrow')}>
           Portfolio de realisations
         </p>
-        <h1 className="hero-title" data-content-key="hero-title">
+        <h1 className="hero-title" data-content-key={ck(section.contentId, 'hero-title')}>
           Nos Realisations
         </h1>
-        <p className="hero-subtitle" data-content-key="hero-subtitle">
+        <p className="hero-subtitle" data-content-key={ck(section.contentId, 'hero-subtitle')}>
           15 ans de savoir-faire alpin
         </p>
       </div>
