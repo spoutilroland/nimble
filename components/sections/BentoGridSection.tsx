@@ -63,7 +63,7 @@ export function BentoGridSection({ section }: Props) {
                 }}
               >
                 {hasImage && (
-                  <Image src={cell.content.imageUrl} alt="" fill className="object-cover" />
+                  <Image src={cell.content.imageUrl!} alt="" fill className="object-cover" />
                 )}
                 {hasOverlay && cell.content.overlay && (
                   <div
