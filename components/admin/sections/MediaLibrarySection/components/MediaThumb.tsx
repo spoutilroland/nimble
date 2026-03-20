@@ -28,10 +28,18 @@ export function MediaThumb({ item, selected, selectMode, onToggleSelect, onOpen 
     }
   };
 
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    // Marque le drag comme interne pour que le drop zone ignore cet élément
+    e.dataTransfer.setData('nimble/media-id', item.id);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
   return (
     <div
+      draggable
       className={`group relative aspect-square rounded-[var(--bo-radius-sm,6px)] overflow-hidden cursor-pointer border-2 transition-[border-color,box-shadow] duration-150 bg-[var(--bo-surface)] hover:border-[var(--bo-border-hover)]${selected ? ' border-[var(--bo-green)] shadow-[var(--bo-green-glow)]' : ' border-transparent'}`}
       onClick={handleClick}
+      onDragStart={handleDragStart}
     >
       <div className="w-full h-full flex items-center justify-center overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -39,6 +47,7 @@ export function MediaThumb({ item, selected, selectMode, onToggleSelect, onOpen 
           src={src}
           alt={item.altText || item.originalName}
           loading="lazy"
+          draggable={false}
           className={`w-full h-full${isSvg ? ' object-contain p-4' : ' object-cover'}`}
           onError={(e) => {
             const img = e.currentTarget;

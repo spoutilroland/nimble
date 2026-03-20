@@ -65,6 +65,7 @@ export function GallerySection({ section }: Props) {
         <div className="gallery-grid grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-10 mb-4">
           {images.slice(0, visibleCount).map((src, i) => (
             <div key={i} className="gallery-item">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={src} alt={`Realisation ${i + 1}`} />
             </div>
           ))}

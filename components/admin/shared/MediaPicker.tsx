@@ -155,6 +155,7 @@ export function MediaPicker({ targetCarouselId, isOpen, onClose, onCopySuccess }
                           title={img.filename}
                           onClick={() => copyImage(img)}
                         >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={img.thumbUrl || img.webpUrl || img.url} alt={img.filename} loading="lazy" className="w-full h-full object-cover block" />
                         </div>
                       ))}

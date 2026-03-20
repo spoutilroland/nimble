@@ -11,13 +11,16 @@ interface FolderCardProps {
   onOpen: (folderId: string) => void;
   onRename: (folderId: string, name: string) => Promise<boolean>;
   onDelete: (folderId: string) => Promise<boolean>;
+  onDropMedia?: (mediaId: string, folderId: string) => void;
 }
 
-export function FolderCard({ folder, mediaCount, onOpen, onRename, onDelete }: FolderCardProps) {
+export function FolderCard({ folder, mediaCount, onOpen, onRename, onDelete, onDropMedia }: FolderCardProps) {
   const { t } = useI18n();
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState(folder.name);
+  const [isDropTarget, setIsDropTarget] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const dragCounter = useRef(0);
 
   useEffect(() => {
     if (editing) inputRef.current?.focus();
@@ -36,6 +39,37 @@ export function FolderCard({ folder, mediaCount, onOpen, onRename, onDelete }: F
     if (e.key === 'Escape') { setEditing(false); setEditName(folder.name); }
   };
 
+  const handleDragEnter = (e: React.DragEvent) => {
+    // Réagir seulement aux drags internes (médias de la médiathèque)
+    if (!e.dataTransfer.types.includes('nimble/media-id')) return;
+    e.preventDefault();
+    dragCounter.current++;
+    if (dragCounter.current === 1) setIsDropTarget(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    if (!e.dataTransfer.types.includes('nimble/media-id')) return;
+    dragCounter.current--;
+    if (dragCounter.current === 0) setIsDropTarget(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    if (!e.dataTransfer.types.includes('nimble/media-id')) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter.current = 0;
+    setIsDropTarget(false);
+    const mediaId = e.dataTransfer.getData('nimble/media-id');
+    if (mediaId && onDropMedia) {
+      onDropMedia(mediaId, folder.id);
+    }
+  };
+
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (confirm(t('mediaLibrary.folderConfirmDelete').replace('{name}', folder.name))) {
@@ -45,10 +79,18 @@ export function FolderCard({ folder, mediaCount, onOpen, onRename, onDelete }: F
 
   return (
     <div
-      className="group relative flex flex-col items-center gap-1 p-3 bg-[var(--bo-bg)] border border-[var(--bo-border)] rounded-[8px] cursor-pointer transition-[border-color] duration-150 hover:border-[var(--bo-accent,#6366f1)] min-h-[120px] justify-center"
+      className={`group relative flex flex-col items-center gap-1 p-3 border rounded-[8px] cursor-pointer transition-[border-color,background-color,box-shadow] duration-150 min-h-[120px] justify-center ${
+        isDropTarget
+          ? 'bg-[var(--bo-accent,#6366f1)]/10 border-[var(--bo-accent,#6366f1)] shadow-[0_0_0_2px_var(--bo-accent,#6366f1)]'
+          : 'bg-[var(--bo-bg)] border-[var(--bo-border)] hover:border-[var(--bo-accent,#6366f1)]'
+      }`}
       onClick={() => !editing && onOpen(folder.id)}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
     >
-      <Folder size={36} className="text-[var(--bo-accent,#6366f1)] mb-1" />
+      <Folder size={36} className={`mb-1 transition-colors duration-150 ${isDropTarget ? 'text-[var(--bo-accent,#6366f1)] scale-110' : 'text-[var(--bo-accent,#6366f1)]'}`} />
 
       {editing ? (
         <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>

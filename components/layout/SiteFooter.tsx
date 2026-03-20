@@ -1,4 +1,5 @@
 // Port de _old/views/partials/footer.ejs
+import Image from 'next/image';
 import type { SiteConfig } from '@/lib/types';
 import { t } from '@/lib/i18n';
 import { sanitizeRichText } from '@/lib/data';
@@ -38,7 +39,7 @@ export function SiteFooter({ site, logoUrl, lang }: Props) {
             {block.type === 'logo-desc' && (
               <>
                 {logoUrl ? (
-                  <img src={logoUrl} alt={b.name} className="footer-logo max-h-[55px] max-w-[170px] object-contain mb-4 block brightness-0 invert opacity-90" />
+                  <Image src={logoUrl} alt={b.name || ''} width={170} height={55} className="footer-logo max-h-[55px] max-w-[170px] object-contain mb-4 block brightness-0 invert opacity-90" />
                 ) : (
                   <h3 className="text-[1.25rem] font-bold uppercase tracking-[1.5px] text-white mb-[1.1rem]">{b.name}</h3>
                 )}
@@ -85,7 +86,6 @@ export function SiteFooter({ site, logoUrl, lang }: Props) {
             )}
 
             {(() => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const b = block as any;
               if (b.type === 'richtext') {
                 return <div dangerouslySetInnerHTML={{ __html: sanitizeRichText(b.content || '') }} />;

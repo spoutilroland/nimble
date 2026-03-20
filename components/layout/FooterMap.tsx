@@ -27,7 +27,6 @@ export function FooterMap({ provider = 'leaflet', address = '', embedUrl = '', h
     } else {
       // Leaflet — chargement dynamique du script
       const initLeaflet = () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const L = (window as any).L;
         if (!L) return;
         const mapId = 'lmap-' + Math.random().toString(36).slice(2, 7);

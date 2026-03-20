@@ -57,6 +57,7 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
 
   // Vérification session au chargement
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     checkSession();
   }, []);
 
@@ -91,7 +92,7 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
   return (
     <div id="admin-dashboard" className="flex flex-col h-screen overflow-hidden">
       <header className="admin-header">
-        <div className="flex justify-between items-center py-4 px-6">
+        <div className="flex justify-between items-center py-4 px-6 max-w-[1440px] mx-auto w-full">
           <h1 className="font-['Plus_Jakarta_Sans',sans-serif] text-[1.05rem] font-extrabold uppercase tracking-[3px] text-[var(--bo-text)] flex items-center gap-[0.7rem]">{t('admin.title')}</h1>
           <div className="flex items-center gap-[0.6rem]">
             <button
@@ -99,7 +100,7 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
               title={isDark ? t('auth.toggleLight') : t('auth.toggleDark')}
               onClick={toggleTheme}
             >
-              {isDark ? '◑' : '●'}
+              {isDark ? '🌙' : '☀️'}
             </button>
             <a href="/" className="bg-transparent border border-[var(--bo-border)] rounded-xl text-[var(--bo-text-dim)] py-[0.45rem] px-4 font-['Inter',sans-serif] text-[0.8rem] font-semibold tracking-[0.3px] cursor-pointer transition-all duration-150 hover:border-[var(--bo-border-hover)] hover:text-[var(--bo-text)] hover:bg-[rgba(255,255,255,0.04)]" target="_blank" rel="noopener noreferrer">
               {t('admin.viewSite')}
@@ -116,6 +117,7 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
         <div className="bo-layout-grid" id={activeTab}>
           {/* Logo — cellule vide (col 1, row 1) */}
           <div className="col-start-1 row-start-1 h-[4.75rem] flex items-center pt-4 pr-3 pb-0 pl-8">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/brand/logo.svg" alt="Nimble" className="max-w-full max-h-[4.25rem] w-auto h-auto block opacity-[0.92]" />
           </div>
           <nav id="main-tabs">
@@ -165,6 +167,7 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
       <footer className="admin-footer">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center py-[0.96rem] px-6 font-['Inter',sans-serif] text-[0.68rem] font-semibold tracking-[0.8px] uppercase text-[var(--bo-text-dim)]">
           <div className="flex items-center gap-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/brand/head-logo.svg" alt="" className="h-[1.1rem] w-auto block opacity-75" aria-hidden="true" />
             <span className="font-['Plus_Jakarta_Sans',sans-serif] font-extrabold text-[0.72rem] tracking-[3px] text-[var(--bo-text)]">Nimble</span>
             <span className="text-[0.62rem] text-[var(--bo-green)] tracking-[1px]">v1</span>

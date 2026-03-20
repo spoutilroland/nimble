@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useI18n } from '@/lib/i18n/context';
 import { MediaSourcePicker } from '@/components/admin/shared/MediaSourcePicker';
 
@@ -15,7 +15,7 @@ export function BlockImageEditor({ carouselId, label }: BlockImageEditorProps) {
   const [uploading, setUploading] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
 
-  const loadImage = () => {
+  const loadImage = useCallback(() => {
     if (!carouselId) return;
     fetch(`/api/carousel/${carouselId}/images`)
       .then(r => r.json())
@@ -24,11 +24,11 @@ export function BlockImageEditor({ carouselId, label }: BlockImageEditorProps) {
         if (images.length > 0) setImageUrl(images[0].url);
       })
       .catch(() => {});
-  };
+  }, [carouselId]);
 
   useEffect(() => {
     loadImage();
-  }, [carouselId]);
+  }, [carouselId, loadImage]);
 
   const handleUpload = async (file: File) => {
     if (!carouselId || uploading) return;
@@ -53,6 +53,7 @@ export function BlockImageEditor({ carouselId, label }: BlockImageEditorProps) {
         title={t('blockImage.clickToChange')}
       >
         {imageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
           <img src={imageUrl} alt="" className="w-full h-full object-cover" />
         ) : (
           <span className="text-[0.72rem] text-[var(--bo-text-dim)]">

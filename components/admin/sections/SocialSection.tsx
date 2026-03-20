@@ -36,6 +36,7 @@ export function SocialSection() {
 
   useEffect(() => {
     if (site) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSocial(site.social || {});
       setLabels(site.socialLabels || {});
     }

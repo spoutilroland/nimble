@@ -52,6 +52,7 @@ export function CaptchaSection() {
 
   useEffect(() => {
     if (site) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setProvider((site.captcha?.provider as CaptchaProvider) || 'none');
       setSiteKey(site.captcha?.siteKey || '');
     }

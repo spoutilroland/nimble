@@ -46,6 +46,7 @@ export function MediaUploader({
     <>
       {url ? (
         <div className="flex items-center gap-[1.2rem] mb-4">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={url} alt={t(imgAltKey)} className={previewClassName} />
           <button className="btn btn-danger" onClick={onDelete}>
             {t(deleteLabelKey)}

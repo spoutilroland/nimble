@@ -27,6 +27,7 @@ export function ImageCard({ image, onDelete, onDragStart, onDragEnd }: ImageCard
       onDragEnd={onDragEnd}
     >
       <div className="drag-handle" title={t('imageCard.dragHandle')}>⠿</div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={image.webpUrl || image.url}
         alt={image.filename}

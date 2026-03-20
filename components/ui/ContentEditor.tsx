@@ -420,7 +420,7 @@ export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
       const header = document.querySelector<HTMLElement>('.header');
       if (header) header.style.top = '';
     };
-  }, [pageId, lang]);
+  }, [pageId, lang, backPath]);
 
   return null;
 }

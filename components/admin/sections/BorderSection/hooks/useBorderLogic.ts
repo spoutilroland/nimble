@@ -41,6 +41,7 @@ export function useBorderLogic() {
 
   useEffect(() => {
     if (site) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrent((site.design?.borderStyle as BorderStyle) || 'angular');
       if (site.design?.customRadius) {
         setCorners(site.design.customRadius);

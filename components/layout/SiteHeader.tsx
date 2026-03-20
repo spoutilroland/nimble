@@ -1,4 +1,6 @@
 // Port de _old/views/partials/header.ejs
+import Image from 'next/image';
+import Link from 'next/link';
 import type { SiteConfig, PageData } from '@/lib/types';
 import { NavBurger } from './NavBurger';
 import { NavDropdown } from './NavDropdown';
@@ -52,9 +54,9 @@ export function SiteHeader({ site, pages, currentPath, logoUrl }: Props) {
   // Logo JSX — partagé entre les deux modes
   const logoJsx = (
     <div className="logo min-w-0 shrink max-w-[calc(100%-60px)] sm:max-w-[45%]">
-      <a href="/" className="flex items-center gap-5 no-underline min-w-0">
+      <Link href="/" className="flex items-center gap-5 no-underline min-w-0">
         {logoUrl && (logoMode === 'logo-only' || logoMode === 'logo-name') && (
-          <img src={logoUrl} alt={site.business.name} className="logo-img h-[60px] w-auto max-w-[120px] sm:max-w-[220px] object-contain" />
+          <Image src={logoUrl} alt={site.business.name} width={220} height={60} className="logo-img h-[60px] w-auto max-w-[120px] sm:max-w-[220px] object-contain" />
         )}
         {(logoMode === 'name-only' || logoMode === 'logo-name' || !logoUrl) && (
           <div className="flex flex-col min-w-0 break-words">
@@ -62,7 +64,7 @@ export function SiteHeader({ site, pages, currentPath, logoUrl }: Props) {
             <span className="logo-tagline text-[var(--accent)] text-[0.8rem] font-semibold mt-[0.3rem] tracking-[3px] uppercase">{site.business.tagline}</span>
           </div>
         )}
-      </a>
+      </Link>
     </div>
   );
 

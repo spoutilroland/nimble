@@ -38,6 +38,7 @@ export function useFooterLogic() {
       const h = (b as { hours?: Record<string, string> }).hours || {};
       const l = (b as { legal?: Record<string, string> }).legal || {};
       const footer = site.footer || { cols: 3, blocks: [] };
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCols(footer.cols || 3);
       setBlocks(footer.blocks as FooterBlock[] || []);
       blockCounterRef.current = (footer.blocks || []).length;

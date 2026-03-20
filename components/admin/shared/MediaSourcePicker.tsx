@@ -349,6 +349,7 @@ export function MediaSourcePicker({
                       onClick={() => toggleSelection(item.id)}
                       title={item.originalName}
                     >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={item.thumbUrl || item.webpUrl || item.url} alt={item.altText || item.originalName} loading="lazy" className="w-full h-full object-cover" />
                     </div>
                   ))}

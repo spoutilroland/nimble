@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import type { Section } from '@/lib/types';
 import { ck } from '@/lib/content-key';
 
@@ -90,10 +91,11 @@ export function CinematicSplitSection({ section }: Props) {
 
           const imagePanel = (
             <div className="relative overflow-hidden">
-              <img
+              <Image
                 src={proj.imageUrl || images[i]}
                 alt={imgAlt}
-                className="w-full h-full object-cover block transition-transform duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-105"
+                fill
+                className="object-cover block transition-transform duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-br from-black/15 to-transparent pointer-events-none" />
             </div>

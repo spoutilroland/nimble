@@ -42,6 +42,7 @@ export function MediaPanel({ media, onClose, onSave, onDelete, onTransform }: Me
 
   // Sync quand le média change
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAltText(media.altText ?? '');
     setTitle(media.title ?? '');
     setTags(media.tags ?? []);

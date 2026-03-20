@@ -1,5 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    // Autorise les images locales avec query string (?v=...)
+    localPatterns: [
+      { pathname: '/uploads/**' },
+      { pathname: '/brand/**' },
+    ],
+  },
   async headers() {
     return [
       {

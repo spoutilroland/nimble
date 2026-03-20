@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
+import Link from 'next/link';
 import { getSectionFields } from '@/lib/sidebar/section-fields';
 import { ck } from '@/lib/content-key';
 import { SECTION_TYPES, DIVIDER_TYPES, DIVIDER_COLORS, DIVIDER_SVG_PATHS } from '@/lib/admin/constants/pages';
@@ -287,7 +288,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
       setTimeout(() => { overlay.style.opacity = '0'; }, 800);
       setTimeout(() => { overlay.remove(); }, 1400);
     }
-  }, []);
+  }, [content, expandedIndex, localSections]);
 
   // Props section change (stats, cinematic, polaroids)
   const handlePropsChange = (sectionIdx: number, propsPatch: Record<string, unknown>) => {
@@ -759,6 +760,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
                                     });
                                   }} className="h-12 w-16 shrink-0 rounded border border-neutral-200 bg-neutral-100 overflow-hidden flex items-center justify-center cursor-pointer hover:border-neutral-400">
                                     {proj.imageUrl ? (
+                                      // eslint-disable-next-line @next/next/no-img-element
                                       <img src={proj.imageUrl} alt="" className="h-full w-full object-cover" />
                                     ) : (
                                       <span className="text-neutral-300 text-lg">+</span>
@@ -883,25 +885,11 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
                       </button>
                     )}
 
-                    {/* Carousel images — grille + upload inline */}
+                    {/* Carousel images — grille auto-suffisante */}
                     {def.hasCarousel && section.carouselId && section.type !== 'custom-layout' && (
                       <CarouselImageGrid
                         carouselId={section.carouselId}
-                        images={carouselImages[section.carouselId]}
                         maxImages={SECTION_TYPES.find(st => st.type === section.type)?.maxImages}
-                        onImagesChange={(imgs) => setCarouselImages(prev => ({ ...prev, [section.carouselId!]: imgs }))}
-                        onOpenPicker={({ carouselId: cid, replaceIndex }) => {
-                          const imgs = carouselImages[cid] || [];
-                          openCarouselMediaPicker(cid, replaceIndex, (url, webpUrl) => {
-                            if (replaceIndex !== undefined) {
-                              const updated = [...imgs];
-                              updated[replaceIndex] = { url, webpUrl };
-                              setCarouselImages(prev => ({ ...prev, [cid]: updated }));
-                            } else {
-                              setCarouselImages(prev => ({ ...prev, [cid]: [...imgs, { url, webpUrl }] }));
-                            }
-                          });
-                        }}
                       />
                     )}
 
@@ -1031,12 +1019,12 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
           >
             + Ajouter une section
           </button>
-          <a
+          <Link
             href="/back"
             className="block text-center text-xs text-neutral-500 hover:text-neutral-700 underline py-1"
           >
             Aller au back-office
-          </a>
+          </Link>
         </div>
       </div>
 
@@ -1104,51 +1092,151 @@ function HtmlInfoButton() {
   );
 }
 
-// ── Carousel Image Grid (grille + upload inline) ──
+// ── Carousel Image Grid (auto-suffisant : gère ses images en interne) ──
 
-function CarouselImageGrid({ carouselId, images, maxImages, gridCols = 4, onImagesChange, onOpenPicker }: {
+interface GridImage { filename: string; url: string; webpUrl?: string | null; thumbUrl?: string | null; }
+
+function CarouselImageGrid({ carouselId, maxImages }: {
   carouselId: string;
-  images?: CarouselImage[];
   maxImages?: number;
-  gridCols?: number;
-  onImagesChange: (imgs: CarouselImage[]) => void;
-  onOpenPicker: (config: { carouselId: string; replaceIndex?: number }) => void;
 }) {
-  const canAdd = !maxImages || (images?.length || 0) < maxImages;
+  const [images, setImages] = useState<GridImage[]>([]);
+  const [serverMaxImages, setServerMaxImages] = useState<number>(20);
+  const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [dragover, setDragover] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+
+  // La prop a priorité sur la valeur serveur (comme InlineCarouselEditor)
+  const effectiveMax = maxImages ?? serverMaxImages;
+  const remaining = Math.max(0, effectiveMax - images.length);
+  const canAdd = remaining > 0;
+
+  const loadImages = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/carousel/${carouselId}/images`);
+      const data = await res.json();
+      setImages(Array.isArray(data) ? data : (data.images || []));
+      if (data.maxImages) setServerMaxImages(data.maxImages);
+    } catch { /* silencieux */ }
+    finally { setLoading(false); }
+  }, [carouselId]);
+
+  useEffect(() => { if (carouselId) loadImages(); }, [carouselId, loadImages]);
+
+  const handleUpload = useCallback(async (files: FileList | File[]) => {
+    if (!carouselId || uploading || remaining <= 0) return;
+    const valid = Array.from(files).slice(0, remaining);
+    if (!valid.length) return;
+    setUploading(true);
+    try {
+      for (const file of valid) {
+        const fd = new FormData();
+        fd.append('image', file);
+        await fetch(`/api/admin/upload/${carouselId}`, { method: 'POST', body: fd });
+      }
+      await loadImages();
+    } finally { setUploading(false); }
+  }, [carouselId, uploading, remaining, loadImages]);
+
+  const confirmDelete = async () => {
+    if (!pendingDelete) return;
+    await fetch('/api/admin/image', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ carouselId, filename: pendingDelete }),
+    });
+    setImages(prev => prev.filter(i => i.filename !== pendingDelete));
+    setPendingDelete(null);
+  };
+
+  const onDragOver = (e: React.DragEvent) => {
+    if (!canAdd || !e.dataTransfer.types.includes('Files')) return;
+    e.preventDefault();
+    setDragover(true);
+  };
+  const onDragLeave = (e: React.DragEvent) => {
+    const el = e.currentTarget as HTMLElement;
+    if (!e.relatedTarget || !el.contains(e.relatedTarget as Node)) setDragover(false);
+  };
+  const onDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragover(false);
+    if (canAdd && e.dataTransfer.files.length) handleUpload(e.dataTransfer.files);
+  };
 
   return (
     <div className="mt-2">
-      <p className="mb-2 text-xs font-medium text-neutral-500">Images</p>
-      {images ? (
-        images.length > 0 ? (
-          <div className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${gridCols}, 1fr)` }}>
-            {images.map((img, idx) => (
-              <button key={idx} onClick={() => onOpenPicker({ carouselId, replaceIndex: idx })} className="relative h-16 overflow-hidden rounded-md border border-neutral-200 bg-neutral-100 cursor-pointer hover:border-neutral-400 transition-colors group/img">
-                <img src={img.webpUrl || img.url} alt={img.alt || ''} className="h-full w-full object-cover" />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
-                  <span className="text-white text-[0.6rem] font-medium">Changer</span>
-                </div>
-              </button>
+      <div className="flex items-center justify-between mb-1.5">
+        <p className="text-xs font-medium text-neutral-500">Images</p>
+        <span className="text-[0.65rem] text-neutral-400 tabular-nums">{images.length} / {effectiveMax}</span>
+      </div>
+      {loading ? (
+        <p className="text-xs text-neutral-400">Chargement...</p>
+      ) : (
+        <div
+          onDragOver={onDragOver}
+          onDragLeave={onDragLeave}
+          onDrop={onDrop}
+          className={`p-1.5 border rounded-md transition-colors ${dragover ? 'border-indigo-400 bg-indigo-50/60' : 'border-neutral-200 bg-neutral-50'}`}
+        >
+          <div className="grid gap-1.5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(56px, 1fr))' }}>
+            {images.map((img) => (
+              <div key={img.filename} className="group relative aspect-square rounded-md overflow-hidden border border-neutral-200 bg-neutral-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={img.thumbUrl || img.webpUrl || img.url} alt="" className="h-full w-full object-cover" />
+                <button
+                  onClick={() => setPendingDelete(img.filename)}
+                  className="absolute top-0.5 right-0.5 w-[18px] h-[18px] bg-black/60 text-red-400 rounded text-[0.75rem] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center leading-none"
+                  title="Retirer"
+                >×</button>
+              </div>
             ))}
             {canAdd && (
               <button
-                onClick={() => onOpenPicker({ carouselId })}
-                className="h-16 rounded-md border border-dashed border-neutral-300 bg-white text-neutral-400 hover:border-neutral-400 hover:text-neutral-600 transition-colors flex items-center justify-center text-lg"
+                onClick={() => setPickerOpen(true)}
+                disabled={uploading}
+                className="aspect-square border border-dashed border-neutral-300 rounded-md text-neutral-400 hover:border-indigo-400 hover:text-indigo-500 transition-colors flex items-center justify-center text-xl bg-white disabled:opacity-50"
+                title="Ajouter une image"
               >
-                +
+                {uploading ? '…' : '+'}
               </button>
             )}
           </div>
-        ) : (
-          <button
-            onClick={() => onOpenPicker({ carouselId })}
-            className="w-full h-16 rounded-md border border-dashed border-neutral-300 bg-white text-neutral-400 hover:border-neutral-400 hover:text-neutral-600 transition-colors flex items-center justify-center text-sm"
-          >
-            + Ajouter une image
-          </button>
-        )
-      ) : (
-        <p className="text-xs text-neutral-400">Chargement...</p>
+        </div>
+      )}
+      {pickerOpen && (
+        <SidebarMediaPickerWrapper
+          carouselId={carouselId}
+          maxSelection={remaining}
+          onClose={() => setPickerOpen(false)}
+          onFileUpload={handleUpload}
+          onSuccess={() => { setPickerOpen(false); loadImages(); }}
+        />
+      )}
+      {pendingDelete !== null && createPortal(
+        <div className="fixed inset-0 z-[10002] flex items-center justify-center bg-black/40" onClick={() => setPendingDelete(null)}>
+          <div className="bg-white rounded-lg shadow-xl p-5 w-72 flex flex-col gap-3" onClick={e => e.stopPropagation()}>
+            <p className="text-sm font-medium text-neutral-800">Retirer cette image de la section ?</p>
+            <p className="text-xs text-neutral-500">L&apos;image reste disponible dans la médiathèque.</p>
+            <div className="flex gap-2 mt-1">
+              <button
+                onClick={confirmDelete}
+                className="flex-1 rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-xs text-red-600 hover:bg-red-100 transition-colors"
+              >
+                Supprimer
+              </button>
+              <button
+                onClick={() => setPendingDelete(null)}
+                className="flex-1 rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-xs text-neutral-600 hover:bg-neutral-100 transition-colors"
+              >
+                Annuler
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body,
       )}
     </div>
   );
@@ -1219,6 +1307,7 @@ function PolaroidsPropsEditor({ items, onChange, onImagePick }: {
           {/* Image thumb */}
           <button onClick={() => onImagePick(i)} className="h-10 w-10 shrink-0 rounded border border-neutral-200 bg-neutral-100 overflow-hidden flex items-center justify-center cursor-pointer hover:border-neutral-400">
             {item.imageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img src={item.imageUrl} alt="" className="h-full w-full object-cover" />
             ) : (
               <span className="text-neutral-300 text-lg">+</span>
@@ -1526,11 +1615,13 @@ function BentoModalInner({ section, onClose, Editor, locale }: {
 
 // ── Sidebar Media Picker Wrapper (lazy-loads MediaSourcePicker + I18nProvider) ──
 
-function SidebarMediaPickerWrapper({ carouselId, onClose, onFileUpload, onPickFromLibrary }: {
+function SidebarMediaPickerWrapper({ carouselId, maxSelection = 1, onClose, onFileUpload, onSuccess, onPickFromLibrary }: {
   carouselId: string;
+  maxSelection?: number;
   onClose: () => void;
   onFileUpload: (files: FileList) => void;
-  onPickFromLibrary: (url: string) => void;
+  onSuccess?: () => void;
+  onPickFromLibrary?: (url: string) => void;
 }) {
   const [MediaSourcePicker, setMediaSourcePicker] = useState<React.ComponentType<{
     carouselId: string;
@@ -1538,6 +1629,7 @@ function SidebarMediaPickerWrapper({ carouselId, onClose, onFileUpload, onPickFr
     onClose: () => void;
     onFileUpload: (files: FileList) => void;
     onSuccess: () => void;
+    maxSelection?: number;
     onPickFromLibrary?: (url: string) => void;
   }> | null>(null);
   const [I18nProvider, setI18nProvider] = useState<React.ComponentType<{
@@ -1581,7 +1673,8 @@ function SidebarMediaPickerWrapper({ carouselId, onClose, onFileUpload, onPickFr
         isOpen={true}
         onClose={onClose}
         onFileUpload={onFileUpload}
-        onSuccess={onClose}
+        onSuccess={onSuccess ?? onClose}
+        maxSelection={maxSelection}
         onPickFromLibrary={onPickFromLibrary}
       />
     </I18nProvider>

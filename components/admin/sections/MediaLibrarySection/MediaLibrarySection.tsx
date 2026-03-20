@@ -36,21 +36,26 @@ export function MediaLibrarySection() {
   } = useMediaLibrary();
 
   const [isDragOver, setIsDragOver] = useState(false);
+  const [isBreadcrumbDropTarget, setIsBreadcrumbDropTarget] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [showNewFolder, setShowNewFolder] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
   const dragCounter = useRef(0);
+  const breadcrumbDragCounter = useRef(0);
   const newFolderRef = useRef<HTMLInputElement>(null);
 
   // Drag & drop global
   const handleDragEnter = useCallback((e: DragEvent) => {
     e.preventDefault();
+    // N'afficher l'overlay que pour les fichiers externes (pas les drags internes)
+    if (!e.dataTransfer?.types.includes('Files')) return;
     dragCounter.current++;
     if (dragCounter.current === 1) setIsDragOver(true);
   }, []);
 
   const handleDragLeave = useCallback((e: DragEvent) => {
     e.preventDefault();
+    if (!e.dataTransfer?.types.includes('Files')) return;
     dragCounter.current--;
     if (dragCounter.current === 0) setIsDragOver(false);
   }, []);
@@ -63,6 +68,8 @@ export function MediaLibrarySection() {
     e.preventDefault();
     dragCounter.current = 0;
     setIsDragOver(false);
+    // Ignorer les drags internes (images déjà présentes dans la médiathèque)
+    if (e.dataTransfer?.getData('nimble/media-id')) return;
     if (e.dataTransfer?.files?.length) {
       setUploading(true);
       const result = await handleUpload(e.dataTransfer.files);
@@ -188,6 +195,43 @@ export function MediaLibrarySection() {
     }
   }, [handleMoveMedia, selectedIds, showFlash, t]);
 
+  const handleDropToFolder = useCallback(async (mediaId: string, folderId: string) => {
+    const ok = await handleMoveMedia([mediaId], folderId);
+    if (ok) showFlash(t('mediaLibrary.moved'), 'success');
+    else showFlash(t('mediaLibrary.moveError'), 'error');
+  }, [handleMoveMedia, showFlash, t]);
+
+  // Drop sur le breadcrumb "racine" → retirer du dossier courant
+  const handleBreadcrumbDragEnter = useCallback((e: React.DragEvent) => {
+    if (!e.dataTransfer.types.includes('nimble/media-id')) return;
+    e.preventDefault();
+    breadcrumbDragCounter.current++;
+    if (breadcrumbDragCounter.current === 1) setIsBreadcrumbDropTarget(true);
+  }, []);
+
+  const handleBreadcrumbDragLeave = useCallback((e: React.DragEvent) => {
+    if (!e.dataTransfer.types.includes('nimble/media-id')) return;
+    breadcrumbDragCounter.current--;
+    if (breadcrumbDragCounter.current === 0) setIsBreadcrumbDropTarget(false);
+  }, []);
+
+  const handleBreadcrumbDragOver = useCallback((e: React.DragEvent) => {
+    if (!e.dataTransfer.types.includes('nimble/media-id')) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  }, []);
+
+  const handleBreadcrumbDrop = useCallback(async (e: React.DragEvent) => {
+    e.preventDefault();
+    breadcrumbDragCounter.current = 0;
+    setIsBreadcrumbDropTarget(false);
+    const mediaId = e.dataTransfer.getData('nimble/media-id');
+    if (!mediaId) return;
+    const ok = await handleMoveMedia([mediaId], null);
+    if (ok) showFlash(t('mediaLibrary.moved'), 'success');
+    else showFlash(t('mediaLibrary.moveError'), 'error');
+  }, [handleMoveMedia, showFlash, t]);
+
   useEffect(() => {
     if (showNewFolder) newFolderRef.current?.focus();
   }, [showNewFolder]);
@@ -218,8 +262,16 @@ export function MediaLibrarySection() {
       {currentFolder && (
         <div className="flex items-center gap-2 mb-3">
           <button
-            className="flex items-center gap-[0.3rem] bg-transparent border-none text-[var(--bo-accent,#6366f1)] cursor-pointer text-[0.85rem] p-0 hover:underline"
+            className={`flex items-center gap-[0.3rem] bg-transparent cursor-pointer text-[0.85rem] p-[0.2rem_0.5rem] rounded-[6px] border transition-[border-color,background-color] duration-150 ${
+              isBreadcrumbDropTarget
+                ? 'text-[var(--bo-accent,#6366f1)] border-[var(--bo-accent,#6366f1)] bg-[var(--bo-accent,#6366f1)]/10'
+                : 'text-[var(--bo-accent,#6366f1)] border-transparent hover:underline'
+            }`}
             onClick={goToRoot}
+            onDragEnter={handleBreadcrumbDragEnter}
+            onDragLeave={handleBreadcrumbDragLeave}
+            onDragOver={handleBreadcrumbDragOver}
+            onDrop={handleBreadcrumbDrop}
           >
             <ArrowLeft size={16} /> {t('mediaLibrary.sectionTitle')}
           </button>
@@ -330,6 +382,7 @@ export function MediaLibrarySection() {
                 onOpen={openFolder}
                 onRename={handleRenameFolder}
                 onDelete={handleDeleteFolder}
+                onDropMedia={handleDropToFolder}
               />
             ))}
           </div>

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import type { Section } from '@/lib/types';
 import type { BentoCell } from '@/lib/types/pages';
 
@@ -62,7 +63,7 @@ export function BentoGridSection({ section }: Props) {
                 }}
               >
                 {hasImage && (
-                  <img src={cell.content.imageUrl} alt="" loading="lazy" className="w-full h-full object-cover" />
+                  <Image src={cell.content.imageUrl} alt="" fill className="object-cover" />
                 )}
                 {hasOverlay && cell.content.overlay && (
                   <div

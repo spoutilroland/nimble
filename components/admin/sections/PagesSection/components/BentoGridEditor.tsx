@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useI18n } from '@/lib/i18n/context';
 import { MediaSourcePicker } from '@/components/admin/shared/MediaSourcePicker';
@@ -114,7 +114,10 @@ function cursorToGrid(
 export function BentoGridEditor({ section, onUpdate, onSave }: Props) {
   const { t } = useI18n();
 
-  const cells: BentoCell[] = (section.props?.cells as BentoCell[]) || [];
+  const cells = useMemo<BentoCell[]>(
+    () => (section.props?.cells as BentoCell[]) || [],
+    [section.props?.cells]
+  );
   const [colCount, setColCount] = useState(() => (section.props?.gridCols as number) || DEFAULT_COLS);
   const [rowCount, setRowCount] = useState(() => Math.max(MIN_ROWS, (section.props?.gridRows as number) || DEFAULT_ROWS, computeMinRows(cells)));
   const [selectedCellId, setSelectedCellId] = useState<string | null>(null);
@@ -166,23 +169,25 @@ export function BentoGridEditor({ section, onUpdate, onSave }: Props) {
     setUploading(false);
   };
 
-const loadCarouselImages = async () => {
-  if (!carouselId) return;
-  try {
-    const res = await fetch(`/api/carousel/${carouselId}/images`);
-    const data = await res.json();
-    const urls = (data.images || []).map((img: { url: string }) => img.url);
-    
-    setUploadedImages(prev => {
-      const existing = new Set(prev);
-      const toAdd = urls.filter((u: string) => !existing.has(u));
-      return toAdd.length ? [...prev, ...toAdd] : prev;
-    });
-  } catch { /* skip */ }
-};
+  const loadCarouselImages = useCallback(async () => {
+    if (!carouselId) return;
+    try {
+      const res = await fetch(`/api/carousel/${carouselId}/images`);
+      const data = await res.json();
+      const urls = (data.images || []).map((img: { url: string }) => img.url);
+      setUploadedImages(prev => {
+        const existing = new Set(prev);
+        const toAdd = urls.filter((u: string) => !existing.has(u));
+        return toAdd.length ? [...prev, ...toAdd] : prev;
+      });
+    } catch { /* skip */ }
+  }, [carouselId]);
 
   // Charger les images au montage
-  useEffect(() => { loadCarouselImages(); }, [loadCarouselImages]);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadCarouselImages();
+  }, [loadCarouselImages]);
 
   const handleUploadAreaDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -322,7 +327,7 @@ const loadCarouselImages = async () => {
     setResizePreview({ cellId, col: cell.col, row: cell.row, colSpan: cell.colSpan, rowSpan: cell.rowSpan, valid: true });
   };
 
-  const handleResizeMoveNative = (e: PointerEvent) => {
+  const handleResizeMoveNative = useCallback((e: PointerEvent) => {
     const info = resizeRef.current;
     if (!info || !gridRef.current) return;
 
@@ -375,7 +380,7 @@ const loadCarouselImages = async () => {
       if (prev && prev.col === newCol && prev.row === newRow && prev.colSpan === newColSpan && prev.rowSpan === newRowSpan && prev.valid === !hasCollision) return prev;
       return { cellId: info.cellId, col: newCol, row: newRow, colSpan: newColSpan, rowSpan: newRowSpan, valid: !hasCollision };
     });
-  };
+  }, [cells, colCount, rowCount]);
 
   const resizePreviewRef = useRef<ResizePreview | null>(null);
  
@@ -383,7 +388,7 @@ const loadCarouselImages = async () => {
     resizePreviewRef.current = resizePreview;
   }, [resizePreview]);
 
-  const handleResizeEnd = () => {
+  const handleResizeEnd = useCallback(() => {
     const info = resizeRef.current;
     const preview = resizePreviewRef.current;
     resizeRef.current = null;
@@ -395,7 +400,7 @@ const loadCarouselImages = async () => {
         ? { ...c, col: preview.col, row: preview.row, colSpan: preview.colSpan, rowSpan: preview.rowSpan }
         : c
     ));
-  };
+  }, [cells, updateCells]);
 
   useEffect(() => {
     document.addEventListener('pointermove', handleResizeMoveNative);

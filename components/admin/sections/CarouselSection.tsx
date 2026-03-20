@@ -150,6 +150,7 @@ function GroupedImageSlot({ carouselId, data, onReload }: GroupedImageSlotProps)
       <div className="grouped-slot-content">
         {images.map((img) => (
           <div key={img.filename} className="grouped-slot-thumb">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={img.webpUrl || img.url} alt="" loading="lazy" decoding="async" />
             <button
               className="grouped-slot-delete"

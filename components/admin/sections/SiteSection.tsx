@@ -25,6 +25,7 @@ export function SiteSection() {
   useEffect(() => {
     if (site) {
       const b = site.business || {} as Record<string, string>;
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setName(b.name || '');
       setTagline(b.tagline || '');
       setDescription(b.description || '');

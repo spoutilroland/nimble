@@ -47,6 +47,7 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
   const [sortRender, setSortRender] = useState<{ dragIdx: number; insertIdx: number, dragHeight: number } | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTitle(page.title);
     setSlug(page.slug);
     setShowInNav(page.showInNav);
@@ -56,7 +57,7 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
     setSections(page.sections || []);
   }, [page]);
 
-  const saveWithSections = (secs: Section[]) => {
+  const saveWithSections = useCallback((secs: Section[]) => {
     if (!title.trim() || !slug.trim()) {
       setMessage({ text: t('pages.validationTitleSlug'), type: 'error' });
       return;
@@ -90,7 +91,7 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
     });
     setMessage({ text: t('pages.saved'), type: 'success' });
     setTimeout(() => setMessage(null), 3000);
-  };
+  }, [title, slug, showInNav, seoTitle, seoDesc, seoImage, layouts, onSave, t]);
 
 const addSection = useCallback((type: string, layoutId?: string, label?: string) => {
   const info = SECTION_TYPES.find(st => st.type === type);

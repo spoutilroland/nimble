@@ -32,11 +32,13 @@ export function ConfigSection() {
 
   useEffect(() => {
     if (!site) loadSite();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadLocales();
   }, [site, loadSite, loadLocales]);
 
   useEffect(() => {
     if (site) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAvailable(site.languages?.available || ['fr']);
       setDefaultLang(site.languages?.default || 'fr');
     }
