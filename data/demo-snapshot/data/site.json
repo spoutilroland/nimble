@@ -103,13 +103,13 @@
     "message": "Hello {name},\nthis is a template test for mailing from nimble ultra light cms"
   },
   "mail": {
-    "enabled": true,
-    "host": "smtp.gmail.com",
+    "enabled": false,
+    "host": "",
     "port": 587,
     "secure": false,
-    "user": "roland.spoutil@gmail.com",
-    "pass": "bxoo regm enij ycln",
-    "from": "noreply.nimble@gmail.com",
-    "to": "roland.spoutil@gmail.com"
+    "user": "",
+    "pass": "",
+    "from": "",
+    "to": ""
   }
 }
