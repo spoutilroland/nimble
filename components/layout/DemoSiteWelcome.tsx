@@ -417,7 +417,7 @@ export function DemoSiteWelcome() {
                   <a
                     href={step.cta.href}
                     onClick={handleClose}
-                    className="group inline-flex items-center gap-1 px-3.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.06] no-underline text-white/50 text-[0.75rem] font-semibold cursor-pointer hover:bg-white/[0.08] hover:text-white/80 transition-all duration-200"
+                    className="group inline-flex items-center gap-1 px-3.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.06] no-underline text-white/50 text-[0.72rem] font-semibold cursor-pointer hover:bg-white/[0.08] hover:text-white/80 transition-all duration-200"
                   >
                     {step.cta.label}
                     <ArrowUpRight size={12} className="opacity-40 group-hover:opacity-70 transition-all duration-200 group-hover:translate-x-[1px] group-hover:-translate-y-[1px]" />
