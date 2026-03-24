@@ -7,7 +7,7 @@ interface SelectionBarProps {
   count: number;
   onDeselect: () => void;
   onMove: () => void;
-  onDelete: () => void;
+  onDelete?: () => void;
 }
 
 export function SelectionBar({ count, onDeselect, onMove, onDelete }: SelectionBarProps) {
@@ -31,7 +31,12 @@ export function SelectionBar({ count, onDeselect, onMove, onDelete }: SelectionB
           <FolderInput size={14} />
           {t('mediaLibrary.btnMove')}
         </button>
-        <button className="btn btn-danger text-[0.8rem] px-[0.7rem] py-[0.3rem] inline-flex items-center gap-[0.3rem] whitespace-nowrap" onClick={onDelete}>
+        <button
+          className="btn btn-danger text-[0.8rem] px-[0.7rem] py-[0.3rem] inline-flex items-center gap-[0.3rem] whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
+          onClick={onDelete}
+          disabled={!onDelete}
+          title={!onDelete ? 'Désactivé en mode demo' : undefined}
+        >
           <Trash2 size={14} />
           {t('mediaLibrary.btnDeleteSelected')}
         </button>

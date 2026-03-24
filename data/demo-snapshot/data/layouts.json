@@ -1,0 +1,85 @@
+{
+  "layouts": {
+    "cta-showcase": {
+    "id": "cta-showcase",
+    "label": "Showcase Nimble",
+    "description": "Section de presentation avec image et texte",
+    "createdAt": "2026-03-24T22:00:00.000Z",
+    "updatedAt": "2026-03-24T22:00:00.000Z",
+    "blocks": [
+      {
+        "blockId": "b1",
+        "type": "image",
+        "row": 1,
+        "col": 1,
+        "colSpan": 1,
+        "display": "cover",
+        "borderRadius": "lg"
+      },
+      {
+        "blockId": "b2",
+        "type": "title",
+        "row": 1,
+        "col": 2,
+        "colSpan": 1,
+        "tag": "h2"
+      },
+      {
+        "blockId": "b3",
+        "type": "richtext",
+        "row": 2,
+        "col": 2,
+        "colSpan": 1
+      }
+    ]
+  },
+  "why-nimble": {
+    "id": "why-nimble",
+    "label": "Pourquoi Nimble",
+    "description": "Section avantages avec icones et texte",
+    "createdAt": "2026-03-24T22:00:00.000Z",
+    "updatedAt": "2026-03-24T22:00:00.000Z",
+    "blocks": [
+      {
+        "blockId": "c1",
+        "type": "title",
+        "row": 1,
+        "col": 1,
+        "colSpan": 2,
+        "tag": "h2"
+      },
+      {
+        "blockId": "c2",
+        "type": "richtext",
+        "row": 2,
+        "col": 1,
+        "colSpan": 1,
+        "bg": "var(--surface)",
+        "borderRadius": "md",
+        "borderWidth": "thin",
+        "borderColor": "var(--border)"
+      },
+      {
+        "blockId": "c3",
+        "type": "richtext",
+        "row": 2,
+        "col": 2,
+        "colSpan": 1,
+        "bg": "var(--surface)",
+        "borderRadius": "md",
+        "borderWidth": "thin",
+        "borderColor": "var(--border)"
+      },
+      {
+        "blockId": "c4",
+        "type": "image",
+        "row": 3,
+        "col": 1,
+        "colSpan": 2,
+        "display": "cover",
+        "borderRadius": "lg"
+      }
+    ]
+  }
+  }
+}

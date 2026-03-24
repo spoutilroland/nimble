@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { readSiteConfig, escapeHtml } from '@/lib/data';
 import { getLogoUrl } from '@/lib/data/helpers';
+import { isDemoMode } from '@/lib/demo';
 
 // Rate limiting in-memory
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -47,6 +48,15 @@ export async function POST(req: NextRequest) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
+    }
+
+    // Mode demo : simuler l'envoi sans envoyer
+    if (isDemoMode()) {
+      return NextResponse.json({
+        success: true,
+        message: 'Email simulé envoyé ! (mode demo)',
+        demo: true,
+      });
     }
 
     // Vérification captcha

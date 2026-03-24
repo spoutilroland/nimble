@@ -1,0 +1,115 @@
+{
+  "business": {
+    "name": "Nimble",
+    "tagline": "Ultra Light CMS",
+    "description": "An ultra light and database free CMS",
+    "phone": "",
+    "email": "roland.spoutil@gmail.com",
+    "address": "",
+    "hours": {
+      "weekdays": "Lundi - Vendredi : 9h - 18h",
+      "saturday": "Samedi : sur rendez-vous",
+      "note": ""
+    },
+    "legal": {
+      "siret": "dd",
+      "certifications": "",
+      "copyright": "2025 Mon Entreprise"
+    }
+  },
+  "seo": {
+    "defaultTitle": "Nimble",
+    "defaultDescription": "An ultra light and database free CMS",
+    "ogImage": null
+  },
+  "fonts": {
+    "heading": "Oswald",
+    "body": "Raleway",
+    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Raleway:wght@300;400;500;600;700&display=swap"
+  },
+  "captcha": {
+    "provider": "",
+    "siteKey": ""
+  },
+  "design": {
+    "borderStyle": "flat",
+    "customRadius": {
+      "tl": 0,
+      "tr": 0,
+      "br": 0,
+      "bl": 0
+    }
+  },
+  "logoMode": "logo-name",
+  "logoPosition": "left",
+  "languages": {
+    "available": [
+      "fr"
+    ],
+    "default": "fr"
+  },
+  "social": {
+    "linkedin": "",
+    "facebook": "",
+    "instagram": "",
+    "x": "",
+    "tiktok": "",
+    "youtube": "",
+    "pinterest": "",
+    "github": "https://github.com/spoutilroland"
+  },
+  "footer": {
+    "cols": 3,
+    "blocks": [
+      {
+        "blockId": "f1",
+        "type": "logo-desc",
+        "row": 1,
+        "col": 1,
+        "colSpan": 1
+      },
+      {
+        "blockId": "f2",
+        "type": "contact",
+        "row": 1,
+        "col": 2,
+        "colSpan": 1
+      },
+      {
+        "blockId": "f4",
+        "type": "social-links",
+        "row": 1,
+        "col": 3,
+        "colSpan": 1,
+        "shape": "square",
+        "direction": "vertical",
+        "size": "lg"
+      }
+    ]
+  },
+  "socialLabels": {
+    "linkedin": "",
+    "facebook": "",
+    "instagram": "",
+    "x": "",
+    "tiktok": "",
+    "youtube": "",
+    "pinterest": "",
+    "github": "GitHub"
+  },
+  "contactReply": {
+    "enabled": true,
+    "subject": "Merci pour votre demande de contacte",
+    "message": "Hello {name},\nthis is a template test for mailing from nimble ultra light cms"
+  },
+  "mail": {
+    "enabled": true,
+    "host": "smtp.gmail.com",
+    "port": 587,
+    "secure": false,
+    "user": "roland.spoutil@gmail.com",
+    "pass": "bxoo regm enij ycln",
+    "from": "noreply.nimble@gmail.com",
+    "to": "roland.spoutil@gmail.com"
+  }
+}

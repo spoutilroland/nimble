@@ -3,7 +3,7 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import fsp from 'fs/promises';
-import { withAuth } from '@/lib/auth';
+import { withAuth, demoBlock } from '@/lib/auth';
 import {
   readCarouselsConfig, writeCarouselsConfig, ensureCarouselExists,
   readMediaRegistry, writeMediaRegistry, generateMediaId, getMediaUrls,
@@ -15,7 +15,7 @@ import { uploadToBlob, appendMediaToBlob } from '@/lib/storage';
 const mediaDir = path.join(process.cwd(), 'uploads', 'media');
 const dataDir = path.join(process.cwd(), 'data');
 
-export const POST = withAuth(async (
+export const POST = demoBlock(withAuth(async (
   req: NextRequest,
   ctx?: { params: Promise<Record<string, string>> }
 ) => {
@@ -98,4 +98,4 @@ export const POST = withAuth(async (
     console.error('Upload error:', error);
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
   }
-});
+}));

@@ -63,16 +63,12 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
       return;
     }
 
-    const invalidLayout = secs.find(s => s.type === 'custom-layout' && (!s.layoutId || !s.carouselId));
-    if (invalidLayout) {
-      setMessage({ text: t('pages.validationLayoutConfig'), type: 'error' });
-      return;
-    }
-
     const processedSections = secs.map(s => {
-      if (s.type !== 'custom-layout' || !s.layoutId || !s.carouselId) return s;
+      if (s.type !== 'custom-layout' || !s.layoutId) return s;
       const layout = layouts.find(l => l.id === s.layoutId);
       if (!layout) return s;
+      // Générer les blockCarousels automatiquement si un carouselId (prefix) est défini
+      if (!s.carouselId) return s;
       const blockCarousels: Record<string, string> = {};
       layout.blocks.forEach(b => {
         if (b.type === 'image' || (b.type as string) === 'carousel') {
@@ -89,8 +85,7 @@ export function PageCard({ page, canDelete, layouts, onDelete, onSave }: PageCar
       seo: { title: seoTitle.trim(), description: seoDesc.trim(), ogImage: seoImage.trim() || null },
       sections: processedSections,
     });
-    setMessage({ text: t('pages.saved'), type: 'success' });
-    setTimeout(() => setMessage(null), 3000);
+    setMessage(null);
   }, [title, slug, showInNav, seoTitle, seoDesc, seoImage, layouts, onSave, t]);
 
 const addSection = useCallback((type: string, layoutId?: string, label?: string) => {
@@ -371,10 +366,10 @@ const getDisplacement = (idx: number): number => {
             />
           )}
 
-          <div className="flex justify-between items-center mt-4">
+          <div className="relative flex justify-between items-center mt-4">
             <button className="btn btn-secondary btn-sm" onClick={() => setEditing(false)}>{t('pages.btnCancel')}</button>
             <div className="flex items-center gap-[0.8rem]">
-              {message && <span className={`page-edit-message form-message ${message.type}`}>{message.text}</span>}
+              {message && <span className={`page-edit-message form-message ${message.type} absolute right-[120px] top-1/2 -translate-y-1/2 !mt-0`}>{message.text}</span>}
               <button className="btn btn-success btn-sm" onClick={handleSave}>{t('pages.btnSave')}</button>
             </div>
           </div>

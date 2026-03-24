@@ -3,7 +3,7 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import fsp from 'fs/promises';
-import { withAuth } from '@/lib/auth';
+import { withAuth, demoBlock } from '@/lib/auth';
 import {
   readMediaRegistry, writeMediaRegistry,
   readCarouselsConfig, writeCarouselsConfig,
@@ -14,7 +14,7 @@ import { deleteFromBlob, removeMediaFromBlob } from '@/lib/storage';
 const mediaDir = path.join(process.cwd(), 'uploads', 'media');
 const dataDir = path.join(process.cwd(), 'data');
 
-export const POST = withAuth(async (req: NextRequest) => {
+export const POST = demoBlock(withAuth(async (req: NextRequest) => {
   try {
     const { mediaIds } = await req.json();
 
@@ -62,4 +62,4 @@ export const POST = withAuth(async (req: NextRequest) => {
   } catch {
     return NextResponse.json({ error: 'Suppression échouée' }, { status: 500 });
   }
-});
+}));

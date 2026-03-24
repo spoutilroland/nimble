@@ -387,16 +387,16 @@
 .btn:hover::before { left: 100%; }
 
 .btn-primary {
-    background: var(--bg-light);
-    color: var(--primary-dark);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
     font-family: 'Oswald', sans-serif;
 }
 
 .btn-primary:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-    background: white;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    background: var(--primary-dark);
 }
 
 .btn-secondary {
@@ -791,18 +791,12 @@
 
 /* ── Section 3 : Extérieurs — Polaroids ─────────────────────── */
 .s3 {
-    background: var(--primary-dark);
     padding: 6rem 0 7rem;
     position: relative;
-    background-image: repeating-linear-gradient(
-        -45deg,
-        transparent, transparent 12px,
-        rgba(255,255,255,0.03) 12px, rgba(255,255,255,0.03) 13px
-    );
 }
 
-.s3 .section-title     { color: white; }
-.s3 .section-tag       { color: var(--primary-light); }
+.s3 .section-title     { color: var(--text); }
+.s3 .section-tag       { color: var(--accent); }
 .s3 .section-title::after { background: var(--accent); }
 .polaroid {
     background: white;
@@ -1192,7 +1186,7 @@ body.admin-mode #accueil [data-content-key]:hover {
   animation: edit-flash-in 0.2s ease, edit-flash-out 0.3s ease 2.2s forwards;
 }
 
-.edit-flash--success { background: var(--primary, #4a7c59); color: #fff; }
+.edit-flash--success { background: #059669; color: #fff; }
 .edit-flash--error   { background: #c0392b; color: #fff; }
 
 @keyframes edit-flash-in {

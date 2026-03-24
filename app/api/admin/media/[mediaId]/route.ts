@@ -3,7 +3,7 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import fsp from 'fs/promises';
-import { withAuth } from '@/lib/auth';
+import { withAuth, demoBlock } from '@/lib/auth';
 import {
   readMediaRegistry, writeMediaRegistry,
   readCarouselsConfig, writeCarouselsConfig,
@@ -57,7 +57,7 @@ export const PATCH = withAuth(async (
   }
 });
 
-export const DELETE = withAuth(async (
+export const DELETE = demoBlock(withAuth(async (
   _req: NextRequest,
   ctx?: { params: Promise<Record<string, string>> }
 ) => {
@@ -98,4 +98,4 @@ export const DELETE = withAuth(async (
   } catch {
     return NextResponse.json({ error: 'Suppression échouée' }, { status: 500 });
   }
-});
+}));

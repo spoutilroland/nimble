@@ -74,3 +74,17 @@ export function getSideNavForTab(tab: TabId): { labelKey: string; anchor: string
     anchor: s.anchor,
   }));
 }
+
+/** Sections masquées en mode demo (par id) */
+const DEMO_HIDDEN_SECTIONS = ['contact-reply'];
+
+export function getDemoFilteredSections(tab: TabId): SectionDescriptor[] {
+  return getSectionsForTab(tab).filter((s) => !DEMO_HIDDEN_SECTIONS.includes(s.id));
+}
+
+export function getDemoFilteredSideNav(tab: TabId): { labelKey: string; anchor: string }[] {
+  return getDemoFilteredSections(tab).map((s) => ({
+    labelKey: s.labelKey,
+    anchor: s.anchor,
+  }));
+}

@@ -3,7 +3,7 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import fsp from 'fs/promises';
-import { withAuth } from '@/lib/auth';
+import { withAuth, demoBlock } from '@/lib/auth';
 import {
   readMediaRegistry, writeMediaRegistry, generateMediaId, getMediaUrls,
   processImageWithSharp, generateThumb, MIME_TO_EXT, ALLOWED_TYPES, MAX_FILE_SIZE,
@@ -14,7 +14,7 @@ import { uploadToBlob, appendMediaToBlob } from '@/lib/storage';
 const mediaDir = path.join(process.cwd(), 'uploads', 'media');
 const dataDir = path.join(process.cwd(), 'data');
 
-export const POST = withAuth(async (req: NextRequest) => {
+export const POST = demoBlock(withAuth(async (req: NextRequest) => {
   try {
     const formData = await req.formData();
     const files = formData.getAll('images') as File[];
@@ -129,4 +129,4 @@ export const POST = withAuth(async (req: NextRequest) => {
     console.error('Upload error:', error);
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
   }
-});
+}));

@@ -55,7 +55,12 @@ export default async function HomePage() {
       />
 
       {page.sections.map((section, i) => (
-        <div key={i} id={`section-${i}`} className={`section-slot-${i % 2 === 0 ? 'a' : 'b'}`}>
+        <div
+          key={i}
+          id={`section-${i}`}
+          className={i % 2 === 0 ? 'section-slot-a' : 'section-slot-b'}
+          style={i % 2 !== 0 ? { background: 'color-mix(in srgb, var(--primary) 6%, var(--bg-light))' } : undefined}
+        >
           <SectionRenderer
             section={section}
             site={site}

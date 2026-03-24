@@ -3,6 +3,7 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import { withAuth } from '@/lib/auth';
 import { readThemeFile, writeThemeFile } from '@/lib/data';
+import { isDemoMode, readDemoConfig } from '@/lib/demo';
 
 const VALID_THEMES = ['alpine', 'pro', 'craft', 'industrial', 'provence'];
 
@@ -24,6 +25,21 @@ export const POST = withAuth(async (req: NextRequest) => {
 
   try {
     const data = readThemeFile();
+
+    // Limite demo : max N thèmes custom
+    if (isDemoMode()) {
+      const { limits } = readDemoConfig();
+      if (!data.customThemes) data.customThemes = {};
+      const existingCount = Object.keys(data.customThemes).length;
+      const isNew = !(id in data.customThemes);
+      if (isNew && existingCount >= limits.maxThemes) {
+        return NextResponse.json(
+          { error: `Mode demo : maximum ${limits.maxThemes} thèmes personnalisés` },
+          { status: 403 }
+        );
+      }
+    }
+
     if (!data.customThemes) data.customThemes = {};
     data.customThemes[id] = { label: label.trim(), vars };
     await writeThemeFile(data);

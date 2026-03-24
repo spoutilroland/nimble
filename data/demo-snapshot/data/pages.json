@@ -1,0 +1,212 @@
+{
+  "pages": [
+    {
+      "id": "home",
+      "slug": "/",
+      "title": "Accueil",
+      "showInNav": true,
+      "navOrder": 0,
+      "seo": {
+        "title": "Nimble - Ultra Light CMS",
+        "description": "Mini CMS leger sans base de donnees. Creez votre site vitrine ou landing page en quelques minutes avec Next.js.",
+        "ogImage": null
+      },
+      "sections": [
+        {
+          "type": "hero",
+          "carouselId": "hero-home",
+          "contentId": "h1",
+          "dividerAfter": {
+            "type": "wave",
+            "color": "var(--background)",
+            "flip": false
+          }
+        },
+        {
+          "type": "about",
+          "contentId": "a1",
+          "dividerAfter": {
+            "type": "wave",
+            "color": "var(--primary)",
+            "flip": false
+          }
+        },
+        {
+          "type": "custom-layout",
+          "layoutId": "why-nimble",
+          "contentId": "lay2",
+          "blockCarousels": {
+            "c4": "6luh5d-c4"
+          },
+          "dividerAfter": {
+            "type": "diagonal",
+            "color": "var(--background)",
+            "flip": false
+          },
+          "carouselId": "6luh5d"
+        },
+        {
+          "type": "services",
+          "contentId": "sv1"
+        },
+        {
+          "type": "polaroids",
+          "carouselId": "polaroid-home",
+          "contentId": "pol1",
+          "props": {
+            "items": [
+              {
+                "title": "Next.js 16",
+                "tag": "Framework",
+                "tagColor": "slate"
+              },
+              {
+                "title": "React 19",
+                "tag": "UI",
+                "tagColor": "green"
+              },
+              {
+                "title": "TypeScript",
+                "tag": "Language",
+                "tagColor": "bois"
+              },
+              {
+                "title": "Zustand",
+                "tag": "State",
+                "tagColor": "slate"
+              },
+              {
+                "title": "Sharp",
+                "tag": "Images",
+                "tagColor": "green"
+              }
+            ]
+          }
+        },
+        {
+          "type": "stats",
+          "props": {
+            "items": [
+              {
+                "count": 11,
+                "label": "Types de sections"
+              },
+              {
+                "count": 5,
+                "label": "Minutes d'installation"
+              },
+              {
+                "count": 0,
+                "label": "Base de donnees"
+              }
+            ]
+          },
+          "contentId": "6midfi"
+        },
+        {
+          "type": "bento-grid",
+          "contentId": "bg1",
+          "props": {
+            "gridCols": 6,
+            "cells": [
+              {
+                "id": "b1",
+                "col": 1,
+                "row": 1,
+                "colSpan": 4,
+                "rowSpan": 2,
+                "content": {
+                  "overlay": {
+                    "position": "bottom",
+                    "textAlign": "left",
+                    "title": "Design System",
+                    "body": "Themes, couleurs et typographies entierement personnalisables depuis le back-office."
+                  },
+                  "imageUrl": "/uploads/media/1774387571825-342805956.webp"
+                }
+              },
+              {
+                "id": "b2",
+                "col": 5,
+                "row": 1,
+                "colSpan": 2,
+                "rowSpan": 1,
+                "content": {
+                  "imageUrl": "/uploads/media/1774387582259-13255188.webp",
+                  "overlay": {
+                    "position": "bottom",
+                    "textAlign": "center",
+                    "title": "Responsive",
+                    "body": "Mobile-first par defaut."
+                  }
+                }
+              },
+              {
+                "id": "b3",
+                "col": 5,
+                "row": 2,
+                "colSpan": 2,
+                "rowSpan": 1,
+                "content": {
+                  "imageUrl": "/uploads/media/1774387581551-586493012.webp",
+                  "overlay": {
+                    "position": "bottom",
+                    "textAlign": "center",
+                    "title": "Open Source",
+                    "body": "Code source libre."
+                  }
+                }
+              },
+              {
+                "id": "b4",
+                "col": 1,
+                "row": 3,
+                "colSpan": 3,
+                "rowSpan": 1,
+                "content": {
+                  "imageUrl": "/uploads/media/1774387577876-38306180.webp",
+                  "overlay": {
+                    "position": "bottom",
+                    "textAlign": "left",
+                    "title": "Mediatheque integree",
+                    "body": "Upload, WebP auto, thumbnails, dossiers."
+                  }
+                }
+              },
+              {
+                "id": "b5",
+                "col": 4,
+                "row": 3,
+                "colSpan": 3,
+                "rowSpan": 1,
+                "content": {
+                  "imageUrl": "/uploads/media/1774387582259-29216718.webp",
+                  "overlay": {
+                    "position": "bottom",
+                    "textAlign": "left",
+                    "title": "Sections modulaires",
+                    "body": "11 types de sections a combiner librement."
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gallery",
+          "carouselId": "gallery-home",
+          "contentId": "gal1",
+          "dividerAfter": {
+            "type": "curve",
+            "color": "var(--background)",
+            "flip": false
+          }
+        },
+        {
+          "type": "contact",
+          "contentId": "ct1"
+        }
+      ]
+    }
+  ]
+}

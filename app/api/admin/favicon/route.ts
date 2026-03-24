@@ -3,7 +3,7 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import fsp from 'fs/promises';
-import { withAuth } from '@/lib/auth';
+import { withAuth, demoBlock } from '@/lib/auth';
 import { MIME_TO_EXT } from '@/lib/data';
 import { uploadToBlob, deleteFromBlobByPrefix } from '@/lib/storage';
 
@@ -13,7 +13,7 @@ const FAVICON_TYPES = [
   'image/svg+xml', 'image/jpeg', 'image/jpg', 'image/webp',
 ];
 
-export const POST = withAuth(async (req: NextRequest) => {
+export const POST = demoBlock(withAuth(async (req: NextRequest) => {
   try {
     const formData = await req.formData();
     const file = formData.get('favicon') as File | null;
@@ -47,9 +47,9 @@ export const POST = withAuth(async (req: NextRequest) => {
   } catch {
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
   }
-});
+}));
 
-export const DELETE = withAuth(async () => {
+export const DELETE = demoBlock(withAuth(async () => {
   try {
     const files = await fsp.readdir(faviconDir);
     for (const f of files) {
@@ -62,4 +62,4 @@ export const DELETE = withAuth(async () => {
   } catch {
     return NextResponse.json({ error: 'Delete failed' }, { status: 500 });
   }
-});
+}));

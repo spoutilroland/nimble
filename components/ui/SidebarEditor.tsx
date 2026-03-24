@@ -123,13 +123,22 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
   // Sync sections from server
   useEffect(() => { setLocalSections(sections); }, [sections]);
 
-  // Auth check
+  // Auth check (bypass cookie en mode demo)
   useEffect(() => {
     async function checkAdmin() {
+      // Mode demo : toujours admin
+      try {
+        const demoRes = await fetch('/api/demo/config');
+        const demoData = await demoRes.json();
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        if (demoData.demo) { setIsAdmin(true); return; }
+      } catch { /* pas en demo */ }
+
       if (!document.cookie.includes('is_admin=')) return;
       try {
         const res = await fetch('/api/auth/check');
         const data = await res.json();
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (data.valid === true) setIsAdmin(true);
       } catch { /* ignore */ }
     }
@@ -161,6 +170,16 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
     fetch('/api/content').then(r => r.json()).then(data => setContent(data[pageId] || {})).catch(() => {});
     fetch('/api/layouts').then(r => r.json()).then(data => setLayouts(data.layouts || {})).catch(() => {});
   }, [isAdmin, pageId]);
+
+  // Sync quand le ContentEditor (inline) sauvegarde un champ
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const { key, value } = (e as CustomEvent).detail;
+      if (key) setContent(prev => ({ ...prev, [key]: value }));
+    };
+    window.addEventListener('content-inline-saved', handler);
+    return () => window.removeEventListener('content-inline-saved', handler);
+  }, []);
 
   // Push layout
   useEffect(() => {
@@ -582,6 +601,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
         className="fixed top-4 z-[9999] flex h-10 w-10 items-center justify-center rounded-full bg-neutral-900 text-white shadow-lg hover:bg-neutral-700 transition-all duration-300"
         style={{ left: isOpen ? `${sidebarWidth + 12}px` : '16px' }}
         title={isOpen ? 'Fermer' : 'Ouvrir la sidebar'}
+        data-tour="sidebar-toggle"
       >
         {isOpen ? (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -642,6 +662,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
                 key={`${section.contentId || i}`}
                 className={`border-b border-neutral-100 transition-transform duration-200 ease-out ${isDragged ? 'opacity-0' : ''}`}
                 style={{ transform: disp ? `translateY(${disp}px)` : undefined }}
+                {...(i === 0 ? { 'data-tour': 'sidebar-section-first' } : {})}
               >
                 {/* Section header */}
                 <div className={`flex w-full items-center gap-1 px-2 py-2.5 text-sm transition-colors ${isExpanded ? 'bg-neutral-50' : ''}`}>
@@ -649,6 +670,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
                   <div
                     onPointerDown={(e) => handleGripDown(e, i)}
                     className="cursor-grab active:cursor-grabbing text-neutral-300 hover:text-neutral-500 shrink-0 touch-none select-none px-1"
+                    {...(i === 0 ? { 'data-tour': 'sidebar-grip' } : {})}
                   >
                     <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
                       <circle cx="5" cy="3" r="1.5"/><circle cx="11" cy="3" r="1.5"/><circle cx="5" cy="8" r="1.5"/><circle cx="11" cy="8" r="1.5"/><circle cx="5" cy="13" r="1.5"/><circle cx="11" cy="13" r="1.5"/>
@@ -675,7 +697,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
 
                 {/* Expanded content */}
                 {isExpanded && (
-                  <div className="relative border-t border-neutral-100 bg-neutral-50 px-4 py-3">
+                  <div className="relative border-t border-neutral-100 bg-neutral-50 px-4 py-3" {...(i === 0 ? { 'data-tour': 'sidebar-section-expanded' } : {})}>
                     {/* Flash pill dans la sidebar */}
                     {flashSection?.idx === i && <SidebarFlashPill type={flashSection.type} />}
 
@@ -960,6 +982,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
                     <button
                       onClick={() => handleDeleteSection(i)}
                       className="mt-3 w-full rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-xs text-red-600 hover:bg-red-100 transition-colors"
+                      {...(i === 0 ? { 'data-tour': 'sidebar-delete-btn' } : {})}
                     >
                       Supprimer cette section
                     </button>
@@ -1016,6 +1039,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
           <button
             onClick={() => setSectionPickerOpen(true)}
             className="w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 transition-colors shadow-sm"
+            data-tour="sidebar-add-section"
           >
             + Ajouter une section
           </button>
@@ -1040,7 +1064,6 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
       {/* Bento grid modal */}
       {bentoSection && <BentoModal section={bentoSection.section} onClose={() => {
         setBentoSection(null);
-        window.location.reload();
       }} />}
 
       {/* Media picker modal */}

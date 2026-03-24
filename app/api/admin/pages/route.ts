@@ -6,6 +6,7 @@ import { withAuth } from '@/lib/auth';
 import { writePagesConfig, ensureCarouselExists, cleanOrphanedCarousels, readLayoutsConfig, readContent, writeContent } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
 import { getSectionFields } from '@/lib/sidebar/section-fields';
+import { isDemoMode, readDemoConfig } from '@/lib/demo';
 import type { SectionType } from '@/lib/types/pages';
 
 export const POST = withAuth(async (req: NextRequest) => {
@@ -18,6 +19,36 @@ export const POST = withAuth(async (req: NextRequest) => {
     });
 
     const body = await req.json();
+
+    // Limites demo
+    if (isDemoMode()) {
+      const { limits } = readDemoConfig();
+      const pages = body.pages || [];
+      if (pages.length > limits.maxPages) {
+        return NextResponse.json(
+          { error: `Mode demo : maximum ${limits.maxPages} pages` },
+          { status: 403 }
+        );
+      }
+      for (const page of pages) {
+        const sections = page.sections || [];
+        if (sections.length > limits.maxSectionsPerPage) {
+          return NextResponse.json(
+            { error: `Mode demo : maximum ${limits.maxSectionsPerPage} sections par page` },
+            { status: 403 }
+          );
+        }
+      }
+      const customCount = pages.reduce((acc: number, p: { sections?: { type: string }[] }) =>
+        acc + (p.sections || []).filter((s: { type: string }) => s.type === 'custom-layout').length, 0
+      );
+      if (customCount > limits.maxCustomSections) {
+        return NextResponse.json(
+          { error: `Mode demo : maximum ${limits.maxCustomSections} sections personnalisées` },
+          { status: 403 }
+        );
+      }
+    }
 
     // Sanitize des slugs : pas d'espaces, pas de caracteres speciaux
     for (const page of body.pages || []) {

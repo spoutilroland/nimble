@@ -12,6 +12,7 @@ interface MediaPanelProps {
   onSave: (id: string, data: { altText?: string; title?: string; tags?: string[] }) => Promise<boolean>;
   onDelete: (id: string) => void;
   onTransform?: (id: string, operation: string) => Promise<boolean>;
+  disableDelete?: boolean;
 }
 
 function formatSize(bytes: number): string {
@@ -30,7 +31,7 @@ function formatDate(iso: string): string {
   }
 }
 
-export function MediaPanel({ media, onClose, onSave, onDelete, onTransform }: MediaPanelProps) {
+export function MediaPanel({ media, onClose, onSave, onDelete, onTransform, disableDelete }: MediaPanelProps) {
   const { t } = useI18n();
   const [altText, setAltText] = useState(media.altText ?? '');
   const [title, setTitle] = useState(media.title ?? '');
@@ -249,7 +250,12 @@ export function MediaPanel({ media, onClose, onSave, onDelete, onTransform }: Me
             <Copy size={13} className="shrink-0" />
             <span className="text-center leading-tight">{copied ? t('mediaLibrary.panelUrlCopied') : t('mediaLibrary.panelBtnCopyUrl')}</span>
           </button>
-          <button className="btn btn-danger shrink-0 inline-flex items-center gap-[0.3rem] text-[0.82rem] py-[0.4rem] px-[0.6rem]" onClick={() => onDelete(media.id)}>
+          <button
+            className="btn btn-danger shrink-0 inline-flex items-center gap-[0.3rem] text-[0.82rem] py-[0.4rem] px-[0.6rem] disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
+            onClick={() => onDelete(media.id)}
+            disabled={disableDelete}
+            title={disableDelete ? 'Désactivé en mode demo' : undefined}
+          >
             <Trash2 size={13} className="shrink-0" />
             <span className="whitespace-nowrap">{t('common.delete')}</span>
           </button>

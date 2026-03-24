@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { Upload, Images, ArrowLeft, Folder } from 'lucide-react';
 import { useI18n } from '@/lib/i18n/context';
 import { useAdminStore } from '@/lib/admin/store';
+import { useDemoMode } from '@/lib/hooks/useDemoMode';
 import type { MediaFolder } from '@/lib/types';
 
 interface MediaSourcePickerProps {
@@ -32,6 +33,7 @@ export function MediaSourcePicker({
   onPickFromLibrary,
 }: MediaSourcePickerProps) {
   const { t, tp } = useI18n();
+  const { isDemo } = useDemoMode();
   const mediaItems = useAdminStore((s) => s.mediaItems);
   const mediaFolders = useAdminStore((s) => s.mediaFolders);
   const loadMedia = useAdminStore((s) => s.loadMedia);
@@ -50,18 +52,19 @@ export function MediaSourcePicker({
   // Navigation dossier dans le picker
   const [pickerFolderId, setPickerFolderId] = useState<string | null>(null);
 
-  // Reset à chaque ouverture
+  // Reset à chaque ouverture (en demo, aller directement à la library)
   useEffect(() => {
     if (isOpen) {
-      setScreen('choice');
+      setScreen(isDemo ? 'library' : 'choice');
       setSelected(new Set());
       setAdding(false);
       setSearch('');
       setFilterType('all');
       setFilterDimension('all');
       setPickerFolderId(null);
+      if (isDemo) loadMedia();
     }
-  }, [isOpen]);
+  }, [isOpen, isDemo, loadMedia]);
 
   // Charger la médiathèque quand on passe à l'écran library
   useEffect(() => {

@@ -116,7 +116,17 @@ export function PagesSection() {
         </div>
       )}
 
-      {globalMessage && <div className={`form-message ${globalMessage.type}`}>{globalMessage.text}</div>}
+      {globalMessage && (
+        <div
+          className="fixed top-6 right-6 z-[9999] px-5 py-3 rounded-lg text-sm font-semibold shadow-xl animate-[fadeInUp_0.3s_ease]"
+          style={{
+            background: globalMessage.type === 'success' ? 'var(--bo-green, #4a7c59)' : '#e53935',
+            color: '#fff',
+          }}
+        >
+          {globalMessage.text}
+        </div>
+      )}
     </div>
   );
 }
