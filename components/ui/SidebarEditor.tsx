@@ -94,9 +94,63 @@ function getDividerPreviewSvg(type: string, flip: boolean): string {
   return `<svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;width:100%;height:100%">${inner}</svg>`;
 }
 
+// ── Sidebar UI translations ──
+
+const SIDEBAR_UI: Record<string, Record<string, string>> = {
+  fr: {
+    title: 'Sections de la page',
+    noFields: 'Aucun champ editable',
+    deleteSection: 'Supprimer cette section',
+    confirmDelete: 'Supprimer cette section ? Cette action est irréversible.',
+    cancelChanges: 'Annuler les modifications',
+    addSection: '+ Ajouter une section',
+    sectionAdded: 'Section ajoutée. Rechargez la page pour voir les changements.',
+    goToBack: 'Aller au back-office',
+    editGrid: 'Modifier la grille',
+    separator: 'Separateur',
+    none: 'Aucun',
+    images: 'Images',
+    loading: 'Chargement...',
+    manageInBack: 'Gerer dans le back-office',
+    stats: 'Statistiques',
+    delete: 'Supprimer',
+    save: 'Enregistrer',
+    saved: 'Enregistre',
+    customLayout: 'Layout personnalise',
+    about: 'A propos',
+    gallery: 'Galerie',
+    statistics: 'Statistiques',
+  },
+  en: {
+    title: 'Page sections',
+    noFields: 'No editable fields',
+    deleteSection: 'Delete this section',
+    confirmDelete: 'Delete this section? This action cannot be undone.',
+    cancelChanges: 'Cancel changes',
+    addSection: '+ Add a section',
+    sectionAdded: 'Section added. Reload the page to see the changes.',
+    goToBack: 'Go to back office',
+    editGrid: 'Edit grid',
+    separator: 'Separator',
+    none: 'None',
+    images: 'Images',
+    loading: 'Loading...',
+    manageInBack: 'Manage in back office',
+    stats: 'Statistics',
+    delete: 'Delete',
+    save: 'Save',
+    saved: 'Saved',
+    customLayout: 'Custom layout',
+    about: 'About',
+    gallery: 'Gallery',
+    statistics: 'Statistics',
+  },
+};
+
 // ── Main Component ──
 
 export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
+  const ui = SIDEBAR_UI[lang] || SIDEBAR_UI.fr;
   const [isAdmin, setIsAdmin] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(360);
@@ -146,10 +200,15 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
   }, []);
 
   // localStorage pour garder la sidebar ouverte + largeur entre les pages
+  // En mode demo, si le welcome tour n'est pas terminé, forcer la sidebar fermée
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      const welcomeDone = document.cookie.includes('nimble-site-welcome-done=1');
       const stored = localStorage.getItem('sidebar-editor-open');
-      if (stored === 'true') setIsOpen(true);
+      if (stored === 'true' && welcomeDone) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsOpen(true);
+      }
       const storedWidth = localStorage.getItem('sidebar-editor-width');
       if (storedWidth) {
         const w = parseInt(storedWidth, 10);
@@ -477,7 +536,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
 
   // Delete section
   const handleDeleteSection = useCallback((index: number) => {
-    if (!confirm('Supprimer cette section ? Cette action est irréversible.')) return;
+    if (!confirm(ui.confirmDelete)) return;
     const updated = localSections.filter((_, i) => i !== index);
     setLocalSections(updated);
     setExpandedIndex(null);
@@ -581,14 +640,14 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
   const sectionDisplayName = (section: Section) => {
     if (section.type === 'custom-layout') {
       const layoutData = section.layoutId ? layouts[section.layoutId] : undefined;
-      const name = section.label || layoutData?.label || 'Layout personnalise';
-      return { primary: name, secondary: 'Layout personnalise' };
+      const name = section.label || layoutData?.label || ui.customLayout;
+      return { primary: name, secondary: ui.customLayout };
     }
     const labels: Record<string, string> = {
-      hero: 'Hero', 'hero-simple': 'Hero Simple', about: 'A propos',
-      services: 'Services', gallery: 'Galerie', contact: 'Contact',
+      hero: 'Hero', 'hero-simple': 'Hero Simple', about: ui.about,
+      services: 'Services', gallery: ui.gallery, contact: 'Contact',
       'bento-grid': 'Bento Grid', 'cinematic-split': 'Cinematic Split',
-      polaroids: 'Polaroids', stats: 'Statistiques',
+      polaroids: 'Polaroids', stats: ui.statistics,
     };
     return { primary: labels[section.type] || section.type, secondary: section.label };
   };
@@ -598,8 +657,11 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
       {/* Bouton flottant */}
       <button
         onClick={() => setIsOpen(prev => !prev)}
-        className="fixed top-4 z-[9999] flex h-10 w-10 items-center justify-center rounded-full bg-neutral-900 text-white shadow-lg hover:bg-neutral-700 transition-all duration-300"
-        style={{ left: isOpen ? `${sidebarWidth + 12}px` : '16px' }}
+        className="fixed top-[53px] z-[9999] flex h-14 w-11 items-center justify-center rounded-lg text-white shadow-lg transition-all duration-300"
+        style={{
+          left: isOpen ? `${sidebarWidth + 12}px` : '16px',
+          background: 'var(--primary, #1a1a1a)',
+        }}
         title={isOpen ? 'Fermer' : 'Ouvrir la sidebar'}
         data-tour="sidebar-toggle"
       >
@@ -642,7 +704,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
         />
         {/* Header */}
         <div className="flex items-center justify-between border-b border-neutral-200 px-4 py-3">
-          <h2 className="text-sm font-semibold text-neutral-900">Sections de la page</h2>
+          <h2 className="text-sm font-semibold text-neutral-900">{ui.title}</h2>
           <button onClick={() => setIsOpen(false)} className="flex h-8 w-8 items-center justify-center rounded-md text-neutral-500 hover:bg-neutral-100 hover:text-neutral-800">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
           </button>
@@ -767,7 +829,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
                                     <button onClick={() => {
                                       const next = projects.filter((_, j) => j !== pi);
                                       handlePropsChange(i, { projects: next });
-                                    }} className="text-red-400 hover:text-red-600 text-xs">Supprimer</button>
+                                    }} className="text-red-400 hover:text-red-600 text-xs">{ui.delete}</button>
                                   )}
                                 </div>
                                 {/* Image */}
@@ -903,7 +965,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
                         onClick={() => setBentoSection({ section, index: i })}
                         className="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 transition-colors"
                       >
-                        Modifier la grille
+                        {ui.editGrid}
                       </button>
                     )}
 
@@ -966,7 +1028,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
 
                     {/* Divider editor */}
                     <div className="mt-3 pt-3 border-t border-neutral-200">
-                      <p className="mb-2 text-xs font-medium text-neutral-500">Separateur</p>
+                      <p className="mb-2 text-xs font-medium text-neutral-500">{ui.separator}</p>
                       <SidebarDividerEditor
                         divider={section.dividerAfter}
                         onChange={d => handleDividerChange(i, d)}
@@ -975,7 +1037,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
 
                     {/* Empty state */}
                     {def.fields.length === 0 && !def.hasCarousel && !def.specialEditor && section.type !== 'custom-layout' && section.type !== 'stats' && section.type !== 'cinematic-split' && section.type !== 'polaroids' && (
-                      <p className="text-xs text-neutral-400">Aucun champ editable</p>
+                      <p className="text-xs text-neutral-400">{ui.noFields}</p>
                     )}
 
                     {/* Bouton supprimer */}
@@ -984,7 +1046,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
                       className="mt-3 w-full rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-xs text-red-600 hover:bg-red-100 transition-colors"
                       {...(i === 0 ? { 'data-tour': 'sidebar-delete-btn' } : {})}
                     >
-                      Supprimer cette section
+                      {ui.deleteSection}
                     </button>
 
                     {/* Bouton annuler */}
@@ -1019,7 +1081,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
                         }}
                         className="mt-3 w-full rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-xs text-neutral-600 hover:bg-neutral-100 transition-colors"
                       >
-                        Annuler les modifications
+                        {ui.cancelChanges}
                       </button>
                     )}
                   </div>
@@ -1033,7 +1095,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
         <div className="border-t border-neutral-200 px-4 py-3 flex flex-col gap-2">
           {addFlash && (
             <div className="rounded-md bg-emerald-50 border border-emerald-200 px-3 py-2 text-xs text-emerald-700">
-              Section ajoutée. Rechargez la page pour voir les changements.
+              {ui.sectionAdded}
             </div>
           )}
           <button
@@ -1041,13 +1103,13 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
             className="w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 transition-colors shadow-sm"
             data-tour="sidebar-add-section"
           >
-            + Ajouter une section
+            {ui.addSection}
           </button>
           <Link
             href="/back"
             className="block text-center text-xs text-neutral-500 hover:text-neutral-700 underline py-1"
           >
-            Aller au back-office
+            {ui.goToBack}
           </Link>
         </div>
       </div>

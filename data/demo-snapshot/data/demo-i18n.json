@@ -1,0 +1,60 @@
+{
+  "pages": {
+    "home": {
+      "fr": "Accueil",
+      "en": "Home"
+    }
+  },
+  "stats": {
+    "fr": [
+      { "count": 11, "label": "Types de sections" },
+      { "count": 5, "label": "Minutes d'installation" },
+      { "count": 0, "label": "Base de donnees" }
+    ],
+    "en": [
+      { "count": 11, "label": "Section types" },
+      { "count": 5, "label": "Minutes to install" },
+      { "count": 0, "label": "Databases" }
+    ]
+  },
+  "bento": {
+    "fr": {
+      "b1": { "title": "Design System", "body": "Themes, couleurs et typographies entierement personnalisables depuis le back-office." },
+      "b2": { "title": "Responsive", "body": "Mobile-first par defaut." },
+      "b3": { "title": "Open Source", "body": "Code source libre." },
+      "b4": { "title": "Mediatheque integree", "body": "Upload, WebP auto, thumbnails, dossiers." },
+      "b5": { "title": "Sections modulaires", "body": "11 types de sections a combiner librement." }
+    },
+    "en": {
+      "b1": { "title": "Design System", "body": "Fully customizable themes, colors and typography from the back-office." },
+      "b2": { "title": "Responsive", "body": "Mobile-first by default." },
+      "b3": { "title": "Open Source", "body": "Free and open source code." },
+      "b4": { "title": "Built-in media library", "body": "Upload, auto WebP, thumbnails, folders." },
+      "b5": { "title": "Modular sections", "body": "11 section types to combine freely." }
+    }
+  },
+  "contact": {
+    "fr": {
+      "namePlaceholder": "Votre nom",
+      "emailPlaceholder": "Votre email",
+      "phonePlaceholder": "Votre telephone",
+      "locationPlaceholder": "Votre ville",
+      "messagePlaceholder": "Decrivez votre projet...",
+      "submit": "Envoyer la demande",
+      "sending": "Envoi en cours...",
+      "success": "Votre demande a bien été envoyée ! Nous vous répondrons rapidement.",
+      "captchaError": "Veuillez valider le captcha."
+    },
+    "en": {
+      "namePlaceholder": "Your name",
+      "emailPlaceholder": "Your email",
+      "phonePlaceholder": "Your phone",
+      "locationPlaceholder": "Your city",
+      "messagePlaceholder": "Describe your project...",
+      "submit": "Send request",
+      "sending": "Sending...",
+      "success": "Your request has been sent! We'll get back to you shortly.",
+      "captchaError": "Please complete the captcha."
+    }
+  }
+}

@@ -4,6 +4,8 @@ import { readPagesConfig } from '@/lib/data/pages';
 import { readLayoutsConfig } from '@/lib/data/layouts';
 import { getLogoUrl, getFaviconUrl } from '@/lib/data/helpers';
 import { detectLang } from '@/lib/i18n/server';
+import { isDemoMode } from '@/lib/demo';
+import { translatePageTitle, translateSectionProps } from '@/lib/demo-i18n';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SectionRenderer } from '@/components/sections/SectionRenderer';
@@ -37,11 +39,25 @@ export default async function HomePage() {
   const layoutsConfig = readLayoutsConfig();
   const logoUrl = getLogoUrl();
   const lang = await detectLang();
+  const demo = isDemoMode();
 
   const page = pagesConfig.pages.find((p) => p.slug === '/');
   if (!page) {
-    return <div>Page non trouvee</div>;
+    return <div>{lang === 'en' ? 'Page not found' : 'Page non trouvée'}</div>;
   }
+
+  // En mode demo, traduire les titres de page pour la navigation
+  const pages = demo
+    ? pagesConfig.pages.map((p) => ({
+        ...p,
+        title: translatePageTitle(p.id, lang, p.title),
+      }))
+    : pagesConfig.pages;
+
+  // En mode demo, traduire les props des sections (stats, bento, etc.)
+  const sections = demo
+    ? page.sections.map((s) => translateSectionProps(s, lang))
+    : page.sections;
 
   const pageId = page.slug.replace(/^\//, '') || 'index';
 
@@ -49,12 +65,13 @@ export default async function HomePage() {
     <>
       <SiteHeader
         site={site}
-        pages={pagesConfig.pages}
+        pages={pages}
         currentPath="/"
         logoUrl={logoUrl}
+        demoOffset={demo}
       />
 
-      {page.sections.map((section, i) => (
+      {sections.map((section, i) => (
         <div
           key={i}
           id={`section-${i}`}
@@ -65,6 +82,7 @@ export default async function HomePage() {
             section={section}
             site={site}
             layouts={layoutsConfig.layouts}
+            lang={lang}
           />
           <SectionDivider divider={section.dividerAfter} />
         </div>
@@ -74,7 +92,7 @@ export default async function HomePage() {
       <ScrollReveal />
       <SmoothScroll />
       <ContentEditor pageId={pageId} lang={lang} backPath={`/${getAdminSlug()}`} />
-      <SidebarEditor pageId={pageId} lang={lang} sections={page.sections} />
+      <SidebarEditor pageId={pageId} lang={lang} sections={sections} />
     </>
   );
 }

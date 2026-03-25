@@ -210,7 +210,7 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
               spoutilroland/nimble
             </a>
           </div>
-          <span className="justify-self-end text-[0.62rem] tracking-[1.5px] text-[var(--bo-text-dim)] opacity-60">CMS léger — zéro base de données</span>
+          <span className="justify-self-end text-[0.62rem] tracking-[1.5px] text-[var(--bo-text-dim)] opacity-60">{t('demo.footerTagline')}</span>
         </div>
       </footer>
     </div>

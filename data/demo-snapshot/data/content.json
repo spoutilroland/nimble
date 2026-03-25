@@ -39,5 +39,46 @@
       "lay2--layout-why-nimble-c2": "<h3>Léger &amp; Rapide</h3><p>Aucune base de données signifie zero latence de requêtes SQL. Les pages sont rendues en Server Components Next.js avec un cache optimal. Votre site charge en moins d'une seconde.</p>",
       "lay2--layout-why-nimble-c3": "<h3>Flexible & Extensible</h3><p>11 types de sections disponibles, des layouts personnalisables en grille, un systeme de themes complet. Nimble s'adapte a tous les cas d'usage : artisan, freelance, agence, portfolio.</p>"
     }
+  },
+  "en": {
+    "index": {
+      "h1--hero-title": "Nimble",
+      "h1--hero-subtitle": "The ultra-light CMS. Zero database. 100% file-based.",
+      "a1--about-title": "A CMS built for simplicity",
+      "a1--about-p1": "Nimble is a mini CMS designed to create showcase sites and landing pages in minutes. No database, no complex configuration: everything is stored in JSON files.",
+      "a1--about-p2": "Install, customize, publish. Nimble adapts to your brand identity with its dynamic theme system and built-in content editor.",
+      "a1--feature-1-title": "Zero DB",
+      "a1--feature-1-desc": "JSON + file storage. No MySQL, PostgreSQL or anything else. Instant deployment on any hosting.",
+      "a1--feature-2-title": "Visual editor",
+      "a1--feature-2-desc": "Full back-office with content editor, media library, page and section management via drag &amp; drop.",
+      "a1--feature-3-title": "Ultra fast",
+      "a1--feature-3-desc": "Next.js 16 + React 19. Server Components, automatic WebP image optimization, near-perfect Lighthouse score.",
+      "sv1--services-title": "What Nimble does for you",
+      "sv1--service-1-title": "Showcase sites",
+      "sv1--service-1-desc": "Homepages, company presentations, portfolios. Modern templates ready to use.",
+      "sv1--service-2-title": "Landing pages",
+      "sv1--service-2-desc": "Conversion pages with contact form, animated stats and impactful sections.",
+      "sv1--service-3-title": "Media library",
+      "sv1--service-3-desc": "Drag & drop upload, automatic WebP conversion, thumbnails, folder organization.",
+      "sv1--service-4-title": "Themes & Design",
+      "sv1--service-4-desc": "Complete theme system with color palettes, Google Fonts typography and customizable borders.",
+      "cs1--s2-tag": "Showcase",
+      "cs1--s2-title": "Sections that make an impression",
+      "cs1--project-1-title": "Hero Carousel",
+      "cs1--project-1-desc": "Full-screen hero sections with image carousel, parallax and editable text overlay.",
+      "cs1--project-2-title": "Bento Grid",
+      "cs1--project-2-desc": "Flexible bento layout grids with text overlay, perfect for portfolios and showcases.",
+      "cs1--project-3-title": "Cinematic Split",
+      "cs1--project-3-desc": "Cinematic layout with alternating image/text and diagonal borders for a premium feel.",
+      "pol1--s3-tag": "",
+      "pol1--s3-title": "Tech stack",
+      "gal1--gallery-title": "responsive",
+      "ct1--contact-title": "Try Nimble",
+      "lay1--layout-cta-showcase-b2": "Ready to launch your site?",
+      "lay1--layout-cta-showcase-b3": "<p>Nimble installs in under 30 minutes on any Node.js hosting. Clone the repo, run <code>npm install && npm run build</code>, and your site is live.</p><p>No database migrations, no Docker, no complex server configuration. Just a <code>data/</code> folder with your JSON files and an <code>uploads/</code> folder for your images.</p>",
+      "lay2--layout-why-nimble-c1": "Why choose Nimble?",
+      "lay2--layout-why-nimble-c2": "<h3>Light &amp; Fast</h3><p>No database means zero SQL query latency. Pages are rendered with Next.js Server Components with optimal caching. Your site loads in under a second.</p>",
+      "lay2--layout-why-nimble-c3": "<h3>Flexible & Extensible</h3><p>11 section types available, customizable grid layouts, a complete theme system. Nimble adapts to all use cases: craftsman, freelancer, agency, portfolio.</p>"
+    }
   }
 }

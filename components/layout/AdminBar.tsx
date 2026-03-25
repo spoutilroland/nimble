@@ -1,7 +1,10 @@
 import { getSession } from '@/lib/auth/session';
 import { getAdminSlug } from '@/lib/data/setup';
-import { isDemoMode, readDemoConfig } from '@/lib/demo';
+import { isDemoMode } from '@/lib/demo';
+import { detectLang } from '@/lib/i18n/server';
+import { t } from '@/lib/i18n';
 import { LogoutButton } from './LogoutButton';
+import { DemoLangSwitch } from './DemoLangSwitch';
 
 export async function AdminBar() {
   const demo = isDemoMode();
@@ -12,9 +15,10 @@ export async function AdminBar() {
   }
 
   if (demo) {
-    const config = readDemoConfig();
+    const lang = await detectLang();
     return (
-      <div className="relative overflow-hidden z-50">
+      <>
+      <div className="fixed top-0 left-0 right-0 overflow-hidden z-[1001]">
         {/* Fond gradient animé */}
         <div
           className="absolute inset-0"
@@ -63,7 +67,7 @@ export async function AdminBar() {
           </span>
 
           <span className="text-[0.72rem] text-[#6b7280] font-medium">
-            {config.bannerText}
+            {t(lang, 'demo.bannerText')}
           </span>
 
           <span className="w-px h-3 bg-white/[0.06]" />
@@ -74,11 +78,15 @@ export async function AdminBar() {
             data-tour="back-office-link"
             style={{ color: 'rgba(52,211,153,0.8)' }}
           >
-            Back office
+            {t(lang, 'demo.backOffice')}
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-50">
               <path d="M7 17L17 7M17 7H7M17 7v10" />
             </svg>
           </a>
+
+          <span className="w-px h-3 bg-white/[0.06]" />
+
+          <DemoLangSwitch />
         </div>
 
         <style dangerouslySetInnerHTML={{ __html: `
@@ -97,6 +105,9 @@ export async function AdminBar() {
           }
         ` }} />
       </div>
+      {/* Spacer pour compenser la hauteur du bandeau fixed */}
+      <div className="h-[37px]" />
+      </>
     );
   }
 

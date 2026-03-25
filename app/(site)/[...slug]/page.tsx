@@ -4,6 +4,8 @@ import { readPagesConfig } from '@/lib/data/pages';
 import { readLayoutsConfig } from '@/lib/data/layouts';
 import { getLogoUrl, getFaviconUrl } from '@/lib/data/helpers';
 import { detectLang } from '@/lib/i18n/server';
+import { isDemoMode } from '@/lib/demo';
+import { translatePageTitle, translateSectionProps } from '@/lib/demo-i18n';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SectionRenderer } from '@/components/sections/SectionRenderer';
@@ -47,10 +49,19 @@ export default async function DynamicPage({ params }: PageProps) {
 
   const slugPath = '/' + slug.join('/');
   const page = pagesConfig.pages.find((p) => p.slug === slugPath);
+  const demo = isDemoMode();
 
   if (!page) {
     notFound();
   }
+
+  const pages = demo
+    ? pagesConfig.pages.map((p) => ({ ...p, title: translatePageTitle(p.id, lang, p.title) }))
+    : pagesConfig.pages;
+
+  const sections = demo
+    ? page.sections.map((s) => translateSectionProps(s, lang))
+    : page.sections;
 
   const pageId = page.slug.replace(/^\//, '') || 'index';
 
@@ -58,12 +69,13 @@ export default async function DynamicPage({ params }: PageProps) {
     <>
       <SiteHeader
         site={site}
-        pages={pagesConfig.pages}
+        pages={pages}
         currentPath={slugPath}
         logoUrl={logoUrl}
+        demoOffset={demo}
       />
 
-      {page.sections.map((section, i) => (
+      {sections.map((section, i) => (
         <div
           key={i}
           id={`section-${i}`}
@@ -74,6 +86,7 @@ export default async function DynamicPage({ params }: PageProps) {
             section={section}
             site={site}
             layouts={layoutsConfig.layouts}
+            lang={lang}
           />
           <SectionDivider divider={section.dividerAfter} />
         </div>

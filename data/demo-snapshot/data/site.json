@@ -44,7 +44,8 @@
   "logoPosition": "left",
   "languages": {
     "available": [
-      "fr"
+      "fr",
+      "en"
     ],
     "default": "fr"
   },

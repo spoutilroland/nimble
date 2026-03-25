@@ -26,7 +26,7 @@ const DEFAULT_CONFIG: DemoConfig = {
     maxFolders: 5,
   },
   resetInactivityMinutes: 30,
-  bannerText: 'Mode Demo — Tout est réinitialisé après 30 min d\'inactivité',
+  bannerText: '',
 };
 
 /** Vérifie si le mode demo est activé (env var) */

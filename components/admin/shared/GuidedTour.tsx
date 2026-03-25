@@ -4,8 +4,10 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { X, ChevronRight, SkipForward, Lightbulb, Check } from 'lucide-react';
 import {
-  TOUR_STEPS, type TourStep,
+  type TourStep,
+  getTourSteps, getTourUi,
   isTourDone, markTourDone, getRandomTip,
+  detectClientLang,
 } from '@/lib/tour/config';
 
 const TIP_DISPLAY_MS = 6000;
@@ -99,13 +101,16 @@ function Arrow({ direction, color }: { direction: 'top' | 'bottom' | 'left' | 'r
 
 // ── Coach mark ──
 
-function CoachMark({ step, onNext, onSkip, onClose, stepIndex, totalSteps }: {
+function CoachMark({ step, onNext, onSkip, onClose, stepIndex, totalSteps, ui, lang, onLangChange }: {
   step: TourStep;
   onNext: () => void;
   onSkip: () => void;
   onClose: () => void;
   stepIndex: number;
   totalSteps: number;
+  ui: { next: string; done: string; skip: string; close: string };
+  lang: string;
+  onLangChange: (lang: string) => void;
 }) {
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<Position | null>(null);
@@ -277,6 +282,21 @@ function CoachMark({ step, onNext, onSkip, onClose, stepIndex, totalSteps }: {
                 <span className="text-[0.65rem] text-[var(--bo-text-dim,#8892a4)] opacity-40 tabular-nums">
                   {stepIndex + 1}/{totalSteps}
                 </span>
+                {/* Lang flags */}
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => { onLangChange('fr'); document.cookie = `lang=fr; path=/; max-age=${365 * 24 * 3600}; SameSite=Lax`; }}
+                    className={`rounded-sm overflow-hidden border cursor-pointer transition-all duration-200 ${lang === 'fr' ? 'border-[var(--bo-text-dim,#8892a4)]/40 opacity-100' : 'border-transparent opacity-30 hover:opacity-60'}`}
+                  >
+                    <svg viewBox="0 0 16 12" width="14" height="10"><rect width="5.33" height="12" fill="#002395"/><rect x="5.33" width="5.34" height="12" fill="#fff"/><rect x="10.67" width="5.33" height="12" fill="#ED2939"/></svg>
+                  </button>
+                  <button
+                    onClick={() => { onLangChange('en'); document.cookie = `lang=en; path=/; max-age=${365 * 24 * 3600}; SameSite=Lax`; }}
+                    className={`rounded-sm overflow-hidden border cursor-pointer transition-all duration-200 ${lang === 'en' ? 'border-[var(--bo-text-dim,#8892a4)]/40 opacity-100' : 'border-transparent opacity-30 hover:opacity-60'}`}
+                  >
+                    <svg viewBox="0 0 16 12" width="14" height="10"><rect width="16" height="12" fill="#012169"/><path d="M0 0L16 12M16 0L0 12" stroke="#fff" strokeWidth="2"/><path d="M0 0L16 12M16 0L0 12" stroke="#C8102E" strokeWidth="1"/><path d="M8 0V12M0 6H16" stroke="#fff" strokeWidth="3.5"/><path d="M8 0V12M0 6H16" stroke="#C8102E" strokeWidth="2"/></svg>
+                  </button>
+                </div>
                 <button
                   onClick={onClose}
                   className="shrink-0 p-1 rounded-lg bg-transparent border-none text-[var(--bo-text-dim,#8892a4)] opacity-30 cursor-pointer hover:opacity-80 hover:bg-white/[0.04] transition-all duration-200"
@@ -301,7 +321,7 @@ function CoachMark({ step, onNext, onSkip, onClose, stepIndex, totalSteps }: {
                 <kbd className="inline-flex items-center justify-center px-1.5 py-0.5 rounded bg-white/[0.04] border border-white/[0.06] text-[0.6rem] text-[var(--bo-text-dim,#8892a4)] opacity-40 font-mono">
                   Esc
                 </kbd>
-                <span className="text-[0.6rem] text-[var(--bo-text-dim,#8892a4)] opacity-25">fermer</span>
+                <span className="text-[0.6rem] text-[var(--bo-text-dim,#8892a4)] opacity-25">{ui.close}</span>
               </div>
 
               <div className="flex items-center gap-2">
@@ -311,7 +331,7 @@ function CoachMark({ step, onNext, onSkip, onClose, stepIndex, totalSteps }: {
                     className="group inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-transparent border border-[var(--bo-border,rgba(255,255,255,0.06))] text-[var(--bo-text-dim,#8892a4)] text-[0.72rem] font-medium cursor-pointer hover:text-[var(--bo-text,#eceef5)] hover:border-[var(--bo-border-hover,rgba(255,255,255,0.15))] transition-all duration-200"
                   >
                     <SkipForward size={11} className="group-hover:translate-x-[1px] transition-transform duration-200" />
-                    Passer
+                    {ui.skip}
                   </button>
                 )}
                 <button
@@ -330,7 +350,7 @@ function CoachMark({ step, onNext, onSkip, onClose, stepIndex, totalSteps }: {
                     e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
-                  {isLast ? 'C\'est parti !' : 'Suivant'}
+                  {isLast ? ui.done : ui.next}
                   {!isLast && <ChevronRight size={13} className="group-hover:translate-x-[2px] transition-transform duration-200" />}
                 </button>
               </div>
@@ -420,16 +440,21 @@ export function GuidedTour() {
   const [stepIndex, setStepIndex] = useState(0);
   const [tipText, setTipText] = useState('');
   const [mounted, setMounted] = useState(false);
+  const [lang, setLang] = useState('fr');
 
   useEffect(() => {
     setMounted(true);
+    setLang(detectClientLang());
   }, []);
+
+  const steps = getTourSteps(lang);
+  const ui = getTourUi(lang);
 
   useEffect(() => {
     if (!mounted) return;
     const timer = setTimeout(() => {
       if (isTourDone()) {
-        const tip = getRandomTip();
+        const tip = getRandomTip(lang);
         setTipText(tip.text);
         setMode('tip');
       } else {
@@ -437,16 +462,16 @@ export function GuidedTour() {
       }
     }, 1500);
     return () => clearTimeout(timer);
-  }, [mounted]);
+  }, [mounted, lang]);
 
   const handleNext = useCallback(() => {
-    if (stepIndex < TOUR_STEPS.length - 1) {
+    if (stepIndex < steps.length - 1) {
       setStepIndex((i) => i + 1);
     } else {
       markTourDone();
       setMode('done');
     }
-  }, [stepIndex]);
+  }, [stepIndex, steps.length]);
 
   const handleSkip = useCallback(() => {
     markTourDone();
@@ -467,12 +492,15 @@ export function GuidedTour() {
   if (mode === 'tour') {
     return (
       <CoachMark
-        step={TOUR_STEPS[stepIndex]}
+        step={steps[stepIndex]}
         stepIndex={stepIndex}
-        totalSteps={TOUR_STEPS.length}
+        totalSteps={steps.length}
         onNext={handleNext}
         onSkip={handleSkip}
         onClose={handleClose}
+        ui={ui}
+        lang={lang}
+        onLangChange={setLang}
       />
     );
   }

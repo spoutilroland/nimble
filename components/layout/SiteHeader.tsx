@@ -10,6 +10,7 @@ interface Props {
   pages: PageData[];
   currentPath: string;
   logoUrl: string | null;
+  demoOffset?: boolean;
 }
 
 const MAX_NAV = 5;
@@ -30,7 +31,7 @@ function NavLink({ page, currentPath }: { page: PageData; currentPath: string })
   );
 }
 
-export function SiteHeader({ site, pages, currentPath, logoUrl }: Props) {
+export function SiteHeader({ site, pages, currentPath, logoUrl, demoOffset }: Props) {
   const logoMode = site.logoMode || 'logo-only';
   const logoPos = site.logoPosition || 'left';
 
@@ -69,7 +70,7 @@ export function SiteHeader({ site, pages, currentPath, logoUrl }: Props) {
   );
 
   return (
-    <header className="header sticky top-0 z-[1000] py-6 backdrop-blur-[10px] border-b-[3px] border-b-[var(--primary)]">
+    <header className={`header sticky ${demoOffset ? 'top-[37px]' : 'top-0'} z-[1000] py-6 backdrop-blur-[10px] border-b-[3px] border-b-[var(--primary)]`}>
       <div className="max-w-[1200px] mx-auto px-5">
         {logoPos === 'center' ? (
           /* ── Mode centré : un seul bloc logo+nav, centré dans le header ── */

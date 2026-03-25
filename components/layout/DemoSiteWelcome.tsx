@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { X, ChevronRight, ArrowUpRight, Sparkles } from 'lucide-react';
+import { detectClientLang } from '@/lib/tour/config';
 
 const COOKIE_NAME = 'nimble-site-welcome-done';
 const SPOTLIGHT_PAD = 10;
@@ -19,7 +20,6 @@ interface SiteStep {
 
 function openSidebar() {
   const btn = document.querySelector('[data-tour="sidebar-toggle"]') as HTMLButtonElement | null;
-  // Ouvrir la sidebar seulement si elle est fermée (le panneau est hors écran)
   const panel = document.querySelector('.fixed.left-0.top-0.z-\\[9998\\]');
   if (btn && panel && panel.classList.contains('-translate-x-full')) {
     btn.click();
@@ -27,9 +27,8 @@ function openSidebar() {
 }
 
 function expandFirstSection() {
-  // Déplier la première section si pas encore dépliée
   const expanded = document.querySelector('[data-tour="sidebar-section-expanded"]');
-  if (expanded) return; // déjà dépliée
+  if (expanded) return;
   const first = document.querySelector('[data-tour="sidebar-section-first"]');
   if (first) {
     const expandBtn = first.querySelector('button');
@@ -37,68 +36,69 @@ function expandFirstSection() {
   }
 }
 
-const SITE_STEPS: SiteStep[] = [
-  {
-    target: null,
-    title: 'Bienvenue sur Nimble',
-    body: 'Un mini CMS que vous pouvez explorer librement.\nModifiez le design, le contenu et les médias — chaque changement est visible instantanément.',
-    icon: '✦',
-    cta: { label: 'Ouvrir le back office', href: '/back' },
+interface SiteTexts {
+  steps: { title: string; body: string; cta?: { label: string; href: string } }[];
+  tagline: string;
+  next: string;
+  done: string;
+}
+
+const SITE_TEXTS: Record<string, SiteTexts> = {
+  fr: {
+    steps: [
+      { title: 'Bienvenue sur Nimble', body: 'Un mini CMS que vous pouvez explorer librement.\nModifiez le design, le contenu et les médias — chaque changement est visible instantanément.', cta: { label: 'Back office', href: '/back' } },
+      { title: 'Accès au back office', body: 'Ce lien vous emmène vers le tableau de bord d\'administration.', cta: { label: 'Back office', href: '/back' } },
+      { title: 'Édition en direct', body: 'Ce bouton ouvre la sidebar d\'édition. Voyons ce qu\'elle permet de faire.' },
+      { title: 'Vos sections', body: 'La sidebar liste toutes les sections de la page. Cliquez sur une section pour déplier ses options d\'édition.' },
+      { title: 'Modifier une section', body: 'Chaque section dépliée révèle ses champs : textes, images, options. Les modifications sont enregistrées instantanément.' },
+      { title: 'Supprimer une section', body: 'Retirez une section en un clic. Rechargez ensuite la page pour voir le changement appliqué.' },
+      { title: 'Ajouter une section', body: 'Ce bouton ouvre un catalogue de sections prêtes à l\'emploi : Hero, Galerie, Services, Contact et bien d\'autres.' },
+      { title: 'Réordonner les sections', body: 'Glissez cette poignée pour déplacer une section. L\'ordre dans la sidebar correspond à l\'ordre sur la page.' },
+      { title: 'Édition inline', body: 'Double-cliquez sur un texte ou une image pour le modifier directement. Essayez avec ce titre !' },
+    ],
+    tagline: 'Mini CMS — zéro base de données',
+    next: 'Suivant',
+    done: 'C\'est parti !',
   },
-  {
-    target: '[data-tour="back-office-link"]',
-    title: 'Accès au back office',
-    body: 'Ce lien vous emmène vers le tableau de bord d\'administration.',
-    icon: '⊟',
-    cta: { label: 'Back office', href: '/back' },
+  en: {
+    steps: [
+      { title: 'Welcome to Nimble', body: 'A mini CMS you can explore freely.\nEdit the design, content and media — every change is visible instantly.', cta: { label: 'Back office', href: '/back' } },
+      { title: 'Back office access', body: 'This link takes you to the administration dashboard.', cta: { label: 'Back office', href: '/back' } },
+      { title: 'Live editing', body: 'This button opens the editing sidebar. Let\'s see what it can do.' },
+      { title: 'Your sections', body: 'The sidebar lists all page sections. Click a section to expand its editing options.' },
+      { title: 'Edit a section', body: 'Each expanded section reveals its fields: text, images, options. Changes are saved instantly.' },
+      { title: 'Delete a section', body: 'Remove a section in one click. Reload the page to see the change applied.' },
+      { title: 'Add a section', body: 'This button opens a catalog of ready-to-use sections: Hero, Gallery, Services, Contact and more.' },
+      { title: 'Reorder sections', body: 'Drag this handle to move a section. The order in the sidebar matches the order on the page.' },
+      { title: 'Inline editing', body: 'Double-click any text or image to edit it directly. Try it with this title!' },
+    ],
+    tagline: 'Mini CMS — zero database',
+    next: 'Next',
+    done: 'Let\'s go!',
   },
-  {
-    target: '[data-tour="sidebar-toggle"]',
-    title: 'Édition en direct',
-    body: 'Ce bouton ouvre la sidebar d\'édition. Voyons ce qu\'elle permet de faire.',
-    icon: '⊞',
-  },
-  {
-    target: '[data-tour="sidebar-section-first"]',
-    title: 'Vos sections',
-    body: 'La sidebar liste toutes les sections de la page. Cliquez sur une section pour déplier ses options d\'édition.',
-    icon: '☰',
-    onEnter: openSidebar,
-    waitForTarget: true,
-  },
-  {
-    target: '[data-tour="sidebar-section-expanded"]',
-    title: 'Modifier une section',
-    body: 'Chaque section dépliée révèle ses champs : textes, images, options. Les modifications sont enregistrées instantanément.',
-    icon: '✎',
-    onEnter: expandFirstSection,
-    waitForTarget: true,
-  },
-  {
-    target: '[data-tour="sidebar-delete-btn"]',
-    title: 'Supprimer une section',
-    body: 'Retirez une section en un clic. Rechargez ensuite la page pour voir le changement appliqué.',
-    icon: '✕',
-  },
-  {
-    target: '[data-tour="sidebar-add-section"]',
-    title: 'Ajouter une section',
-    body: 'Ce bouton ouvre un catalogue de sections prêtes à l\'emploi : Hero, Galerie, Services, Contact et bien d\'autres.',
-    icon: '✚',
-  },
-  {
-    target: '[data-tour="sidebar-grip"]',
-    title: 'Réordonner les sections',
-    body: 'Glissez cette poignée pour déplacer une section. L\'ordre dans la sidebar correspond à l\'ordre sur la page.',
-    icon: '⋮',
-  },
-  {
-    target: '.hero-title',
-    title: 'Édition inline',
-    body: 'Double-cliquez sur un texte ou une image pour le modifier directement. Essayez avec ce titre !',
-    icon: '✎',
-  },
+};
+
+const STEP_DEFS: Omit<SiteStep, 'title' | 'body' | 'cta'>[] = [
+  { target: null, icon: '✦' },
+  { target: '[data-tour="back-office-link"]', icon: '⊟' },
+  { target: '[data-tour="sidebar-toggle"]', icon: '⊞' },
+  { target: '[data-tour="sidebar-section-first"]', icon: '☰', onEnter: openSidebar, waitForTarget: true },
+  { target: '[data-tour="sidebar-section-expanded"]', icon: '✎', onEnter: expandFirstSection, waitForTarget: true },
+  { target: '[data-tour="sidebar-delete-btn"]', icon: '✕' },
+  { target: '[data-tour="sidebar-add-section"]', icon: '✚' },
+  { target: '[data-tour="sidebar-grip"]', icon: '⋮' },
+  { target: '.hero-title', icon: '✎' },
 ];
+
+function getSiteSteps(lang: string): SiteStep[] {
+  const texts = SITE_TEXTS[lang] || SITE_TEXTS.fr;
+  return STEP_DEFS.map((def, i) => ({
+    ...def,
+    title: texts.steps[i].title,
+    body: texts.steps[i].body,
+    cta: texts.steps[i].cta,
+  }));
+}
 
 function isWelcomeDone(): boolean {
   if (typeof document === 'undefined') return false;
@@ -117,6 +117,7 @@ function Typewriter({ text, speed = 20, onDone }: { text: string; speed?: number
 
   useEffect(() => {
     indexRef.current = 0;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDisplayed('');
 
     const interval = setInterval(() => {
@@ -180,14 +181,19 @@ export function DemoSiteWelcome() {
   const [visible, setVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [done, setDone] = useState(false);
-    const [bodyReady, setBodyReady] = useState(false);
+  const [bodyReady, setBodyReady] = useState(false);
   const [pos, setPos] = useState<{ top: number; left: number; arrow: 'top' | 'bottom' } | null>(null);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
+  const [lang, setLang] = useState('fr');
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
+    setLang(detectClientLang());
   }, []);
+
+  const SITE_STEPS = getSiteSteps(lang);
+  const texts = SITE_TEXTS[lang] || SITE_TEXTS.fr;
 
   useEffect(() => {
     if (!mounted || isWelcomeDone() || done) return;
@@ -197,7 +203,6 @@ export function DemoSiteWelcome() {
 
     const step = SITE_STEPS[stepIndex];
 
-    // Exécuter l'action d'entrée (ouvrir sidebar, déplier section, etc.)
     if (step.onEnter) step.onEnter();
 
     const positionTooltip = () => {
@@ -228,7 +233,6 @@ export function DemoSiteWelcome() {
       });
     };
 
-    // Si waitForTarget, on attend que l'élément apparaisse dans le DOM
     if (step.waitForTarget && step.target) {
       const delay = stepIndex === 0 ? 600 : 200;
       let attempts = 0;
@@ -248,7 +252,8 @@ export function DemoSiteWelcome() {
       const timer = setTimeout(positionTooltip, stepIndex === 0 ? 600 : 200);
       return () => clearTimeout(timer);
     }
-  }, [mounted, stepIndex, done]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mounted, stepIndex, done, lang]);
 
   const handleClose = useCallback(() => {
     setVisible(false);
@@ -264,7 +269,7 @@ export function DemoSiteWelcome() {
     } else {
       handleClose();
     }
-  }, [stepIndex, handleClose]);
+  }, [stepIndex, handleClose, SITE_STEPS.length]);
 
   if (!mounted || isWelcomeDone() || done) return null;
 
@@ -274,7 +279,7 @@ export function DemoSiteWelcome() {
 
   return createPortal(
     <>
-      {/* Overlay — z au-dessus de la sidebar (z-[9998]) */}
+      {/* Overlay */}
       {isCentered ? (
         <div
           className={`fixed inset-0 z-[10000] transition-all duration-500 ${visible ? 'bg-black/70 backdrop-blur-[6px]' : 'bg-black/0'}`}
@@ -287,17 +292,16 @@ export function DemoSiteWelcome() {
             left: targetRect.left - SPOTLIGHT_PAD,
             width: targetRect.width + SPOTLIGHT_PAD * 2,
             height: targetRect.height + SPOTLIGHT_PAD * 2,
-            borderRadius: 14,
+            borderRadius: 12,
             boxShadow: '0 0 0 9999px rgba(0,0,0,0.65)',
           }}
         >
-          {/* Double pulse ring */}
           <div
-            className="absolute inset-[-6px] rounded-[18px] border border-emerald-400/30"
+            className="absolute inset-[-6px] rounded-[16px] border border-emerald-400/30"
             style={{ animation: 'sw-pulse-ring 2s ease-in-out infinite' }}
           />
           <div
-            className="absolute inset-[-12px] rounded-[22px] border border-emerald-400/10"
+            className="absolute inset-[-12px] rounded-[20px] border border-emerald-400/10"
             style={{ animation: 'sw-pulse-ring 2s ease-in-out infinite 0.3s' }}
           />
         </div>
@@ -329,7 +333,6 @@ export function DemoSiteWelcome() {
         )}
 
         <div className="relative overflow-hidden bg-[#13161f] border border-white/[0.06] rounded-2xl shadow-[0_24px_64px_rgba(0,0,0,0.7)] min-w-[300px]" style={{ maxWidth: isCentered ? 420 : 380 }}>
-          {/* Orbs en background (centré uniquement) */}
           {isCentered && <FloatingOrbs />}
 
           {/* Progress gradient en haut */}
@@ -365,26 +368,50 @@ export function DemoSiteWelcome() {
                   {isCentered && stepIndex === 0 && (
                     <span className="inline-flex items-center gap-1 mt-1 text-[0.65rem] text-emerald-400/60 font-semibold uppercase tracking-wider">
                       <Sparkles size={10} />
-                      Mini CMS — zéro base de données
+                      {texts.tagline}
                     </span>
                   )}
                 </div>
               </div>
-              <button
-                onClick={handleClose}
-                className="shrink-0 p-1.5 rounded-lg bg-transparent border-none text-white/20 cursor-pointer hover:text-white/60 hover:bg-white/[0.04] transition-all duration-200"
-              >
-                <X size={14} />
-              </button>
+              <div className="flex items-center gap-2 shrink-0">
+                {/* Lang flags */}
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => { setLang('fr'); document.cookie = `lang=fr; path=/; max-age=${365 * 24 * 3600}; SameSite=Lax`; }}
+                    className={`rounded-sm overflow-hidden border cursor-pointer transition-all duration-200 ${lang === 'fr' ? 'border-white/30 opacity-100' : 'border-transparent opacity-30 hover:opacity-60'}`}
+                    title="Français"
+                  >
+                    <svg viewBox="0 0 16 12" width="14" height="10"><rect width="5.33" height="12" fill="#002395"/><rect x="5.33" width="5.34" height="12" fill="#fff"/><rect x="10.67" width="5.33" height="12" fill="#ED2939"/></svg>
+                  </button>
+                  <button
+                    onClick={() => { setLang('en'); document.cookie = `lang=en; path=/; max-age=${365 * 24 * 3600}; SameSite=Lax`; }}
+                    className={`rounded-sm overflow-hidden border cursor-pointer transition-all duration-200 ${lang === 'en' ? 'border-white/30 opacity-100' : 'border-transparent opacity-30 hover:opacity-60'}`}
+                    title="English"
+                  >
+                    <svg viewBox="0 0 16 12" width="14" height="10"><rect width="16" height="12" fill="#012169"/><path d="M0 0L16 12M16 0L0 12" stroke="#fff" strokeWidth="2"/><path d="M0 0L16 12M16 0L0 12" stroke="#C8102E" strokeWidth="1"/><path d="M8 0V12M0 6H16" stroke="#fff" strokeWidth="3.5"/><path d="M8 0V12M0 6H16" stroke="#C8102E" strokeWidth="2"/></svg>
+                  </button>
+                </div>
+                <button
+                  onClick={handleClose}
+                  className="shrink-0 p-1.5 rounded-lg bg-transparent border-none text-white/20 cursor-pointer hover:text-white/60 hover:bg-white/[0.04] transition-all duration-200"
+                >
+                  <X size={14} />
+                </button>
+              </div>
             </div>
 
-            {/* Body avec typewriter */}
-            <div className={`text-[0.82rem] text-white/45 leading-[1.7] m-0 ${isCentered ? 'mb-5' : 'mb-4'} min-h-[2.5em]`}>
-              {bodyReady ? (
-                <Typewriter text={step.body} speed={10} />
-              ) : (
-                <span className="inline-block w-[2px] h-[0.9em] bg-emerald-400/80 ml-[1px] align-middle" style={{ animation: 'tw-blink 0.8s step-end infinite' }} />
-              )}
+            {/* Body avec typewriter — texte invisible réserve l'espace */}
+            <div className={`relative text-[0.82rem] leading-[1.7] m-0 ${isCentered ? 'mb-5' : 'mb-4'}`}>
+              <span className="invisible whitespace-pre-line">{step.body.split('\n').map((line, i) => (
+                <span key={i}>{i > 0 && <br />}{line}</span>
+              ))}</span>
+              <div className="absolute inset-0 text-white/45">
+                {bodyReady ? (
+                  <Typewriter text={step.body} speed={10} />
+                ) : (
+                  <span className="inline-block w-[2px] h-[0.9em] bg-emerald-400/80 ml-[1px] align-middle" style={{ animation: 'tw-blink 0.8s step-end infinite' }} />
+                )}
+              </div>
             </div>
 
             {/* Footer */}
@@ -439,7 +466,7 @@ export function DemoSiteWelcome() {
                     e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
-                  {isLast ? 'C\'est parti !' : 'Suivant'}
+                  {isLast ? texts.done : texts.next}
                   {!isLast && <ChevronRight size={14} />}
                 </button>
               </div>

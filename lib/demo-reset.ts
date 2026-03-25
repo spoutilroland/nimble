@@ -11,6 +11,7 @@ const SNAPSHOT_UPLOADS = join(SNAPSHOT_DIR, 'uploads');
 const DATA_FILES = [
   'carousels.json',
   'content.json',
+  'demo-i18n.json',
   'layouts.json',
   'media.json',
   'pages.json',

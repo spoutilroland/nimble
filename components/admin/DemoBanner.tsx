@@ -3,12 +3,15 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { RotateCcw, Radio, ExternalLink } from 'lucide-react';
 import { resetTourCookie } from '@/lib/tour/config';
+import { useI18n } from '@/lib/i18n/context';
+import { DemoLangSwitch } from '@/components/layout/DemoLangSwitch';
 
 interface DemoBannerProps {
   text: string;
 }
 
 export function DemoBanner({ text }: DemoBannerProps) {
+  const { t } = useI18n();
   const [resetting, setResetting] = useState(false);
   const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -34,6 +37,8 @@ export function DemoBanner({ text }: DemoBannerProps) {
       if (res.ok) {
         resetTourCookie();
         document.cookie = 'nimble-site-welcome-done=; path=/; max-age=0';
+        // Réinitialiser la sidebar côté site
+        localStorage.removeItem('sidebar-editor-open');
         window.location.reload();
       }
     } finally {
@@ -93,7 +98,7 @@ export function DemoBanner({ text }: DemoBannerProps) {
 
         {/* Texte */}
         <span className="text-[0.78rem] text-[#9ca3af] font-medium tracking-wide">
-          {text || 'Tout est réinitialisé après 30 min d\'inactivité'}
+          {text || t('demo.bannerText')}
         </span>
 
         <span className="w-px h-3.5 bg-white/[0.06]" />
@@ -103,7 +108,7 @@ export function DemoBanner({ text }: DemoBannerProps) {
           href="/"
           className="group inline-flex items-center gap-1 text-[0.72rem] text-[#9ca3af] font-medium no-underline hover:text-white transition-all duration-300"
         >
-          Voir le site
+          {t('demo.viewSite')}
           <ExternalLink size={10} className="opacity-40 group-hover:opacity-80 transition-all duration-300 group-hover:translate-x-[1px] group-hover:-translate-y-[1px]" />
         </a>
 
@@ -119,8 +124,12 @@ export function DemoBanner({ text }: DemoBannerProps) {
             size={11}
             className={`transition-transform duration-500 ${resetting ? 'animate-spin' : 'group-hover:rotate-[-30deg]'}`}
           />
-          {resetting ? 'Reset...' : 'Reset demo'}
+          {resetting ? t('demo.resetting') : t('demo.reset')}
         </button>
+
+        <span className="w-px h-3.5 bg-white/[0.06]" />
+
+        <DemoLangSwitch />
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
