@@ -1,9 +1,10 @@
 import { existsSync, mkdirSync, readdirSync, copyFileSync, statSync } from 'fs';
 import { join } from 'path';
+import { getDataDir, getUploadsDir } from '@/lib/paths';
 
-const DATA_DIR = join(process.cwd(), 'data');
-const UPLOADS_DIR = join(process.cwd(), 'uploads');
-const SNAPSHOT_DIR = join(process.cwd(), 'data', 'demo-snapshot');
+const DATA_DIR = getDataDir();
+const UPLOADS_DIR = getUploadsDir();
+const SNAPSHOT_DIR = join(getDataDir(), 'demo-snapshot');
 const SNAPSHOT_DATA = join(SNAPSHOT_DIR, 'data');
 const SNAPSHOT_UPLOADS = join(SNAPSHOT_DIR, 'uploads');
 

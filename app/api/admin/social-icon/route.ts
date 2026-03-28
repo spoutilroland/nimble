@@ -6,9 +6,10 @@ import fsp from 'fs/promises';
 import { withAuth } from '@/lib/auth';
 import { processImageWithSharp, MIME_TO_EXT, ALLOWED_TYPES, MAX_FILE_SIZE } from '@/lib/data';
 import { uploadToBlob, deleteFromBlobByPrefix } from '@/lib/storage';
+import { getUploadsDir } from '@/lib/paths';
 
 const NETWORKS = ['linkedin', 'facebook', 'instagram', 'x', 'tiktok', 'youtube', 'pinterest', 'github'];
-const socialDir = path.join(process.cwd(), 'uploads', 'social');
+const socialDir = path.join(getUploadsDir(), 'social');
 
 export const POST = withAuth(async (req: NextRequest) => {
   try {

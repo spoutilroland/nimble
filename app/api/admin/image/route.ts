@@ -6,8 +6,9 @@ import {
   readMediaRegistry,
 } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
+import { getDataDir } from '@/lib/paths';
 
-const dataDir = path.join(process.cwd(), 'data');
+const dataDir = getDataDir();
 
 export const DELETE = withAuth(async (req: NextRequest) => {
   try {

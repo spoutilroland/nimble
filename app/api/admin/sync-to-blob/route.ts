@@ -14,9 +14,10 @@ import path from 'path';
 import { withAuth } from '@/lib/auth';
 import { isBlobEnabled, uploadToBlob } from '@/lib/storage';
 import { put } from '@vercel/blob';
+import { getDataDir, getUploadsDir } from '@/lib/paths';
 
-const DATA_DIR = path.join(process.cwd(), 'data');
-const UPLOADS_DIR = path.join(process.cwd(), 'uploads');
+const DATA_DIR = getDataDir();
+const UPLOADS_DIR = getUploadsDir();
 
 // Fichiers JSON à synchroniser
 // media.json EXCLU : géré uniquement via opérations atomiques (append/remove)

@@ -3,8 +3,9 @@ import fsp from 'fs/promises';
 import path from 'path';
 import type { ThemeConfig } from '@/lib/types';
 import { syncJsonToBlob } from '@/lib/storage';
+import { getDataDir } from '@/lib/paths';
 
-const themeFile = path.join(process.cwd(), 'data', 'theme.json');
+const themeFile = path.join(getDataDir(), 'theme.json');
 
 export function readThemeFile(): ThemeConfig {
   try {

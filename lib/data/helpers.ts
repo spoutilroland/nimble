@@ -1,8 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import sharp from 'sharp';
+import { getUploadsDir } from '@/lib/paths';
 
-const uploadsDir = path.join(process.cwd(), 'uploads');
+const uploadsDir = getUploadsDir();
 
 export function getLogoUrl(): string {
   try {

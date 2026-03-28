@@ -8,10 +8,11 @@ import { pushUndo } from '@/lib/undoManager';
 import { getSectionFields } from '@/lib/sidebar/section-fields';
 import { isDemoMode, readDemoConfig } from '@/lib/demo';
 import type { SectionType } from '@/lib/types/pages';
+import { getDataDir } from '@/lib/paths';
 
 export const POST = withAuth(async (req: NextRequest) => {
   try {
-    const siteFile = path.join(process.cwd(), 'data');
+    const siteFile = getDataDir();
     pushUndo('Pages et sections', {
       'pages.json': path.join(siteFile, 'pages.json'),
       'carousels.json': path.join(siteFile, 'carousels.json'),

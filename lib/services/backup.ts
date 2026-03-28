@@ -3,6 +3,7 @@ import fs from 'fs';
 import fsp from 'fs/promises';
 import archiver from 'archiver';
 import AdmZip from 'adm-zip';
+import { getDataDir, getUploadsDir } from '@/lib/paths';
 
 import {
   readSiteConfig, writeSiteConfig,
@@ -407,8 +408,8 @@ function validateAndMerge(filename: string, data: unknown): { data: unknown; war
  * Les fichiers absents localement sont récupérés depuis Vercel Blob.
  */
 export async function buildBackupExport(): Promise<Buffer> {
-  const dataDir = path.join(process.cwd(), 'data');
-  const uploadsDir = path.join(process.cwd(), 'uploads');
+  const dataDir = getDataDir();
+  const uploadsDir = getUploadsDir();
 
   const chunks: Buffer[] = [];
 
@@ -508,8 +509,8 @@ export async function restoreBackup(zipBuffer: Buffer): Promise<RestoreResult> {
     warnings: [],
   };
 
-  const uploadsDir = path.join(process.cwd(), 'uploads');
-  const dataDir = path.join(process.cwd(), 'data');
+  const uploadsDir = getUploadsDir();
+  const dataDir = getDataDir();
 
   // Assure que les dossiers existent
   await fsp.mkdir(dataDir, { recursive: true });
@@ -597,9 +598,10 @@ export async function restoreBackup(zipBuffer: Buffer): Promise<RestoreResult> {
 
   for (const entry of mediaEntries) {
     try {
-      // uploads/media/foo.jpg → {cwd}/uploads/media/foo.jpg
+      // uploads/media/foo.jpg → {uploadsDir}/media/foo.jpg
       const relativePath = entry.entryName; // uploads/dir/file
-      const destPath = path.join(process.cwd(), relativePath);
+      const subPath = relativePath.startsWith('uploads/') ? relativePath.slice('uploads/'.length) : relativePath;
+      const destPath = path.join(getUploadsDir(), subPath);
       const destDir = path.dirname(destPath);
       await fsp.mkdir(destDir, { recursive: true });
       await fsp.writeFile(destPath, entry.getData());

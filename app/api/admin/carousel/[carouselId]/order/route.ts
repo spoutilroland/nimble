@@ -5,6 +5,7 @@ import path from 'path';
 import { withAuth } from '@/lib/auth';
 import { readCarouselsConfig, writeCarouselsConfig, readMediaRegistry } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
+import { getDataDir } from '@/lib/paths';
 
 export const POST = withAuth(async (
   req: NextRequest,
@@ -25,7 +26,7 @@ export const POST = withAuth(async (
     }
 
     pushUndo('Ordre images', {
-      'carousels.json': path.join(process.cwd(), 'data', 'carousels.json'),
+      'carousels.json': path.join(getDataDir(), 'carousels.json'),
     });
 
     const mediaData = readMediaRegistry();

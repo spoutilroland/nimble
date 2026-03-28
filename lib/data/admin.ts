@@ -3,8 +3,9 @@ import fsp from 'fs/promises';
 import path from 'path';
 import type { AdminData } from '@/lib/types';
 import { syncJsonToBlob } from '@/lib/storage';
+import { getDataDir } from '@/lib/paths';
 
-const adminFile = path.join(process.cwd(), 'data', 'admin.json');
+const adminFile = path.join(getDataDir(), 'admin.json');
 
 export function readAdminHash(): string | null {
   try {

@@ -3,11 +3,12 @@ import fsp from 'fs/promises';
 import path from 'path';
 import type { SnapshotMeta, SnapshotsIndex } from '@/lib/schemas';
 import { syncJsonToBlob, deleteFromBlobByPrefix } from '@/lib/storage';
+import { getDataDir } from '@/lib/paths';
 
 // Fichiers JSON inclus dans un snapshot (admin.json et media.json exclus)
 const SNAPSHOT_FILES = ['site', 'pages', 'carousels', 'layouts', 'theme', 'content'] as const;
 
-const DATA_DIR = path.join(process.cwd(), 'data');
+const DATA_DIR = getDataDir();
 const SNAPSHOTS_DIR = path.join(DATA_DIR, 'snapshots');
 const INDEX_FILE = path.join(SNAPSHOTS_DIR, 'snapshots.json');
 

@@ -1,6 +1,7 @@
 import { put, del, list } from '@vercel/blob';
 import fsp from 'fs/promises';
 import path from 'path';
+import { getDataDir, getUploadsDir } from '@/lib/paths';
 
 // Map pathname → blob URL (peuplée au bootstrap, mise à jour sur put/delete)
 const blobUrlMap = new Map<string, string>();
@@ -257,7 +258,11 @@ export async function bootstrapDataFromBlob(): Promise<void> {
 
       if (shouldDownload) {
         try {
-          const localPath = path.join(process.cwd(), blob.pathname);
+          // Résoudre le chemin local selon l'environnement (Vercel → /tmp, sinon cwd)
+          const root = blob.pathname.startsWith('uploads/')
+            ? path.join(getUploadsDir(), blob.pathname.slice('uploads/'.length))
+            : path.join(getDataDir(), blob.pathname.slice('data/'.length));
+          const localPath = root;
 
           const res = await fetchPrivateBlob(blob.url);
           const buffer = Buffer.from(await res.arrayBuffer());

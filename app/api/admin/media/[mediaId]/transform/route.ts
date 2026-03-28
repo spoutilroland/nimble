@@ -7,9 +7,10 @@ import { withAuth } from '@/lib/auth';
 import { readMediaRegistry, writeMediaRegistry } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
 import { processImageWithSharp, generateThumb } from '@/lib/data/helpers';
+import { getDataDir, getUploadsDir } from '@/lib/paths';
 
-const mediaDir = path.join(process.cwd(), 'uploads', 'media');
-const dataDir = path.join(process.cwd(), 'data');
+const mediaDir = path.join(getUploadsDir(), 'media');
+const dataDir = getDataDir();
 
 type TransformOp = 'rotate-90' | 'rotate-180' | 'rotate-270' | 'flip-h' | 'flip-v';
 const VALID_OPS: TransformOp[] = ['rotate-90', 'rotate-180', 'rotate-270', 'flip-h', 'flip-v'];

@@ -1,5 +1,6 @@
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
+import { getDataDir } from '@/lib/paths';
 
 export interface DemoLimits {
   maxPages: number;
@@ -15,7 +16,7 @@ export interface DemoConfig {
   bannerText: string;
 }
 
-const DEMO_CONFIG_PATH = join(process.cwd(), 'data', 'demo.json');
+const DEMO_CONFIG_PATH = join(getDataDir(), 'demo.json');
 
 const DEFAULT_CONFIG: DemoConfig = {
   limits: {

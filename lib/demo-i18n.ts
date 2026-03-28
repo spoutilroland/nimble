@@ -1,8 +1,9 @@
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import type { Section } from '@/lib/types';
+import { getDataDir } from '@/lib/paths';
 
-const FILE_PATH = join(process.cwd(), 'data', 'demo-i18n.json');
+const FILE_PATH = join(getDataDir(), 'demo-i18n.json');
 
 interface DemoI18n {
   pages: Record<string, Record<string, string>>;

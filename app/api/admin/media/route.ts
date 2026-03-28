@@ -6,8 +6,9 @@ import fsp from 'fs/promises';
 import sharp from 'sharp';
 import { withAuth } from '@/lib/auth';
 import { readMediaRegistry, writeMediaRegistry, readCarouselsConfig, getMediaUrls, generateThumb } from '@/lib/data';
+import { getUploadsDir } from '@/lib/paths';
 
-const mediaDir = path.join(process.cwd(), 'uploads', 'media');
+const mediaDir = path.join(getUploadsDir(), 'media');
 
 export const GET = withAuth(async () => {
   const mediaData = readMediaRegistry();

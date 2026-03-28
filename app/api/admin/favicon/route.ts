@@ -6,8 +6,9 @@ import fsp from 'fs/promises';
 import { withAuth, demoBlock } from '@/lib/auth';
 import { MIME_TO_EXT } from '@/lib/data';
 import { uploadToBlob, deleteFromBlobByPrefix } from '@/lib/storage';
+import { getUploadsDir } from '@/lib/paths';
 
-const faviconDir = path.join(process.cwd(), 'uploads', 'favicon');
+const faviconDir = path.join(getUploadsDir(), 'favicon');
 const FAVICON_TYPES = [
   'image/x-icon', 'image/vnd.microsoft.icon', 'image/png',
   'image/svg+xml', 'image/jpeg', 'image/jpg', 'image/webp',

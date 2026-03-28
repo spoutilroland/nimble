@@ -10,9 +10,10 @@ import {
 } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
 import { deleteFromBlob, removeMediaFromBlob } from '@/lib/storage';
+import { getDataDir, getUploadsDir } from '@/lib/paths';
 
-const mediaDir = path.join(process.cwd(), 'uploads', 'media');
-const dataDir = path.join(process.cwd(), 'data');
+const mediaDir = path.join(getUploadsDir(), 'media');
+const dataDir = getDataDir();
 
 export const POST = demoBlock(withAuth(async (req: NextRequest) => {
   try {

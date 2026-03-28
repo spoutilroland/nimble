@@ -5,10 +5,11 @@ import path from 'path';
 import { withAuth } from '@/lib/auth';
 import { readSiteConfig, writeSiteConfig } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
+import { getDataDir } from '@/lib/paths';
 
 export const POST = withAuth(async (req: NextRequest) => {
   try {
-    const siteFile = path.join(process.cwd(), 'data', 'site.json');
+    const siteFile = path.join(getDataDir(), 'site.json');
     pushUndo('Identité du site', { 'site.json': siteFile });
     const body = await req.json();
 

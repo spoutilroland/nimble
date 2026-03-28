@@ -5,8 +5,9 @@ import type { PagesConfig } from '@/lib/types';
 import type { SectionType } from '@/lib/types/pages';
 import { syncJsonToBlob } from '@/lib/storage';
 import { getSectionFields } from '@/lib/sidebar/section-fields';
+import { getDataDir } from '@/lib/paths';
 
-const pagesFile = path.join(process.cwd(), 'data', 'pages.json');
+const pagesFile = path.join(getDataDir(), 'pages.json');
 
 export function readPagesConfig(): PagesConfig {
   try {
@@ -28,7 +29,7 @@ export function readPagesConfig(): PagesConfig {
       try { fs.writeFileSync(pagesFile, JSON.stringify(config, null, 2)); } catch { /* ignore */ }
       // Migrer le contenu existant vers les nouvelles cles prefixees
       try {
-        const contentFile = path.join(process.cwd(), 'data', 'content.json');
+        const contentFile = path.join(getDataDir(), 'content.json');
         const content = JSON.parse(fs.readFileSync(contentFile, 'utf8'));
         let contentChanged = false;
         for (const { pageId, contentId, type } of newContentIds) {

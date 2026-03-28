@@ -6,8 +6,9 @@ import fsp from 'fs/promises';
 import { withAuth, demoBlock } from '@/lib/auth';
 import { processImageWithSharp, MIME_TO_EXT, ALLOWED_TYPES, MAX_FILE_SIZE } from '@/lib/data';
 import { uploadToBlob, deleteFromBlobByPrefix } from '@/lib/storage';
+import { getUploadsDir } from '@/lib/paths';
 
-const logoDir = path.join(process.cwd(), 'uploads', 'logo');
+const logoDir = path.join(getUploadsDir(), 'logo');
 
 export const POST = demoBlock(withAuth(async (req: NextRequest) => {
   try {

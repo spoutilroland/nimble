@@ -3,8 +3,9 @@ import fsp from 'fs/promises';
 import path from 'path';
 import type { SiteConfig } from '@/lib/types';
 import { syncJsonToBlob } from '@/lib/storage';
+import { getDataDir } from '@/lib/paths';
 
-const siteFile = path.join(process.cwd(), 'data', 'site.json');
+const siteFile = path.join(getDataDir(), 'site.json');
 
 const defaultSiteConfig: SiteConfig = {
   business: {
