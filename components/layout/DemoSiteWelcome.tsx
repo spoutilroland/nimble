@@ -401,7 +401,7 @@ export function DemoSiteWelcome() {
             </div>
 
             {/* Body avec typewriter — texte invisible réserve l'espace */}
-            <div className={`relative text-[0.82rem] leading-[1.7] m-0 ${isCentered ? 'mb-5' : 'mb-4'}`}>
+            <div className={`relative text-[1.05rem] leading-[1.7] m-0 ${isCentered ? 'mb-5' : 'mb-4'}`}>
               <span className="invisible whitespace-pre-line">{step.body.split('\n').map((line, i) => (
                 <span key={i}>{i > 0 && <br />}{line}</span>
               ))}</span>

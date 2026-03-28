@@ -312,7 +312,7 @@ function CoachMark({ step, onNext, onSkip, onClose, stepIndex, totalSteps, ui, l
             </h4>
 
             {/* Body */}
-            <p className="text-[0.8rem] text-[var(--bo-text-dim,#8892a4)] leading-[1.65] m-0 mb-4">{step.body}</p>
+            <p className="text-[0.92rem] text-[var(--bo-text-dim,#8892a4)] leading-[1.65] m-0 mb-4">{step.body}</p>
 
             {/* Actions */}
             <div className="flex items-center justify-between">
@@ -426,7 +426,7 @@ function TipToast({ text, onDone }: { text: string; onDone: () => void }) {
         >
           <Lightbulb size={13} className="text-emerald-400 opacity-80" />
         </span>
-        <p className="text-[0.8rem] text-[var(--bo-text-dim,#8892a4)] m-0 leading-[1.55]">{text}</p>
+        <p className="text-[0.92rem] text-[var(--bo-text-dim,#8892a4)] m-0 leading-[1.55]">{text}</p>
       </div>
     </div>,
     document.body
