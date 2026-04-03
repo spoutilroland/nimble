@@ -18,6 +18,7 @@ export const LayoutBlockSchema = z.object({
   row: z.number(),
   col: z.number(),
   colSpan: z.number(),
+  rowSpan: z.number().optional(),
   // Champs optionnels selon le type de bloc
   provider: z.string().optional(),
   address: z.string().optional(),
@@ -29,6 +30,7 @@ export const LayoutBlockSchema = z.object({
   shape: z.string().optional(),
   direction: z.string().optional(),
   size: z.string().optional(),
+  align: z.enum(['left', 'center', 'right']).optional(),
   bg: z.string().optional(),
   color: z.string().optional(),
   borderWidth: z.string().optional(),

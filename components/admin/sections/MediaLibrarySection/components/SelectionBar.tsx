@@ -8,9 +8,13 @@ interface SelectionBarProps {
   onDeselect: () => void;
   onMove: () => void;
   onDelete?: () => void;
+  onDemoBlock?: () => void;
+  disableMove?: boolean;
 }
 
-export function SelectionBar({ count, onDeselect, onMove, onDelete }: SelectionBarProps) {
+const demoStyle = { cursor: 'not-allowed', opacity: 0.4 } as const;
+
+export function SelectionBar({ count, onDeselect, onMove, onDelete, onDemoBlock, disableMove }: SelectionBarProps) {
   const { t } = useI18n();
 
   if (count === 0) return null;
@@ -27,15 +31,20 @@ export function SelectionBar({ count, onDeselect, onMove, onDelete }: SelectionB
           <XCircle size={14} />
           {t('mediaLibrary.btnDeselect')}
         </button>
-        <button className="btn btn-secondary text-[0.8rem] px-[0.7rem] py-[0.3rem] inline-flex items-center gap-[0.3rem] whitespace-nowrap" onClick={onMove}>
+        <button
+          className="btn btn-secondary text-[0.8rem] px-[0.7rem] py-[0.3rem] inline-flex items-center gap-[0.3rem] whitespace-nowrap"
+          style={disableMove ? demoStyle : undefined}
+          onClick={disableMove ? onDemoBlock : onMove}
+          title={disableMove ? 'Not available in demo / Non disponible en démo' : undefined}
+        >
           <FolderInput size={14} />
           {t('mediaLibrary.btnMove')}
         </button>
         <button
-          className="btn btn-danger text-[0.8rem] px-[0.7rem] py-[0.3rem] inline-flex items-center gap-[0.3rem] whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
-          onClick={onDelete}
-          disabled={!onDelete}
-          title={!onDelete ? 'Désactivé en mode demo' : undefined}
+          className="btn btn-danger text-[0.8rem] px-[0.7rem] py-[0.3rem] inline-flex items-center gap-[0.3rem] whitespace-nowrap"
+          style={!onDelete ? demoStyle : undefined}
+          onClick={onDelete ?? onDemoBlock}
+          title={!onDelete ? 'Not available in demo / Non disponible en démo' : undefined}
         >
           <Trash2 size={14} />
           {t('mediaLibrary.btnDeleteSelected')}

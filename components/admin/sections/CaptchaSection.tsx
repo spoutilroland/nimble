@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { ShieldOff } from 'lucide-react';
 import { useI18n } from '@/lib/i18n/context';
 import { useAdminStore } from '@/lib/admin/store';
+import { useDemoMode } from '@/lib/hooks/useDemoMode';
 import type { CaptchaProvider } from '@/lib/types';
 
 interface InstructionDef {
@@ -13,6 +15,7 @@ interface InstructionDef {
 
 export function CaptchaSection() {
   const { t } = useI18n();
+  const { isDemo } = useDemoMode();
   const site = useAdminStore((s) => s.site);
   const loadSite = useAdminStore((s) => s.loadSite);
   const saveSite = useAdminStore((s) => s.saveSite);
@@ -82,12 +85,25 @@ export function CaptchaSection() {
           <h2>{t('captcha.sectionTitle')}</h2>
           <div className="carousel-info">{t('captcha.sectionInfo')}</div>
         </div>
-        <button className="bg-[var(--bo-green)] text-[#0b0d12] font-['Plus_Jakarta_Sans',sans-serif] text-[0.875rem] font-bold tracking-[0.2px] py-[0.65rem] px-6 border-none rounded-xl cursor-pointer transition-[background,box-shadow] duration-200 hover:bg-[var(--primary-light)] hover:shadow-[var(--bo-green-glow)]" onClick={save}>
-          {t('captcha.btnSave')}
-        </button>
+        {!isDemo && (
+          <button className="bg-[var(--bo-green)] text-[#0b0d12] font-['Plus_Jakarta_Sans',sans-serif] text-[0.875rem] font-bold tracking-[0.2px] py-[0.65rem] px-6 border-none rounded-xl cursor-pointer transition-[background,box-shadow] duration-200 hover:bg-[var(--primary-light)] hover:shadow-[var(--bo-green-glow)]" onClick={save}>
+            {t('captcha.btnSave')}
+          </button>
+        )}
       </div>
 
-      <div className="flex flex-col gap-[0.9rem] mt-[0.9rem] max-w-[520px]">
+      {isDemo && (
+        <div className="flex items-center gap-3 mt-4 mb-2 px-4 py-3 rounded-lg border border-[var(--bo-border)] bg-[var(--bo-bg)]">
+          <ShieldOff size={18} className="text-[var(--bo-text-dim)] shrink-0" />
+          <p className="text-[0.85rem] text-[var(--bo-text-dim)] m-0 leading-snug">
+            These options are disabled in demo mode.
+            <br />
+            Ces options sont désactivées en mode démo.
+          </p>
+        </div>
+      )}
+
+      <div className={`flex flex-col gap-[0.9rem] mt-[0.9rem] max-w-[520px] ${isDemo ? 'opacity-40 pointer-events-none select-none' : ''}`}>
         <div className="border border-[var(--bo-border)] py-[1.2rem] px-[1.4rem]">
           <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-[0.8rem] tracking-[0.12em] uppercase text-[var(--bo-green)] m-0 mb-4">{t('captcha.providerGroupTitle')}</h3>
 

@@ -37,6 +37,10 @@ export function MediaLibrarySection() {
     showMoveModal, openMoveModal, closeMoveModal, handleMoveMedia,
   } = useMediaLibrary();
 
+  const handleDemoBlock = useCallback(() => {
+    showFlash('Not available in demo / Non disponible en démo', 'error');
+  }, [showFlash]);
+
   const [isDragOver, setIsDragOver] = useState(false);
   const [isBreadcrumbDropTarget, setIsBreadcrumbDropTarget] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -286,16 +290,16 @@ export function MediaLibrarySection() {
 
       {/* Barre d'import + nouveau dossier */}
       <div className="flex items-center gap-[0.6rem] mb-[0.8rem]">
-        {!isDemo && (
-          <button
-            className="btn btn-primary inline-flex items-center gap-[0.4rem]"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploading}
-          >
-            <Upload size={16} />
-            {uploading ? t('mediaLibrary.loading') : t('mediaLibrary.btnImport')}
-          </button>
-        )}
+        <button
+          className="btn btn-primary inline-flex items-center gap-[0.4rem]"
+          style={isDemo ? { cursor: 'not-allowed', opacity: 0.4 } : undefined}
+          onClick={isDemo ? handleDemoBlock : () => fileInputRef.current?.click()}
+          disabled={!isDemo && uploading}
+          title={isDemo ? 'Not available in demo / Non disponible en démo' : undefined}
+        >
+          <Upload size={16} />
+          {uploading && !isDemo ? t('mediaLibrary.loading') : t('mediaLibrary.btnImport')}
+        </button>
         {!currentFolderId && (!isDemo || (mediaFolders.length < (limits?.maxFolders ?? 5))) && (
           <button
             className="btn btn-secondary inline-flex items-center gap-[0.4rem]"
@@ -306,8 +310,10 @@ export function MediaLibrarySection() {
           </button>
         )}
         <button
-          className={`btn inline-flex items-center gap-[0.4rem] ${selectMode ? 'btn-primary' : 'btn-secondary'}`}
-          onClick={toggleSelectMode}
+          className={`btn inline-flex items-center gap-[0.4rem] ${!isDemo && selectMode ? 'btn-primary' : 'btn-secondary'}`}
+          style={isDemo ? { cursor: 'not-allowed', opacity: 0.4 } : undefined}
+          onClick={isDemo ? handleDemoBlock : toggleSelectMode}
+          title={isDemo ? 'Not available in demo / Non disponible en démo' : undefined}
         >
           <CheckSquare size={16} />
           {selectMode ? t('mediaLibrary.btnSelectModeOn') : t('mediaLibrary.btnSelectMode')}
@@ -315,7 +321,9 @@ export function MediaLibrarySection() {
         {filtered.length > 0 && (
           <button
             className="btn btn-secondary inline-flex items-center gap-[0.4rem]"
-            onClick={() => selectAll(filtered)}
+            style={isDemo ? { cursor: 'not-allowed', opacity: 0.4 } : undefined}
+            onClick={isDemo ? handleDemoBlock : () => selectAll(filtered)}
+            title={isDemo ? 'Not available in demo / Non disponible en démo' : undefined}
           >
             <CheckCheck size={16} />
             {t('mediaLibrary.btnSelectAll')}
@@ -417,6 +425,8 @@ export function MediaLibrarySection() {
         onDeselect={clearSelection}
         onMove={openMoveModal}
         onDelete={isDemo ? undefined : handleDeleteBulk}
+        onDemoBlock={isDemo ? handleDemoBlock : undefined}
+        disableMove={isDemo}
       />
 
       {/* Modal déplacement */}
@@ -439,6 +449,7 @@ export function MediaLibrarySection() {
           onDelete={handleDeleteFromPanel}
           onTransform={handleTransform}
           disableDelete={isDemo}
+          onDemoBlock={isDemo ? handleDemoBlock : undefined}
         />
       )}
 

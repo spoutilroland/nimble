@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Github } from 'lucide-react';
 import { I18nProvider, useI18n } from '@/lib/i18n/context';
 import { useAdminStore, type TabId } from '@/lib/admin/store';
@@ -38,9 +38,6 @@ export function AdminShell({ locale, adminSlug }: AdminShellProps) {
   );
 }
 
-/** Onglets masqués en mode demo */
-const DEMO_HIDDEN_TABS: TabId[] = ['tab-security'];
-
 function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
   const { t } = useI18n();
   const { isDemo, bannerText } = useDemoMode();
@@ -52,11 +49,7 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
   const toggleTheme = useAdminStore((s) => s.toggleTheme);
   const initTheme = useAdminStore((s) => s.initTheme);
 
-  // Tabs filtrés en mode demo (masquer Security)
-  const visibleTabs = useMemo(
-    () => isDemo ? TABS.filter((tab) => !DEMO_HIDDEN_TABS.includes(tab.id)) : TABS,
-    [isDemo]
-  );
+  const visibleTabs = TABS;
 
   const checkSession = async () => {
     try {

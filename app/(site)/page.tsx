@@ -73,7 +73,7 @@ export default async function HomePage() {
 
       {sections.map((section, i) => (
         <div
-          key={i}
+          key={section.contentId || i}
           id={`section-${i}`}
           className={i % 2 === 0 ? 'section-slot-a' : 'section-slot-b'}
           style={i % 2 !== 0 ? { background: 'color-mix(in srgb, var(--primary) 6%, var(--bg-light))' } : undefined}

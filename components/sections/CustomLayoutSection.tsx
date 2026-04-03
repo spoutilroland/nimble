@@ -18,6 +18,7 @@ function blockStyle(block: LayoutBlock & Record<string, unknown>, gridStyle: str
   if (hasBg || hasBorder || hasRadius) style += '; padding: 1rem';
   if (hasBg) style += '; background: ' + block.bg;
   if (block.color) style += '; color: ' + block.color;
+  if (block.align) style += '; text-align: ' + block.align;
   if (hasBorder) {
     const bw = BLOCK_BORDER_WIDTH[block.borderWidth as string] || '1px';
     const bc = (block.borderColor as string) || 'var(--primary)';
@@ -56,6 +57,8 @@ export function CustomLayoutSection({ section, layout }: Props) {
             const img = images[0];
             const placeholder = blockEl.querySelector('.layout-image-placeholder');
             if (placeholder) placeholder.remove();
+            // Retirer les images précédentes avant d'ajouter
+            blockEl.querySelectorAll(':scope > img').forEach((el) => el.remove());
             const imgEl = document.createElement('img');
             imgEl.src = img.webpUrl || img.url;
             imgEl.alt = '';
@@ -64,6 +67,8 @@ export function CustomLayoutSection({ section, layout }: Props) {
           } else if (blockEl.classList.contains('layout-carousel')) {
             const container = blockEl.querySelector('.layout-carousel-container');
             if (!container) return;
+            // Retirer les images précédentes avant d'ajouter
+            container.querySelectorAll('img').forEach((el) => el.remove());
             images.forEach((img: { webpUrl?: string; url: string }) => {
               const imgEl = document.createElement('img');
               imgEl.src = img.webpUrl || img.url;
@@ -94,7 +99,7 @@ export function CustomLayoutSection({ section, layout }: Props) {
           }).map((block) => {
             const contentKey = ck(section.contentId, `layout-${section.layoutId}-${block.blockId}`);
             const bcId = section.blockCarousels?.[block.blockId];
-            const gridStyle = `grid-row:${block.row || 1}; grid-column:${block.col || 1} / span ${block.colSpan || 1}`;
+            const gridStyle = `grid-row:${block.row || 1} / span ${block.rowSpan || 1}; grid-column:${block.col || 1} / span ${block.colSpan || 1}`;
             const extBlock = block as LayoutBlock & Record<string, unknown>;
 
             if (block.type === 'title') {

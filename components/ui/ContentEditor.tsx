@@ -406,6 +406,10 @@ export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
       });
     }
 
+    // Permet à d'autres composants (SidebarEditor) de re-injecter le contenu après un router.refresh()
+    const handleReapply = () => { applyContent(); };
+    window.addEventListener('content-reapply', handleReapply);
+
     async function init() {
       await applyContent();
       const isAdmin = await checkAdmin();
@@ -421,6 +425,7 @@ export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
     init();
 
     return () => {
+      window.removeEventListener('content-reapply', handleReapply);
       if (hideTimeout !== null) clearTimeout(hideTimeout);
       document.removeEventListener('mousedown', onDocumentMouseDown);
       editBar?.remove();

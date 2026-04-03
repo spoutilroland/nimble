@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { getSectionFields } from '@/lib/sidebar/section-fields';
 import { ck } from '@/lib/content-key';
 import { SECTION_TYPES, DIVIDER_TYPES, DIVIDER_COLORS, DIVIDER_SVG_PATHS } from '@/lib/admin/constants/pages';
@@ -150,7 +151,15 @@ const SIDEBAR_UI: Record<string, Record<string, string>> = {
 // ── Main Component ──
 
 export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
+  const router = useRouter();
   const ui = SIDEBAR_UI[lang] || SIDEBAR_UI.fr;
+
+  // Rafraîchit le Server Component puis ré-injecte le contenu dynamique
+  const refreshPage = useCallback(() => {
+    router.refresh();
+    // Laisser le temps au DOM de se mettre à jour après le refresh serveur
+    setTimeout(() => window.dispatchEvent(new Event('content-reapply')), 300);
+  }, [router]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(360);
@@ -530,9 +539,10 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
       if (ok) {
         setAddFlash(true);
         setTimeout(() => setAddFlash(false), 4000);
+        refreshPage();
       }
     });
-  }, [localSections, layouts, pageId]);
+  }, [localSections, layouts, pageId, refreshPage]);
 
   // Delete section
   const handleDeleteSection = useCallback((index: number) => {
@@ -545,9 +555,10 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
       if (ok) {
         setAddFlash(true);
         setTimeout(() => setAddFlash(false), 4000);
+        refreshPage();
       }
     });
-  }, [localSections, pageId]);
+  }, [localSections, pageId, refreshPage]);
 
   // Open media picker for carousel images
   const openCarouselMediaPicker = useCallback((carouselId: string, replaceIndex: number | undefined, onResult: (url: string, webpUrl?: string) => void) => {
@@ -597,7 +608,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
           const [moved] = arr.splice(s.dragIdx, 1);
           const target = s.insertIdx > s.dragIdx ? s.insertIdx - 1 : s.insertIdx;
           arr.splice(target, 0, moved);
-          persistAllSections(pageId, arr);
+          persistAllSections(pageId, arr).then(ok => { if (ok) refreshPage(); });
           return arr;
         });
       }
@@ -606,7 +617,7 @@ export function SidebarEditor({ pageId, lang, sections }: SidebarEditorProps) {
     };
     document.addEventListener('pointermove', handleMove);
     document.addEventListener('pointerup', handleUp);
-  }, [pageId]);
+  }, [pageId, refreshPage]);
 
   const getDisplacement = (idx: number): number => {
     if (!sortRender) return 0;
