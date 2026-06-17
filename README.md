@@ -2,10 +2,10 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-# Nimble — Lightweight CMS
+# Nimble - Lightweight CMS
 <!-- last updated: 2026-02-27 -->
 <!-- persistence user data test -->
-A lightweight, database-free CMS for showcase websites. Manage pages, sections, carousels, theme, content and contact form entirely from a back-office — all stored in JSON files.
+A lightweight, database-free CMS for showcase websites. Manage pages, sections, carousels, theme, content and contact form entirely from a back-office - all stored in JSON files.
 
 ## Stack
 
@@ -15,7 +15,7 @@ A lightweight, database-free CMS for showcase websites. Manage pages, sections, 
 - **Uploads**: Sharp (auto-resize & WebP conversion)
 - **Email**: Nodemailer (SMTP)
 - **Styling**: Tailwind CSS v4 + native CSS variables
-- **Storage**: JSON files — no database
+- **Storage**: JSON files - no database
 
 ## Features
 
@@ -51,7 +51,7 @@ Default login: `admin` / `changeme123`
 
 ---
 
-## Production — Docker on Ubuntu
+## Production - Docker on Ubuntu
 
 ### 1. Install Docker and Git
 
@@ -81,7 +81,7 @@ The script will:
 3. Validate that `SESSION_SECRET` is at least 32 characters
 4. Build the Docker image and start the container
 
-App: `http://<server-ip>:3000` — Back-office: `http://<server-ip>:3000/back`
+App: `http://<server-ip>:3000` - Back-office: `http://<server-ip>:3000/back`
 
 ### Persistent volumes
 
@@ -110,7 +110,7 @@ See `.env.example` for all available options.
 |---|---|
 | `ADMIN_USERNAME` | Back-office login (default: `admin`) |
 | `ADMIN_PASSWORD` | Temporary password for first login |
-| `SESSION_SECRET` | Random string for session signing — **minimum 32 characters** |
+| `SESSION_SECRET` | Random string for session signing - **minimum 32 characters** |
 | `EMAIL_HOST` | SMTP host |
 | `EMAIL_PORT` | SMTP port |
 | `EMAIL_USER` | SMTP username |
