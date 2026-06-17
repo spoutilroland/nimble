@@ -4,7 +4,7 @@
 
 # Nimble
 
-Un CMS léger, sans base de données, pour les sites vitrines. Gérez les pages, sections, carrousels, thème, contenu et formulaire de contact depuis un back-office — tout est stocké en fichiers JSON.
+Un CMS léger, sans base de données, pour les sites vitrines. Gérez les pages, sections, carrousels, thème, contenu et formulaire de contact depuis un back-office - tout est stocké en fichiers JSON.
 
 ## Stack
 
@@ -14,7 +14,7 @@ Un CMS léger, sans base de données, pour les sites vitrines. Gérez les pages,
 - **Uploads** : Sharp (redimensionnement auto & conversion WebP)
 - **Email** : Nodemailer (SMTP)
 - **Style** : Tailwind CSS v4 + variables CSS natives
-- **Stockage** : Fichiers JSON — pas de base de données
+- **Stockage** : Fichiers JSON - pas de base de données
 
 ## Fonctionnalités
 
@@ -50,7 +50,7 @@ Identifiants par défaut : `admin` / `changeme123`
 
 ---
 
-## Production — Docker sur Ubuntu
+## Production - Docker sur Ubuntu
 
 ### 1. Installer Docker et Git
 
@@ -80,7 +80,7 @@ Le script va :
 3. Valider que `SESSION_SECRET` fait au moins 32 caractères
 4. Construire l'image Docker et démarrer le container
 
-Application : `http://<ip-serveur>:3000` — Back-office : `http://<ip-serveur>:3000/back`
+Application : `http://<ip-serveur>:3000` - Back-office : `http://<ip-serveur>:3000/back`
 
 ### Volumes persistants
 
@@ -109,7 +109,7 @@ Voir `.env.example` pour toutes les options disponibles.
 |---|---|
 | `ADMIN_USERNAME` | Identifiant du back-office (défaut : `admin`) |
 | `ADMIN_PASSWORD` | Mot de passe temporaire pour la première connexion |
-| `SESSION_SECRET` | Chaîne aléatoire pour la signature de session — **minimum 32 caractères** |
+| `SESSION_SECRET` | Chaîne aléatoire pour la signature de session - **minimum 32 caractères** |
 | `EMAIL_HOST` | Hôte SMTP |
 | `EMAIL_PORT` | Port SMTP |
 | `EMAIL_USER` | Nom d'utilisateur SMTP |
