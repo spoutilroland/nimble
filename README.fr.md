@@ -4,7 +4,7 @@
 
 # Nimble
 
-Un CMS léger, sans base de données, pour les sites vitrines. Gérez les pages, sections, carrousels, thème, contenu et formulaire de contact depuis un back-office — tout est stocké en fichiers JSON.
+Un CMS léger, sans base de données, pour les sites vitrines. Gérez les pages, sections, carrousels, thème, contenu et formulaire de contact depuis un back-office - tout est stocké en fichiers JSON.
 
 ## Stack
 
