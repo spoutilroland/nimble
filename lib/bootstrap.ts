@@ -30,14 +30,13 @@ export async function copyRepoDataToTmp() {
 }
 
 /**
- * En mode démo, les données live (data/*.json, uploads/) sont gitignorées :
- * seul data/demo-snapshot/ est versionné et déployé. Au cold start, si les
- * fichiers live sont absents, on les seed depuis le snapshot — ce qui donne
- * aussi le reset démo attendu à chaque redémarrage.
+ * En mode démo, data/demo-snapshot/ (versionné) est la seule source de vérité.
+ * Restauration systématique au cold start : le bundle serverless peut contenir
+ * des data/*.json par défaut générés au build, qu'il faut écraser — et c'est
+ * aussi la sémantique de reset démo attendue à chaque redémarrage.
  */
 export function seedDemoDataFromSnapshot() {
   if (!isDemoMode()) return;
-  if (existsSync(path.join(getDataDir(), 'site.json'))) return;
   const restored = restoreDemoSnapshot();
   console.log(restored
     ? '[bootstrap] Données démo restaurées depuis le snapshot'
