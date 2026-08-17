@@ -3,13 +3,14 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import fsp from 'fs/promises';
-import { withAuth } from '@/lib/auth';
+import { withAuth, demoBlock } from '@/lib/auth';
 import { processImageWithSharp, MIME_TO_EXT, ALLOWED_TYPES, MAX_FILE_SIZE } from '@/lib/data';
 import { uploadToBlob, deleteFromBlobByPrefix } from '@/lib/storage';
+import { getUploadsDir } from '@/lib/paths';
 
-const logoDir = path.join(process.cwd(), 'uploads', 'logo');
+const logoDir = path.join(getUploadsDir(), 'logo');
 
-export const POST = withAuth(async (req: NextRequest) => {
+export const POST = demoBlock(withAuth(async (req: NextRequest) => {
   try {
     const formData = await req.formData();
     const file = formData.get('logo') as File | null;
@@ -49,9 +50,9 @@ export const POST = withAuth(async (req: NextRequest) => {
   } catch {
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
   }
-});
+}));
 
-export const DELETE = withAuth(async () => {
+export const DELETE = demoBlock(withAuth(async () => {
   try {
     const files = await fsp.readdir(logoDir);
     for (const f of files) {
@@ -64,4 +65,4 @@ export const DELETE = withAuth(async () => {
   } catch {
     return NextResponse.json({ error: 'Delete failed' }, { status: 500 });
   }
-});
+}));

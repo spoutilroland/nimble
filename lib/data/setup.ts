@@ -3,8 +3,9 @@ import fsp from 'fs/promises';
 import path from 'path';
 import type { SetupConfig } from '@/lib/schemas/setup';
 import { syncJsonToBlob } from '@/lib/storage';
+import { getDataDir } from '@/lib/paths';
 
-const setupFile = path.join(process.cwd(), 'data', 'setup.json');
+const setupFile = path.join(getDataDir(), 'setup.json');
 
 const defaultSetupConfig: SetupConfig = {
   setupDone: false,

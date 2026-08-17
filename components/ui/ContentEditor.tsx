@@ -183,6 +183,8 @@ export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
         });
         if (!res.ok) throw new Error('Save failed');
         showFlash('Texte enregistre', 'success');
+        // Notifier la sidebar pour synchroniser le contenu
+        window.dispatchEvent(new CustomEvent('content-inline-saved', { detail: { key, value } }));
       } catch {
         showFlash('Erreur lors de la sauvegarde', 'error');
       }
@@ -245,7 +247,16 @@ export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
       } catch {}
     }
 
+    let isDemoMode = false;
+
     async function checkAdmin(): Promise<boolean> {
+      // Mode demo : toujours admin (pas de cookie is_admin)
+      try {
+        const demoRes = await fetch('/api/demo/config');
+        const demoData = await demoRes.json();
+        if (demoData.demo) { isDemoMode = true; return true; }
+      } catch { /* pas en demo */ }
+
       if (!document.cookie.includes('is_admin=')) return false;
       try {
         const res = await fetch('/api/auth/check');
@@ -395,13 +406,18 @@ export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
       });
     }
 
+    // Permet à d'autres composants (SidebarEditor) de re-injecter le contenu après un router.refresh()
+    const handleReapply = () => { applyContent(); };
+    window.addEventListener('content-reapply', handleReapply);
+
     async function init() {
       await applyContent();
       const isAdmin = await checkAdmin();
       if (!isAdmin) return;
 
       document.body.classList.add('admin-mode');
-      createEditorUI();
+      // En mode demo, pas de barre "Mode edition admin" (le bandeau demo SSR suffit)
+      if (!isDemoMode) createEditorUI();
       bindHoverListeners();
       document.addEventListener('mousedown', onDocumentMouseDown);
     }
@@ -409,6 +425,7 @@ export function ContentEditor({ pageId, lang, backPath = '/back' }: Props) {
     init();
 
     return () => {
+      window.removeEventListener('content-reapply', handleReapply);
       if (hideTimeout !== null) clearTimeout(hideTimeout);
       document.removeEventListener('mousedown', onDocumentMouseDown);
       editBar?.remove();

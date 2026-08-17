@@ -3,8 +3,9 @@ import fsp from 'fs/promises';
 import path from 'path';
 import type { ContentData } from '@/lib/types';
 import { syncJsonToBlob } from '@/lib/storage';
+import { getDataDir } from '@/lib/paths';
 
-const contentFile = path.join(process.cwd(), 'data', 'content.json');
+const contentFile = path.join(getDataDir(), 'content.json');
 
 export function readContent(): ContentData {
   try {

@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { ShieldOff } from 'lucide-react';
 import { useI18n } from '@/lib/i18n/context';
+import { useDemoMode } from '@/lib/hooks/useDemoMode';
 
 interface Criteria {
   length: boolean;
@@ -23,6 +25,7 @@ const STRENGTH_COLORS = ['', '#e53935', '#fb8c00', '#fdd835', '#43a047'];
 
 export function SecuritySection() {
   const { t } = useI18n();
+  const { isDemo } = useDemoMode();
   const [current, setCurrent] = useState('');
   const [newPwd, setNewPwd] = useState('');
   const [confirmPwd, setConfirmPwd] = useState('');
@@ -71,7 +74,18 @@ export function SecuritySection() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-[0.9rem] mt-[0.9rem] max-w-[420px]">
+      {isDemo && (
+        <div className="flex items-center gap-3 mt-4 mb-2 px-4 py-3 rounded-lg border border-[var(--bo-border)] bg-[var(--bo-bg)]">
+          <ShieldOff size={18} className="text-[var(--bo-text-dim)] shrink-0" />
+          <p className="text-[0.85rem] text-[var(--bo-text-dim)] m-0 leading-snug">
+            These options are disabled in demo mode.
+            <br />
+            Ces options sont désactivées en mode démo.
+          </p>
+        </div>
+      )}
+
+      <div className={`flex flex-col gap-[0.9rem] mt-[0.9rem] max-w-[420px] ${isDemo ? 'opacity-40 pointer-events-none select-none' : ''}`}>
         <div className="border border-[var(--bo-border)] py-[1.2rem] px-[1.4rem]">
           <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-[0.8rem] tracking-[0.12em] uppercase text-[var(--bo-green)] m-0 mb-4">{t('security.passwordGroupTitle')}</h3>
 

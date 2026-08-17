@@ -3,8 +3,14 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth/session';
 import { checkRateLimit } from '@/lib/auth/rateLimit';
+import { isDemoMode } from '@/lib/demo';
 
 export async function GET(req: NextRequest) {
+  // Mode demo : toujours authentifié
+  if (isDemoMode()) {
+    return NextResponse.json({ valid: true, user: 'demo' });
+  }
+
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
   const { limited, retryAfter } = checkRateLimit(ip, { windowMs: 60_000, max: 30 });
   if (limited) {

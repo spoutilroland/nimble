@@ -1,6 +1,7 @@
 import { put, del, list } from '@vercel/blob';
 import fsp from 'fs/promises';
 import path from 'path';
+import { getDataDir, getUploadsDir } from '@/lib/paths';
 
 // Map pathname → blob URL (peuplée au bootstrap, mise à jour sur put/delete)
 const blobUrlMap = new Map<string, string>();
@@ -257,7 +258,11 @@ export async function bootstrapDataFromBlob(): Promise<void> {
 
       if (shouldDownload) {
         try {
-          const localPath = path.join(process.cwd(), blob.pathname);
+          // Résoudre le chemin local selon l'environnement (Vercel → /tmp, sinon cwd)
+          const root = blob.pathname.startsWith('uploads/')
+            ? path.join(getUploadsDir(), blob.pathname.slice('uploads/'.length))
+            : path.join(getDataDir(), blob.pathname.slice('data/'.length));
+          const localPath = root;
 
           const res = await fetchPrivateBlob(blob.url);
           const buffer = Buffer.from(await res.arrayBuffer());
@@ -278,18 +283,9 @@ export async function bootstrapDataFromBlob(): Promise<void> {
               continue;
             }
 
-            // Si le fichier local existe et contient des données valides → le garder.
-            // Le local peut être plus récent si le sync Blob a échoué silencieusement.
-            try {
-              const localContent = await fsp.readFile(localPath, 'utf8');
-              const localParsed = JSON.parse(localContent);
-              if (!isEmptyJsonData(localParsed)) {
-                // Local valide → pas d'écrasement
-                continue;
-              }
-            } catch {
-              // Fichier local absent ou illisible → restaurer depuis Blob
-            }
+            // Sur Vercel, le Blob est la source de vérité — toujours écraser le local
+            // (le local vient du repo via copyRepoDataToTmp, pas de vraies données admin)
+            // Sur Hostinger, cette fonction n'est jamais appelée (Blob désactivé)
           }
 
           await fsp.mkdir(path.dirname(localPath), { recursive: true });

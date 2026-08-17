@@ -16,9 +16,10 @@ interface Props {
   section: Section;
   site: SiteConfig;
   layouts: Record<string, Layout>;
+  lang?: string;
 }
 
-export function SectionRenderer({ section, site, layouts }: Props) {
+export function SectionRenderer({ section, site, layouts, lang }: Props) {
   switch (section.type) {
     case 'hero':
       return <HeroSection section={section} />;
@@ -36,6 +37,7 @@ export function SectionRenderer({ section, site, layouts }: Props) {
           section={section}
           captchaProvider={site.captcha?.provider || undefined}
           captchaSiteKey={site.captcha?.siteKey || undefined}
+          lang={lang}
         />
       );
     case 'bento-grid':

@@ -1,5 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Embarque le snapshot démo dans les fonctions serverless (Vercel) :
+  // data/*.json et uploads/ sont gitignorés, le snapshot est la seule
+  // source de données disponible au cold start en mode démo.
+  outputFileTracingIncludes: {
+    '/**': ['./data/demo-snapshot/**/*'],
+  },
   images: {
     // Autorise les images locales avec query string (?v=...)
     localPatterns: [

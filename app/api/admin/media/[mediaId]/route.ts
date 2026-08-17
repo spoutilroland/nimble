@@ -3,16 +3,17 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import fsp from 'fs/promises';
-import { withAuth } from '@/lib/auth';
+import { withAuth, demoBlock } from '@/lib/auth';
 import {
   readMediaRegistry, writeMediaRegistry,
   readCarouselsConfig, writeCarouselsConfig,
 } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
 import { deleteFromBlob, appendMediaToBlob, removeMediaFromBlob } from '@/lib/storage';
+import { getDataDir, getUploadsDir } from '@/lib/paths';
 
-const mediaDir = path.join(process.cwd(), 'uploads', 'media');
-const dataDir = path.join(process.cwd(), 'data');
+const mediaDir = path.join(getUploadsDir(), 'media');
+const dataDir = getDataDir();
 
 // Champs éditables par le client
 const EDITABLE_FIELDS = ['altText', 'title', 'tags'] as const;
@@ -57,7 +58,7 @@ export const PATCH = withAuth(async (
   }
 });
 
-export const DELETE = withAuth(async (
+export const DELETE = demoBlock(withAuth(async (
   _req: NextRequest,
   ctx?: { params: Promise<Record<string, string>> }
 ) => {
@@ -98,4 +99,4 @@ export const DELETE = withAuth(async (
   } catch {
     return NextResponse.json({ error: 'Suppression échouée' }, { status: 500 });
   }
-});
+}));

@@ -6,8 +6,9 @@ import type { PagesConfig } from '@/lib/types';
 import type { MediaUrls } from '@/lib/types';
 import { readMediaRegistry, getMediaUrls } from './media';
 import { syncJsonToBlob } from '@/lib/storage';
+import { getDataDir } from '@/lib/paths';
 
-const carouselsFile = path.join(process.cwd(), 'data', 'carousels.json');
+const carouselsFile = path.join(getDataDir(), 'carousels.json');
 
 export function readCarouselsConfig(): CarouselsConfig {
   try {

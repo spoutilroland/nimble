@@ -5,11 +5,12 @@ import path from 'path';
 import { withAuth } from '@/lib/auth';
 import { readContent, writeContent, readSiteConfig, sanitizeRichText } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
+import { getDataDir } from '@/lib/paths';
 
 export const POST = withAuth(async (req: NextRequest) => {
   const { page, key, value, lang } = await req.json();
   try {
-    const contentFile = path.join(process.cwd(), 'data', 'content.json');
+    const contentFile = path.join(getDataDir(), 'content.json');
     pushUndo('Texte inline', { 'content.json': contentFile });
 
     const content = readContent();

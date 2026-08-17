@@ -5,6 +5,7 @@ import path from 'path';
 import { withAuth } from '@/lib/auth';
 import { readSiteConfig, writeSiteConfig } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
+import { getDataDir } from '@/lib/paths';
 
 export const PUT = withAuth(async (req: NextRequest) => {
   const { mode } = await req.json();
@@ -12,7 +13,7 @@ export const PUT = withAuth(async (req: NextRequest) => {
     return NextResponse.json({ error: 'Mode invalide' }, { status: 400 });
   }
   try {
-    pushUndo('Mode logo', { 'site.json': path.join(process.cwd(), 'data', 'site.json') });
+    pushUndo('Mode logo', { 'site.json': path.join(getDataDir(), 'site.json') });
     const site = readSiteConfig();
     site.logoMode = mode;
     await writeSiteConfig(site);

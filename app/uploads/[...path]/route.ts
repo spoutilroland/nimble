@@ -4,8 +4,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import { proxyBlobFile } from '@/lib/storage';
+import { getUploadsDir } from '@/lib/paths';
 
-const uploadsDir = path.join(process.cwd(), 'uploads');
+const uploadsDir = getUploadsDir();
 
 const MIME_TYPES: Record<string, string> = {
   '.jpg': 'image/jpeg',

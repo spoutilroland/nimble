@@ -17,6 +17,8 @@ uploads/
 public/uploads/
 # Exception : route Next.js de serving des uploads (code source, pas des fichiers)
 !app/uploads/
+# Exception branche demo : les assets du snapshot démo doivent être déployés
+!data/demo-snapshot/uploads/
 
 # Logs
 logs/
@@ -47,3 +49,4 @@ done.md
 # Rapports d'audit (données sensibles, garder en local uniquement)
 SECURITY_AUDIT.md
 SECURITY_CORRECTIONS.md
+.vercel

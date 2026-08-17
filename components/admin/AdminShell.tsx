@@ -4,8 +4,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { Github } from 'lucide-react';
 import { I18nProvider, useI18n } from '@/lib/i18n/context';
 import { useAdminStore, type TabId } from '@/lib/admin/store';
-import { getSectionsForTab, getSideNavForTab } from '@/lib/admin/registry';
+import { getSectionsForTab, getSideNavForTab, getDemoFilteredSections, getDemoFilteredSideNav } from '@/lib/admin/registry';
+import { useDemoMode } from '@/lib/hooks/useDemoMode';
 import { LoginScreen } from './LoginScreen';
+import { DemoBanner } from './DemoBanner';
+import { GuidedTour } from './shared/GuidedTour';
 
 interface AdminShellProps {
   locale: Record<string, unknown>;
@@ -37,6 +40,7 @@ export function AdminShell({ locale, adminSlug }: AdminShellProps) {
 
 function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
   const { t } = useI18n();
+  const { isDemo, bannerText } = useDemoMode();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   const activeTab = useAdminStore((s) => s.activeTab);
@@ -44,6 +48,8 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
   const isDark = useAdminStore((s) => s.isDark);
   const toggleTheme = useAdminStore((s) => s.toggleTheme);
   const initTheme = useAdminStore((s) => s.initTheme);
+
+  const visibleTabs = TABS;
 
   const checkSession = async () => {
     try {
@@ -55,11 +61,16 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
     }
   };
 
-  // Vérification session au chargement
+  // Vérification session au chargement (bypass en demo)
   useEffect(() => {
+    if (isDemo) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsAuthenticated(true);
+      return;
+    }
     // eslint-disable-next-line react-hooks/set-state-in-effect
     checkSession();
-  }, []);
+  }, [isDemo]);
 
   // Init dark theme state
   useEffect(() => {
@@ -85,12 +96,14 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
     return <LoginScreen onLogin={handleLogin} />;
   }
 
-  // Dashboard — rendu via registry
-  const sideNavItems = getSideNavForTab(activeTab);
-  const sections = getSectionsForTab(activeTab);
+  // Dashboard — rendu via registry (filtré en demo)
+  const sideNavItems = isDemo ? getDemoFilteredSideNav(activeTab) : getSideNavForTab(activeTab);
+  const sections = isDemo ? getDemoFilteredSections(activeTab) : getSectionsForTab(activeTab);
 
   return (
     <div id="admin-dashboard" className="flex flex-col h-screen overflow-hidden">
+      {isDemo && <DemoBanner text={bannerText} />}
+      {isDemo && <GuidedTour />}
       <header className="admin-header">
         <div className="flex justify-between items-center py-4 px-6 max-w-[1440px] mx-auto w-full">
           <h1 className="font-['Plus_Jakarta_Sans',sans-serif] text-[1.05rem] font-extrabold uppercase tracking-[3px] text-[var(--bo-text)] flex items-center gap-[0.7rem]">{t('admin.title')}</h1>
@@ -105,9 +118,11 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
             <a href="/" className="bg-transparent border border-[var(--bo-border)] rounded-xl text-[var(--bo-text-dim)] py-[0.45rem] px-4 font-['Inter',sans-serif] text-[0.8rem] font-semibold tracking-[0.3px] cursor-pointer transition-all duration-150 hover:border-[var(--bo-border-hover)] hover:text-[var(--bo-text)] hover:bg-[rgba(255,255,255,0.04)]" target="_blank" rel="noopener noreferrer">
               {t('admin.viewSite')}
             </a>
-            <button className="bg-transparent border border-[var(--bo-border)] rounded-xl text-[var(--bo-text-dim)] py-[0.45rem] px-4 font-['Inter',sans-serif] text-[0.8rem] font-semibold tracking-[0.3px] cursor-pointer transition-all duration-150 hover:border-[var(--bo-border-hover)] hover:text-[var(--bo-text)] hover:bg-[rgba(255,255,255,0.04)]" onClick={handleLogout}>
-              {t('admin.logout')}
-            </button>
+            {!isDemo && (
+              <button className="bg-transparent border border-[var(--bo-border)] rounded-xl text-[var(--bo-text-dim)] py-[0.45rem] px-4 font-['Inter',sans-serif] text-[0.8rem] font-semibold tracking-[0.3px] cursor-pointer transition-all duration-150 hover:border-[var(--bo-border-hover)] hover:text-[var(--bo-text)] hover:bg-[rgba(255,255,255,0.04)]" onClick={handleLogout}>
+                {t('admin.logout')}
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -121,7 +136,7 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
             <img src="/brand/logo.svg" alt="Nimble" className="max-w-full max-h-[4.25rem] w-auto h-auto block opacity-[0.92]" />
           </div>
           <nav id="main-tabs">
-            {TABS.map((tab) => (
+            {visibleTabs.map((tab) => (
               <button
                 key={tab.id}
                 className={`main-tab${activeTab === tab.id ? ' active' : ''}`}
@@ -134,7 +149,7 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
           <nav className="side-nav">
             {/* Label de l'onglet actif */}
             <span className="block px-[14px] pt-[10px] pb-2 font-['Inter',sans-serif] text-[0.65rem] font-bold uppercase tracking-[2px] text-[var(--bo-green)] leading-none">
-              {t(TABS.find((tab) => tab.id === activeTab)?.labelKey ?? '').replace(/\p{Emoji_Presentation}\s*/gu, '').trim()}
+              {t(visibleTabs.find((tab) => tab.id === activeTab)?.labelKey ?? '').replace(/\p{Emoji_Presentation}\s*/gu, '').trim()}
             </span>
             <div className="h-px bg-[var(--bo-border)] mx-[2px] mt-1 mb-[14px] shrink-0" />
             {sideNavItems.map((item) => (
@@ -188,7 +203,7 @@ function AdminShellInner({ adminSlug }: { adminSlug?: string }) {
               spoutilroland/nimble
             </a>
           </div>
-          <span className="justify-self-end text-[0.62rem] tracking-[1.5px] text-[var(--bo-text-dim)] opacity-60">CMS léger — zéro base de données</span>
+          <span className="justify-self-end text-[0.62rem] tracking-[1.5px] text-[var(--bo-text-dim)] opacity-60">{t('demo.footerTagline')}</span>
         </div>
       </footer>
     </div>

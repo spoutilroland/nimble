@@ -5,6 +5,7 @@ import path from 'path';
 import { withAuth } from '@/lib/auth';
 import { readThemeFile, writeThemeFile } from '@/lib/data';
 import { pushUndo } from '@/lib/undoManager';
+import { getDataDir } from '@/lib/paths';
 
 const VALID_THEMES = ['alpine', 'pro', 'craft', 'industrial', 'provence'];
 
@@ -19,7 +20,7 @@ export const POST = withAuth(async (req: NextRequest) => {
   }
 
   try {
-    pushUndo('Thème actif', { 'theme.json': path.join(process.cwd(), 'data', 'theme.json') });
+    pushUndo('Thème actif', { 'theme.json': path.join(getDataDir(), 'theme.json') });
     data.theme = theme;
     await writeThemeFile(data);
     return NextResponse.json({ success: true, theme });

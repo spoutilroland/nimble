@@ -3,8 +3,9 @@ import fsp from 'fs/promises';
 import path from 'path';
 import type { MediaRegistry, MediaEntry, MediaUrls } from '@/lib/types';
 import { appendMediaToBlob, removeMediaFromBlob } from '@/lib/storage';
+import { getDataDir } from '@/lib/paths';
 
-const mediaFile = path.join(process.cwd(), 'data', 'media.json');
+const mediaFile = path.join(getDataDir(), 'media.json');
 const mediaTmpFile = mediaFile + '.tmp';
 
 export function readMediaRegistry(): MediaRegistry {

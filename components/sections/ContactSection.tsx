@@ -8,12 +8,42 @@ interface Props {
   section: Section;
   captchaProvider?: string;
   captchaSiteKey?: string;
+  lang?: string;
 }
 
-export function ContactSection({ section, captchaProvider, captchaSiteKey }: Props) {
+// Textes par langue (fallback côté client si pas de prop lang)
+const TEXTS: Record<string, Record<string, string>> = {
+  fr: {
+    namePlaceholder: 'Votre nom',
+    emailPlaceholder: 'Votre email',
+    phonePlaceholder: 'Votre telephone',
+    locationPlaceholder: 'Votre ville',
+    messagePlaceholder: 'Decrivez votre projet...',
+    submit: 'Envoyer la demande',
+    sending: 'Envoi en cours...',
+    success: 'Votre demande a bien été envoyée ! Nous vous répondrons rapidement.',
+    captchaError: 'Veuillez valider le captcha.',
+  },
+  en: {
+    namePlaceholder: 'Your name',
+    emailPlaceholder: 'Your email',
+    phonePlaceholder: 'Your phone',
+    locationPlaceholder: 'Your city',
+    messagePlaceholder: 'Describe your project...',
+    submit: 'Send request',
+    sending: 'Sending...',
+    success: 'Your request has been sent! We\'ll get back to you shortly.',
+    captchaError: 'Please complete the captcha.',
+  },
+};
+
+export function ContactSection({ section, captchaProvider, captchaSiteKey, lang: langProp }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+
+  const lang = langProp || 'fr';
+  const txt = TEXTS[lang] || TEXTS.fr;
 
   // Charger le script captcha
   useEffect(() => {
@@ -52,7 +82,7 @@ export function ContactSection({ section, captchaProvider, captchaSiteKey }: Pro
       token = field?.value;
       if (!token) {
         setStatus('error');
-        setErrorMsg('Veuillez valider le captcha.');
+        setErrorMsg(txt.captchaError);
         return;
       }
     }
@@ -84,7 +114,7 @@ export function ContactSection({ section, captchaProvider, captchaSiteKey }: Pro
       if (res.ok) {
         setStatus('success');
       } else {
-        throw new Error(data.error || "Erreur lors de l'envoi");
+        throw new Error(data.error || txt.captchaError);
       }
     } catch (err) {
       setStatus('error');
@@ -101,27 +131,27 @@ export function ContactSection({ section, captchaProvider, captchaSiteKey }: Pro
     <section className="section section-contact" id="contact">
       <div className="max-w-[1200px] mx-auto px-5">
         <h2 className="section-title" data-content-key={ck(section.contentId, 'contact-title')}>
-          Demandez votre devis gratuit
+          {lang === 'en' ? 'Get in touch' : 'Demandez votre devis gratuit'}
         </h2>
         <form className="contact-form max-w-[750px] mx-auto" ref={formRef} onSubmit={handleSubmit}>
           <div className="form-row grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
             <div className="form-group mb-8">
-              <input type="text" name="name" placeholder="Votre nom" required />
+              <input type="text" name="name" placeholder={txt.namePlaceholder} required />
             </div>
             <div className="form-group mb-8">
-              <input type="email" name="email" placeholder="Votre email" required />
+              <input type="email" name="email" placeholder={txt.emailPlaceholder} required />
             </div>
           </div>
           <div className="form-row grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
             <div className="form-group mb-8">
-              <input type="tel" name="phone" placeholder="Votre telephone" />
+              <input type="tel" name="phone" placeholder={txt.phonePlaceholder} />
             </div>
             <div className="form-group mb-8">
-              <input type="text" name="location" placeholder="Votre ville" />
+              <input type="text" name="location" placeholder={txt.locationPlaceholder} />
             </div>
           </div>
           <div className="form-group mb-8">
-            <textarea name="message" placeholder="Decrivez votre projet..." rows={5} required />
+            <textarea name="message" placeholder={txt.messagePlaceholder} rows={5} required />
           </div>
 
           {/* Honeypot anti-bot */}
@@ -151,7 +181,7 @@ export function ContactSection({ section, captchaProvider, captchaSiteKey }: Pro
 
           {status === 'success' ? (
             <div className="contact-msg contact-msg--success text-center">
-              Votre demande a bien été envoyée ! Nous vous répondrons rapidement.
+              {txt.success}
             </div>
           ) : (
             <div className="text-center">
@@ -161,7 +191,7 @@ export function ContactSection({ section, captchaProvider, captchaSiteKey }: Pro
                 disabled={status === 'sending'}
                 style={{ pointerEvents: status === 'sending' ? 'none' : undefined }}
               >
-                {status === 'sending' ? 'Envoi en cours...' : 'Envoyer la demande'}
+                {status === 'sending' ? txt.sending : txt.submit}
               </button>
             </div>
           )}

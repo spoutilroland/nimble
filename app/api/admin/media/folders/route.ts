@@ -3,6 +3,7 @@ export const runtime = 'nodejs';
 import { NextResponse } from 'next/server';
 import { withAuth } from '@/lib/auth';
 import { readMediaRegistry, writeMediaRegistry } from '@/lib/data';
+import { isDemoMode, readDemoConfig } from '@/lib/demo';
 
 // GET — liste des dossiers
 export const GET = withAuth(async () => {
@@ -19,9 +20,21 @@ export const POST = withAuth(async (req) => {
     return NextResponse.json({ error: 'Name required' }, { status: 400 });
   }
 
-  const id = 'f_' + Date.now() + '_' + Math.round(Math.random() * 1e9);
   const data = readMediaRegistry();
   if (!data.folders) data.folders = {};
+
+  // Limite demo
+  if (isDemoMode()) {
+    const { limits } = readDemoConfig();
+    if (Object.keys(data.folders).length >= limits.maxFolders) {
+      return NextResponse.json(
+        { error: `Mode demo : maximum ${limits.maxFolders} dossiers` },
+        { status: 403 }
+      );
+    }
+  }
+
+  const id = 'f_' + Date.now() + '_' + Math.round(Math.random() * 1e9);
   data.folders[id] = { id, name, createdAt: new Date().toISOString() };
   await writeMediaRegistry(data);
 

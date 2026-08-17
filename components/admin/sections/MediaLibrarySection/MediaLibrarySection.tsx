@@ -4,6 +4,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { Upload, FolderPlus, ArrowLeft, CheckSquare, CheckCheck } from 'lucide-react';
 import { useI18n } from '@/lib/i18n/context';
 import { useAdminStore } from '@/lib/admin/store';
+import { useDemoMode } from '@/lib/hooks/useDemoMode';
 import { useMediaLibrary } from './hooks/useMediaLibrary';
 import { MediaFilters } from './components/MediaFilters';
 import { MediaGrid } from './components/MediaGrid';
@@ -15,6 +16,7 @@ import { MoveToFolderModal } from './components/MoveToFolderModal';
 
 export function MediaLibrarySection() {
   const { t } = useI18n();
+  const { isDemo, limits } = useDemoMode();
   const showFlash = useAdminStore((s) => s.showFlash);
   const {
     filtered, mediaLoading, totalCount,
@@ -34,6 +36,10 @@ export function MediaLibrarySection() {
     // Déplacement
     showMoveModal, openMoveModal, closeMoveModal, handleMoveMedia,
   } = useMediaLibrary();
+
+  const handleDemoBlock = useCallback(() => {
+    showFlash('Not available in demo / Non disponible en démo', 'error');
+  }, [showFlash]);
 
   const [isDragOver, setIsDragOver] = useState(false);
   const [isBreadcrumbDropTarget, setIsBreadcrumbDropTarget] = useState(false);
@@ -70,6 +76,8 @@ export function MediaLibrarySection() {
     setIsDragOver(false);
     // Ignorer les drags internes (images déjà présentes dans la médiathèque)
     if (e.dataTransfer?.getData('nimble/media-id')) return;
+    // Bloquer l'upload en mode demo
+    if (isDemo) return;
     if (e.dataTransfer?.files?.length) {
       setUploading(true);
       const result = await handleUpload(e.dataTransfer.files);
@@ -86,7 +94,7 @@ export function MediaLibrarySection() {
         showFlash(result.error || t('mediaLibrary.uploadError'), 'error');
       }
     }
-  }, [handleUpload, showFlash, t]);
+  }, [handleUpload, showFlash, t, isDemo]);
 
   useEffect(() => {
     const el = document.getElementById('media-library-section');
@@ -284,13 +292,15 @@ export function MediaLibrarySection() {
       <div className="flex items-center gap-[0.6rem] mb-[0.8rem]">
         <button
           className="btn btn-primary inline-flex items-center gap-[0.4rem]"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={uploading}
+          style={isDemo ? { cursor: 'not-allowed', opacity: 0.4 } : undefined}
+          onClick={isDemo ? handleDemoBlock : () => fileInputRef.current?.click()}
+          disabled={!isDemo && uploading}
+          title={isDemo ? 'Not available in demo / Non disponible en démo' : undefined}
         >
           <Upload size={16} />
-          {uploading ? t('mediaLibrary.loading') : t('mediaLibrary.btnImport')}
+          {uploading && !isDemo ? t('mediaLibrary.loading') : t('mediaLibrary.btnImport')}
         </button>
-        {!currentFolderId && (
+        {!currentFolderId && (!isDemo || (mediaFolders.length < (limits?.maxFolders ?? 5))) && (
           <button
             className="btn btn-secondary inline-flex items-center gap-[0.4rem]"
             onClick={() => setShowNewFolder(true)}
@@ -300,8 +310,10 @@ export function MediaLibrarySection() {
           </button>
         )}
         <button
-          className={`btn inline-flex items-center gap-[0.4rem] ${selectMode ? 'btn-primary' : 'btn-secondary'}`}
-          onClick={toggleSelectMode}
+          className={`btn inline-flex items-center gap-[0.4rem] ${!isDemo && selectMode ? 'btn-primary' : 'btn-secondary'}`}
+          style={isDemo ? { cursor: 'not-allowed', opacity: 0.4 } : undefined}
+          onClick={isDemo ? handleDemoBlock : toggleSelectMode}
+          title={isDemo ? 'Not available in demo / Non disponible en démo' : undefined}
         >
           <CheckSquare size={16} />
           {selectMode ? t('mediaLibrary.btnSelectModeOn') : t('mediaLibrary.btnSelectMode')}
@@ -309,7 +321,9 @@ export function MediaLibrarySection() {
         {filtered.length > 0 && (
           <button
             className="btn btn-secondary inline-flex items-center gap-[0.4rem]"
-            onClick={() => selectAll(filtered)}
+            style={isDemo ? { cursor: 'not-allowed', opacity: 0.4 } : undefined}
+            onClick={isDemo ? handleDemoBlock : () => selectAll(filtered)}
+            title={isDemo ? 'Not available in demo / Non disponible en démo' : undefined}
           >
             <CheckCheck size={16} />
             {t('mediaLibrary.btnSelectAll')}
@@ -410,7 +424,9 @@ export function MediaLibrarySection() {
         count={selectedIds.size}
         onDeselect={clearSelection}
         onMove={openMoveModal}
-        onDelete={handleDeleteBulk}
+        onDelete={isDemo ? undefined : handleDeleteBulk}
+        onDemoBlock={isDemo ? handleDemoBlock : undefined}
+        disableMove={isDemo}
       />
 
       {/* Modal déplacement */}
@@ -432,6 +448,8 @@ export function MediaLibrarySection() {
           onSave={handleSave}
           onDelete={handleDeleteFromPanel}
           onTransform={handleTransform}
+          disableDelete={isDemo}
+          onDemoBlock={isDemo ? handleDemoBlock : undefined}
         />
       )}
 
@@ -445,8 +463,8 @@ export function MediaLibrarySection() {
         />
       )}
 
-      {/* Overlay drag & drop */}
-      {isDragOver && (
+      {/* Overlay drag & drop (masqué en demo — upload bloqué) */}
+      {isDragOver && !isDemo && (
         <div className="fixed inset-0 bg-[rgba(52,211,153,0.12)] backdrop-blur-[2px] z-[400] flex items-center justify-center pointer-events-none">
           <div className="flex flex-col items-center gap-[0.8rem] text-[var(--bo-green)] text-[1.2rem] font-semibold">
             <Upload size={48} />

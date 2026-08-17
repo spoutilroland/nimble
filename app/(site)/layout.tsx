@@ -4,6 +4,8 @@ import { readThemeFile } from '@/lib/data/theme';
 import { detectLang } from '@/lib/i18n/server';
 import { ThemeScript } from '@/components/ui/ThemeScript';
 import { AdminBar } from '@/components/layout/AdminBar';
+import { isDemoMode } from '@/lib/demo';
+import { DemoSiteWelcome } from '@/components/layout/DemoSiteWelcome';
 import '../globals.css';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -59,6 +61,7 @@ export default async function SiteLayout({
       </head>
       <body className="site-page font-['Raleway',sans-serif] leading-[1.7] text-[var(--text)] bg-[var(--bg)] overflow-x-hidden">
         <AdminBar />
+        {isDemoMode() && <DemoSiteWelcome />}
         {children}
       </body>
     </html>
