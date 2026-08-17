@@ -1,6 +1,8 @@
 import { cpSync, existsSync, mkdirSync } from 'fs';
 import path from 'path';
 import { getDataDir, getUploadsDir } from '@/lib/paths';
+import { isDemoMode } from '@/lib/demo';
+import { restoreDemoSnapshot } from '@/lib/demo-reset';
 
 /**
  * Sur Vercel, /tmp est vide à chaque cold start.
@@ -25,4 +27,19 @@ export async function copyRepoDataToTmp() {
     mkdirSync(tmpUploads, { recursive: true });
     cpSync(repoUploads, tmpUploads, { recursive: true });
   }
+}
+
+/**
+ * En mode démo, les données live (data/*.json, uploads/) sont gitignorées :
+ * seul data/demo-snapshot/ est versionné et déployé. Au cold start, si les
+ * fichiers live sont absents, on les seed depuis le snapshot — ce qui donne
+ * aussi le reset démo attendu à chaque redémarrage.
+ */
+export function seedDemoDataFromSnapshot() {
+  if (!isDemoMode()) return;
+  if (existsSync(path.join(getDataDir(), 'site.json'))) return;
+  const restored = restoreDemoSnapshot();
+  console.log(restored
+    ? '[bootstrap] Données démo restaurées depuis le snapshot'
+    : '[bootstrap] Snapshot démo introuvable — données par défaut');
 }
